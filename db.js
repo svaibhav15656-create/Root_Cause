@@ -10,7 +10,16 @@ const schema = `
 CREATE TABLE IF NOT EXISTS tenants (
   id uuid PRIMARY KEY, email text NOT NULL UNIQUE, name text NOT NULL,
   salt text NOT NULL, password_hash text NOT NULL, plan text NOT NULL DEFAULT 'starter',
+  phone text, github_id text, github_username text, github_token_enc text,
   created_at timestamptz NOT NULL DEFAULT now(), deleted_at timestamptz
+);
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS phone text;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_id text;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_username text;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_token_enc text;
+CREATE TABLE IF NOT EXISTS github_oauth_states (
+  state_hash text PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  expires_at timestamptz NOT NULL
 );
 CREATE TABLE IF NOT EXISTS sessions (
   token_hash text PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,

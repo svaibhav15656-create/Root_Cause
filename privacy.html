@@ -1,16 +1,26 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8f5"><title>Privacy · RootCause</title><link rel="stylesheet" href="/styles.css"></head>
-<body><header class="nav wrap"><a class="brand" href="/"><b>r<span>.</span></b> rootcause</a><a href="/">← Back home</a></header>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8f5">
+<title>Privacy · RootCause</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="nav wrap"><a class="brand" href="/"><b>r<span>.</span></b> rootcause</a><a href="/">← Back home</a></header>
 <main class="section wrap legal"><label>LAST UPDATED · OCTOBER 2026</label><h1>What happens to your information</h1>
-<p>This notice describes the data RootCause processes to provide its log-monitoring service. RootCause is operated by <strong>[operator or business name]</strong>. For privacy requests, contact <strong>[support email]</strong>. These contact details must be completed by the operator.</p>
-<h2>What we collect</h2><p>We collect your name and email address; a salted scrypt password hash (we do not store your plain-text password); session and app-key hashes; application settings; logs and incident details you submit; notification settings; and service usage. Your browser also receives an HTTP-only, SameSite session cookie that keeps you signed in. Log redaction removes some common secrets and email addresses, but is best-effort. Do not send passwords, API tokens, or personal data in logs.</p>
+<p>This notice describes the data RootCause processes to provide its log-monitoring service.</p>
+<h2>What we collect</h2>
+<p>We collect your name and email address; a salted scrypt password hash (we do not store your plain-text password); session and app-key hashes; application settings; logs and incident details you submit; notification settings; and service usage. Your browser also receives an HTTP-only, SameSite session cookie that keeps you signed in. Log redaction removes some common secrets and email addresses, but is best-effort. Do not send passwords, API tokens, or personal data in logs.</p>
 <p>We process your IP address and request time temporarily for rate limiting and abuse prevention. The request throttle uses temporary in-memory counters. For the free explainer, we store a keyed hash of the client IP with a daily use count for two days; we do not store the original IP in that table. We store timestamps included with logs and incident records.</p>
-<h2>Why we use it</h2><p>We use this information to operate RootCause, analyze logs, create incidents and warnings, send alerts and password-reset messages, enforce usage limits, prevent abuse, and protect the service.</p>
-<h2>Who processes it</h2><p>Render hosts the application, Neon hosts the PostgreSQL database, and Resend delivers email when configured. Optional Slack and Telegram destinations receive alerts when a workspace owner configures them. If AI explanations are enabled, redacted portions of unmatched log messages may be sent to OpenAI to generate an explanation. Please do not include secrets or personal data in logs.</p>
-<h2>Where it is stored</h2><p>The production Neon database is hosted in Singapore. Render and email-provider processing may take place in other regions under those providers’ terms.</p>
-<h2>How long we keep it</h2><p>Logs are retained for 30 days on the Starter plan and 90 days on the Team plan. Account information is kept until you delete your account. Session cookies last up to seven days; password-reset links expire after 30 minutes. On the current Neon Free plan, instant-restore history is limited to six hours. That is a recovery window, not the log-retention period.</p>
-<h2>How we protect it</h2><p>Connections use HTTPS and TLS to Neon. Passwords and app keys are stored as hashes. Slack and Telegram credentials are encrypted before they are stored in Neon. These safeguards reduce risk but cannot guarantee that a service or provider will never be compromised.</p>
-<h2>Your choices</h2><p>You can delete your account and its associated RootCause data from the workspace. You may request access to or correction of account information by contacting <strong>[support email]</strong>. Provider records and backups may have separate retention periods.</p>
-<p class="legal-note">This notice should be reviewed and updated with the operator’s legal name, contact details, and any requirements that apply to the business and its customers.</p></main>
-<footer class="footer wrap"><a class="brand" href="/"><b>r<span>.</span></b> rootcause</a><a href="/terms.html">Terms</a></footer></body></html>
+<h2>Why we use it</h2>
+<p>We use this information to operate RootCause, analyze logs, create incidents and warnings, send alerts and password-reset messages, enforce usage limits, prevent abuse, and protect the service.</p>
+<h2>Who processes it</h2>
+<p>Render hosts the application, Neon hosts the PostgreSQL database, and Resend delivers email when configured. Optional Slack and Telegram destinations receive alerts when a workspace owner configures them. If AI explanations are enabled, redacted portions of unmatched log messages may be sent to OpenAI to generate an explanation. Please do not include secrets or personal data in logs.</p>
+<h2>How long we keep it</h2>
+<p>Logs are retained for 30 days on the Starter plan and 90 days on the Team plan. Account information is kept until you delete your account. Session cookies last up to seven days; password-reset links expire after 30 minutes. Database instant-restore history is limited to six hours. That is a recovery window, not the log-retention period.</p>
+<h2>How we protect it</h2>
+<p>Connections use HTTPS and TLS. Passwords and app keys are stored as hashes. Slack and Telegram credentials are encrypted before they are stored in Neon. These safeguards reduce risk but cannot guarantee that a service or provider will never be compromised.</p>
+<h2>Your choices</h2>
+<p>You can delete your account and its associated RootCause data from the workspace. You may request access to or correction of account information. Provider records and backups may have separate retention periods.</p>
+</main>
+<footer class="footer wrap"><a class="brand" href="/"><b>r<span>.</span></b> rootcause</a><a href="/terms.html">Terms</a></footer>
+</body></html>

@@ -58,8 +58,34 @@ async function account(req,res,method,pathName){
   if(method==='POST'&&pathName==='/api/explain'){
     const b=await body(req),text=redact(b.text,12000).trim();if(!text)return reply(res,400,{error:'Paste a log or error message first.'});const rateSecret=process.env.RATE_LIMIT_SECRET;if(!rateSecret)return reply(res,503,{error:'Anonymous rate limiting is not configured.'});const clientHash=crypto.createHmac('sha256',rateSecret).update(clientIp(req)).digest('hex'),usageDate=new Date().toISOString().slice(0,10);const usage=await transaction(async c=>c.query(`INSERT INTO anonymous_explanation_usage(client_hash,usage_date,explanation_count) VALUES($1,$2,1) ON CONFLICT(client_hash,usage_date) DO UPDATE SET explanation_count=anonymous_explanation_usage.explanation_count+1 WHERE anonymous_explanation_usage.explanation_count<10 RETURNING explanation_count`,[clientHash,usageDate]));if(!usage.rowCount)return reply(res,429,{error:'Daily free explanation limit reached. Try again tomorrow.'});return reply(res,200,{explanation:await explain(text,normalizeLevel(b.level),pool),remaining:10-usage.rows[0].explanation_count});
   }
+  if(method==='GET'&&pathName==='/api/integrations/github/callback'){
+    const redirect=(result)=>{res.writeHead(302,{'location':`/dashboard.html?github=${result}#account`,'cache-control':'no-store'});res.end()};
+    const state=String(new URL(req.url,`http://${req.headers.host||'localhost'}`).searchParams.get('state')||''),code=String(new URL(req.url,`http://${req.headers.host||'localhost'}`).searchParams.get('code')||'');
+    if(!/^[A-Za-z0-9_-]{40,50}$/.test(state)||!code||!process.env.GITHUB_CLIENT_ID||!process.env.GITHUB_CLIENT_SECRET)return redirect('error');
+    const claimed=await pool.query('DELETE FROM github_oauth_states WHERE state_hash=$1 AND expires_at>now() RETURNING tenant_id',[sha(state)]);if(!claimed.rowCount)return redirect('error');
+    const base=new URL(process.env.APP_BASE_URL||`http://${HOST}:${PORT}`);if(process.env.NODE_ENV==='production'&&base.protocol!=='https:')return redirect('error');
+    const callback=new URL('/api/integrations/github/callback',base).toString();
+    const tokenResponse=await fetch('https://github.com/login/oauth/access_token',{method:'POST',headers:{accept:'application/json','content-type':'application/json'},body:JSON.stringify({client_id:process.env.GITHUB_CLIENT_ID,client_secret:process.env.GITHUB_CLIENT_SECRET,code,redirect_uri:callback})});
+    const tokenData=await tokenResponse.json();if(!tokenResponse.ok||!tokenData.access_token)return redirect('error');
+    const githubResponse=await fetch('https://api.github.com/user',{headers:{authorization:`Bearer ${tokenData.access_token}`,accept:'application/vnd.github+json','user-agent':'RootCause'}});const github=await githubResponse.json();
+    if(!githubResponse.ok||!github.id||!github.login)return redirect('error');
+    const sealed=encrypt(tokenData.access_token);await pool.query('UPDATE tenants SET github_id=$1,github_username=$2,github_token_enc=$3 WHERE id=$4 AND deleted_at IS NULL',[String(github.id),redact(github.login,100),sealed,claimed.rows[0].tenant_id]);return redirect('connected');
+  }
   const user=await authenticated(req);if(!user)return reply(res,401,{error:'Sign in to continue.'});
   if(method==='GET'&&pathName==='/api/me')return reply(res,200,{user:{id:user.id,email:user.email,name:user.name},plan:user.plan,billingEnabled:BILLING_ENABLED});
+  if(method==='GET'&&pathName==='/api/profile'){
+    const q=await pool.query('SELECT email,name,phone,github_username FROM tenants WHERE id=$1 AND deleted_at IS NULL',[user.id]);const p=q.rows[0];return reply(res,200,{email:p.email,name:p.name,phone:p.phone||'',githubUsername:p.github_username||'',githubConfigured:!!(process.env.GITHUB_CLIENT_ID&&process.env.GITHUB_CLIENT_SECRET)});
+  }
+  if(method==='PUT'&&pathName==='/api/profile'){
+    const b=await body(req),phone=String(b.phone||'').trim();if(phone.length>24||(phone&&!/^\+?[0-9 ()-]{7,24}$/.test(phone)))return reply(res,400,{error:'Enter a valid phone number, including country code if needed.'});await pool.query('UPDATE tenants SET phone=$1 WHERE id=$2 AND deleted_at IS NULL',[phone||null,user.id]);return reply(res,200,{ok:true});
+  }
+  if(method==='POST'&&pathName==='/api/integrations/github/start'){
+    if(!process.env.GITHUB_CLIENT_ID||!process.env.GITHUB_CLIENT_SECRET)return reply(res,503,{error:'GitHub connection is not configured on this server yet.'});
+    const base=new URL(process.env.APP_BASE_URL||`http://${HOST}:${PORT}`);if(process.env.NODE_ENV==='production'&&base.protocol!=='https:')return reply(res,503,{error:'Set APP_BASE_URL to the public HTTPS website address.'});const callback=new URL('/api/integrations/github/callback',base).toString();const state=crypto.randomBytes(32).toString('base64url');await pool.query('INSERT INTO github_oauth_states(state_hash,tenant_id,expires_at) VALUES($1,$2,now()+interval \'10 minutes\')',[sha(state),user.id]);await pool.query('DELETE FROM github_oauth_states WHERE expires_at<=now()');const target=new URL('https://github.com/login/oauth/authorize');target.searchParams.set('client_id',process.env.GITHUB_CLIENT_ID);target.searchParams.set('redirect_uri',callback);target.searchParams.set('scope','read:user');target.searchParams.set('state',state);return reply(res,200,{url:target.toString()});
+  }
+  if(method==='DELETE'&&pathName==='/api/integrations/github'){
+    await pool.query('UPDATE tenants SET github_id=NULL,github_username=NULL,github_token_enc=NULL WHERE id=$1',[user.id]);return reply(res,200,{ok:true});
+  }
   if(method==='GET'&&pathName==='/api/overview'){
     const [stats,recent,activity]=await Promise.all([
       pool.query(`SELECT (SELECT count(*)::int FROM apps WHERE tenant_id=$1 AND deleted_at IS NULL) AS apps,
