@@ -37,7 +37,7 @@ The API accepts 1–100 events per batch. Supported levels are TRACE, DEBUG, INF
 - App keys are high-entropy random values stored only as SHA-256 hashes. Keys can be revoked by rotating them.
 - Instant deduplicated incidents for ERROR/FATAL logs, with redacted evidence and a rule-based explanation. Unknown signatures can use the optional OpenAI Responses API fallback; text is redacted first and sent with storage disabled. Results are cached by normalized signature.
 - A database-backed analyzer runs at startup and every 60 seconds. It compares 15-minute windows for rising database latency plus retries, retry spikes, memory/GC pressure and unexpected log silence. Warnings state a likely consequence, show evidence and use cautious confidence ratings.
-- Email (SMTP), Slack incoming webhooks and Telegram bot notifications, with a 30-minute per-incident/channel cooldown. Slack/Telegram credentials are encrypted using AES-256-GCM with `APP_ENCRYPTION_KEY`. Workspace settings include a dedicated SMTP test email and a test-alert action for configured channels.
+- Email through SMTP or the HTTPS Resend API, Slack incoming webhooks and Telegram bot notifications, with a 30-minute per-incident/channel cooldown. Slack/Telegram credentials are encrypted using AES-256-GCM with `APP_ENCRYPTION_KEY`. Workspace settings include a dedicated email test and a test-alert action for configured channels.
 - Warning scorecard judges whether a real error followed a warning within 60 minutes and reports accuracy and average lead time.
 - Account-data deletion, app deletion, one-time key display, and key rotation.
 - Razorpay subscription checkout and signed webhook processing. Billing is off by default; only a verified webhook changes a tenant's plan. Browser checkout success is never trusted.
@@ -46,7 +46,7 @@ The API accepts 1–100 events per batch. Supported levels are TRACE, DEBUG, INF
 
 ## Optional integrations
 
-- **Email:** Configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM`. Email alerts go to the account email.
+- **Email:** Configure SMTP with `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM`, or configure `RESEND_API_KEY` and `EMAIL_FROM` for the HTTPS Resend API. The HTTPS API is suitable for Render Free instances, which block outbound SMTP ports. Resend's `onboarding@resend.dev` sender is for owner-only testing; sending to RootCause users requires a verified sending domain. Email alerts go to the account email.
 - **Slack/Telegram:** The user saves credentials from Workspace → Alert destinations. Slack URLs are limited to Slack's incoming-webhook host. Telegram uses the Bot API host.
 - **LLM:** Set `OPENAI_API_KEY` and optionally `OPENAI_MODEL`. The known-issues library is checked first; the LLM is used only for unmatched explanations.
 - **Razorpay:** Create test-mode Starter and Team subscription plans, set both plan IDs and test credentials, configure a webhook at `/webhooks/razorpay`, then set `BILLING_ENABLED=true`. Subscribe to subscription activated, charged, cancelled, halted and paused events. Test the full signed-webhook flow before using live keys.
