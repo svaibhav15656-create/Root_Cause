@@ -49,6 +49,17 @@ async function account(req,res,method,pathName){
   }
   const user=await authenticated(req);if(!user)return reply(res,401,{error:'Sign in to continue.'});
   if(method==='GET'&&pathName==='/api/me')return reply(res,200,{user:{id:user.id,email:user.email,name:user.name},plan:user.plan,billingEnabled:BILLING_ENABLED});
+  if(method==='GET'&&pathName==='/api/overview'){
+    const [stats,recent,activity]=await Promise.all([
+      pool.query(`SELECT (SELECT count(*)::int FROM apps WHERE tenant_id=$1 AND deleted_at IS NULL) AS apps,
+        COALESCE((SELECT log_count FROM usage_counters WHERE tenant_id=$1 AND month=date_trunc('month',now())::date),0)::bigint AS month_logs,
+        (SELECT count(*)::int FROM incidents WHERE tenant_id=$1 AND status='open') AS open_incidents,
+        (SELECT count(*)::int FROM incidents WHERE tenant_id=$1 AND type='error' AND created_at>=now()-interval '24 hours') AS errors_24h`,[user.id]),
+      pool.query(`SELECT i.*,a.name AS app_name FROM incidents i JOIN apps a ON a.id=i.app_id WHERE i.tenant_id=$1 ORDER BY i.created_at DESC LIMIT 8`,[user.id]),
+      pool.query(`SELECT date_trunc('hour',event_at) AS hour,count(*)::int AS total FROM logs WHERE tenant_id=$1 AND event_at>=now()-interval '24 hours' GROUP BY 1 ORDER BY 1`,[user.id])
+    ]);
+    const s=stats.rows[0];return reply(res,200,{stats:{apps:s.apps,monthLogs:Number(s.month_logs),openIncidents:s.open_incidents,errors24h:s.errors_24h},incidents:recent.rows.map(r=>({...incidentRow(r),appName:r.app_name})),activity:activity.rows.map(r=>({hour:r.hour,total:r.total}))});
+  }
   if(method==='GET'&&pathName==='/api/apps'){
     const q=await pool.query(`SELECT a.id,a.name,a.created_at,a.last_seen,ak.prefix,
       (SELECT count(*) FROM logs l WHERE l.app_id=a.id AND l.event_at>=date_trunc('month',now()))::int AS month_logs,
@@ -67,6 +78,8 @@ async function account(req,res,method,pathName){
   if(method==='DELETE'&&match){const q=await pool.query('DELETE FROM apps WHERE id=$1 AND tenant_id=$2 RETURNING id',[match[1],user.id]);if(!q.rowCount)return reply(res,404,{error:'App not found.'});return reply(res,200,{ok:true})}
   match=pathName.match(/^\/api\/apps\/([\w-]+)\/incidents$/);
   if(method==='GET'&&match){const app=await pool.query('SELECT id FROM apps WHERE id=$1 AND tenant_id=$2 AND deleted_at IS NULL',[match[1],user.id]);if(!app.rowCount)return reply(res,404,{error:'App not found.'});const q=await pool.query('SELECT * FROM incidents WHERE app_id=$1 AND tenant_id=$2 ORDER BY created_at DESC LIMIT 100',[match[1],user.id]);return reply(res,200,{incidents:q.rows.map(incidentRow)})}
+  match=pathName.match(/^\/api\/apps\/([\w-]+)\/logs$/);
+  if(method==='GET'&&match){const app=await pool.query('SELECT id FROM apps WHERE id=$1 AND tenant_id=$2 AND deleted_at IS NULL',[match[1],user.id]);if(!app.rowCount)return reply(res,404,{error:'App not found.'});const q=await pool.query('SELECT event_at,level,service,message,status_code,duration_ms FROM logs WHERE app_id=$1 AND tenant_id=$2 ORDER BY event_at DESC LIMIT 50',[match[1],user.id]);return reply(res,200,{logs:q.rows})}
   match=pathName.match(/^\/api\/incidents\/([\w-]+)$/);
   if(method==='PATCH'&&match){const b=await body(req),status=['open','resolved','ignored'].includes(b.status)?b.status:null;if(!status)return reply(res,400,{error:'Status must be open, resolved, or ignored.'});const q=await pool.query('UPDATE incidents SET status=$1,resolved_at=CASE WHEN $1=\'open\' THEN NULL ELSE now() END WHERE id=$2 AND tenant_id=$3 RETURNING id',[status,match[1],user.id]);if(!q.rowCount)return reply(res,404,{error:'Incident not found.'});return reply(res,200,{ok:true})}
   if(method==='GET'&&pathName==='/api/scorecard'){
@@ -120,7 +133,7 @@ async function serve(req,res){
   if(m==='POST'&&p==='/webhooks/razorpay')return razorpayWebhook(req,res);
   if(m==='POST'&&p==='/v1/logs')return ingest(req,res);
   if(p.startsWith('/api/'))return account(req,res,m,p);
-  if(m==='GET'&&(p==='/'||p.endsWith('.html')||p.endsWith('.css')||p.endsWith('.js'))){const file=p==='/'?'index.html':path.basename(p),full=path.join(ROOT,file);if(!['index.html','styles.css','dashboard.css','app.js','integrations.html','privacy.html','terms.html'].includes(file)||!fs.existsSync(full))return reply(res,404,{error:'Not found.'});const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8'};const h={'content-type':types[path.extname(full)],'x-content-type-options':'nosniff','x-frame-options':'DENY','referrer-policy':'strict-origin-when-cross-origin','permissions-policy':'camera=(), microphone=(), geolocation=()','content-security-policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",'cache-control':file==='index.html'?'no-cache':'public, max-age=3600'};if(req.socket.encrypted||COOKIE_SECURE)h['strict-transport-security']='max-age=31536000; includeSubDomains';res.writeHead(200,h);return fs.createReadStream(full).pipe(res)}
+  if(m==='GET'&&(p==='/'||p.endsWith('.html')||p.endsWith('.css')||p.endsWith('.js'))){const file=p==='/'?'index.html':path.basename(p),full=path.join(ROOT,file);if(!['index.html','dashboard.html','styles.css','dashboard.css','dashboard-page.css','app.js','dashboard-app.js','integrations.html','privacy.html','terms.html'].includes(file)||!fs.existsSync(full))return reply(res,404,{error:'Not found.'});const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8'};const h={'content-type':types[path.extname(full)],'x-content-type-options':'nosniff','x-frame-options':'DENY','referrer-policy':'strict-origin-when-cross-origin','permissions-policy':'camera=(), microphone=(), geolocation=()','content-security-policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",'cache-control':file==='index.html'||file==='dashboard.html'?'no-cache':'public, max-age=3600'};if(req.socket.encrypted||COOKIE_SECURE)h['strict-transport-security']='max-age=31536000; includeSubDomains';res.writeHead(200,h);return fs.createReadStream(full).pipe(res)}
   return reply(res,404,{error:'Not found.'});
 }
 

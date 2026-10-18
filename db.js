@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required. Create a Neon project and copy its pooled connection string into .env.');
-if (!/sslmode=require/i.test(process.env.DATABASE_URL)) throw new Error('DATABASE_URL must include sslmode=require for Neon TLS.');
+if (!/[?&]sslmode=(?:verify-full|require)(?:&|$)/i.test(process.env.DATABASE_URL)) throw new Error('DATABASE_URL must include sslmode=verify-full for Neon TLS.');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, idleTimeoutMillis: 30_000, connectionTimeoutMillis: 10_000, ssl: { rejectUnauthorized: true }, application_name: 'rootcause' });
 pool.on('error', error => console.error('PostgreSQL idle client error:', error.message));

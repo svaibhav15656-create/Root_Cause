@@ -4,10 +4,10 @@ RootCause is a Node.js log-monitoring service for small teams. PostgreSQL on Neo
 
 ## Run it with Neon
 
-1. Create a Neon project and copy its **pooled** PostgreSQL connection string. Keep `sslmode=require` on the URL.
+1. Create a Neon project and copy its **pooled** PostgreSQL connection string. Prefer `sslmode=verify-full` so the TLS certificate and host name are checked.
 2. Copy `.env.example` to `.env` and fill in `DATABASE_URL`. Generate `APP_ENCRYPTION_KEY` and `RATE_LIMIT_SECRET` as independent random values; commands are in the example file. Do not commit `.env`.
 3. Run `npm ci` and `npm start` with Node.js 20.6 or newer.
-4. Open `http://localhost:3000`, create an account with a 12+ character password, add an app, then copy its API key. The key is displayed once; rotate it if lost.
+4. Open `http://localhost:3000`, create an account with a 12+ character password, and continue to the workspace dashboard. Add an app and copy its API key. The dashboard includes account totals, a 24-hour activity chart, incident fixes and evidence, recent log events, alert settings, warning accuracy, plan status, and account deletion. The key is displayed once; rotate it if lost.
 
 The web process must stay online for scheduled analysis and alert delivery. For production, run behind an HTTPS reverse proxy, set `HOST=0.0.0.0` and `COOKIE_SECURE=true`, use a durable secret store for environment variables, and configure health checks against `/health`. Set `TRUST_PROXY=true` only when the proxy overwrites `X-Forwarded-For`; otherwise leave it off so clients cannot spoof the rate-limit address. Use a production Neon project and backups before customers rely on the service.
 
