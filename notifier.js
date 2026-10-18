@@ -1,0 +1,19 @@
+const crypto=require('node:crypto');
+const {decrypt}=require('./secrets');
+let mailer;
+function mail(){if(mailer)return mailer;if(!process.env.SMTP_HOST||!process.env.SMTP_USER||!process.env.SMTP_PASS)return null;const nodemailer=require('nodemailer');mailer=nodemailer.createTransport({host:process.env.SMTP_HOST,port:Number(process.env.SMTP_PORT||465),secure:process.env.SMTP_SECURE!=='false',auth:{user:process.env.SMTP_USER,pass:process.env.SMTP_PASS},tls:{minVersion:'TLSv1.2'}});return mailer;}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function slack(url,incident){if(!/^https:\/\/hooks\.slack\.com\/services\/[A-Z0-9]+\/[A-Z0-9]+\/[A-Za-z0-9]+$/.test(url))throw new Error('Slack webhook URL format is invalid.');const r=await fetch(url,{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),headers:{'content-type':'application/json'},body:JSON.stringify({text:`RootCause ${incident.type}: ${incident.title}\n${incident.cause}\nApp: ${incident.appName} · Confidence: ${incident.confidence}`})});if(!r.ok)throw new Error(`Slack returned HTTP ${r.status}`);}
+async function telegram(token,chat,incident){if(!/^\d{5,15}:[A-Za-z0-9_-]{20,}$/.test(token)||!/^(@[A-Za-z0-9_]{5,}|-?\d{5,20})$/.test(chat))throw new Error('Telegram bot token or chat identifier is invalid.');const r=await fetch(`https://api.telegram.org/bot${token}/sendMessage`,{method:'POST',redirect:'error',signal:AbortSignal.timeout(8000),headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:chat,text:`RootCause ${incident.type}: ${incident.title}\n${incident.cause}\nApp: ${incident.appName} · Confidence: ${incident.confidence}`})});if(!r.ok)throw new Error(`Telegram returned HTTP ${r.status}`);}
+async function deliver(pool,incident){
+  const [tenant,settings]=await Promise.all([pool.query('SELECT email FROM tenants WHERE id=$1',[incident.tenantId]),pool.query('SELECT * FROM notification_settings WHERE tenant_id=$1',[incident.tenantId])]);
+  const userEmail=tenant.rows[0]?.email;if(!userEmail)return;const s=settings.rows[0]||{};
+  const channels=[];if(s.email_enabled&&mail())channels.push(['email',()=>mail().sendMail({from:process.env.SMTP_FROM||process.env.SMTP_USER,to:userEmail,subject:`RootCause ${incident.severity}: ${incident.title}`,text:`${incident.cause}\n\nApp: ${incident.appName}\nConfidence: ${incident.confidence}\n\nEvidence:\n${(incident.evidence||[]).map(e=>`${e.timestamp} ${e.level} ${e.service}: ${e.message}`).join('\n')}`,html:`<h2>${escapeHtml(incident.title)}</h2><p>${escapeHtml(incident.cause)}</p><p>App: ${escapeHtml(incident.appName)} · Confidence: ${escapeHtml(incident.confidence)}</p><pre>${escapeHtml((incident.evidence||[]).map(e=>`${e.timestamp} ${e.level} ${e.service}: ${e.message}`).join('\n'))}</pre>`})]);
+  if(s.slack_webhook_enc)channels.push(['slack',()=>slack(decrypt(s.slack_webhook_enc),incident)]);
+  if(s.telegram_token_enc&&s.telegram_chat_enc)channels.push(['telegram',()=>telegram(decrypt(s.telegram_token_enc),decrypt(s.telegram_chat_enc),incident)]);
+  for(const [channel,send] of channels){const slot=Math.floor(Date.now()/1_800_000);const dedupe=`${incident.id}:${channel}:${slot}`;
+    try{await send();await pool.query('INSERT INTO notifications(id,tenant_id,incident_id,channel,status,dedupe_key) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(dedupe_key) DO NOTHING',[crypto.randomUUID(),incident.tenantId,incident.id,channel,'sent',dedupe]);}
+    catch(error){await pool.query('INSERT INTO notifications(id,tenant_id,incident_id,channel,status,error,dedupe_key) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(dedupe_key) DO NOTHING',[crypto.randomUUID(),incident.tenantId,incident.id,channel,'failed',String(error.message).slice(0,250),dedupe]).catch(()=>{});}
+  }
+}
+module.exports={deliver};
