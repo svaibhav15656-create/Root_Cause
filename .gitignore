@@ -1,5 +1,11 @@
 data/
-.env
 node_modules/
 *.log
-.env.example
+
+# real secrets
+.env
+.env.*
+
+# placeholder templates are safe to commit
+!.env.example
+!.env.production.example
