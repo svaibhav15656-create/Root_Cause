@@ -30,7 +30,10 @@ async function judgeOutcomes(pool){
     WHERE w.type='warning' AND o.incident_id IS NULL AND w.created_at<now()-interval '60 minutes'
     ON CONFLICT(incident_id) DO NOTHING`);
 }
-async function prune(pool){await pool.query(`DELETE FROM logs l USING tenants t,plans p WHERE l.tenant_id=t.id AND p.code=t.plan AND l.event_at<now()-(p.retention_days||' days')::interval`);await pool.query("DELETE FROM sessions WHERE expires_at<now()");await pool.query("DELETE FROM anonymous_explanation_usage WHERE usage_date<current_date-2");}
+async function prune(pool){await pool.query(`WITH expired AS (
+    SELECT l.ctid FROM logs l JOIN tenants t ON t.id=l.tenant_id JOIN plans p ON p.code=t.plan
+    WHERE l.event_at<now()-p.retention_days*interval '1 day' ORDER BY l.event_at LIMIT 5000
+  ) DELETE FROM logs l USING expired e WHERE l.ctid=e.ctid`);await pool.query("DELETE FROM sessions WHERE expires_at<now()");await pool.query("DELETE FROM anonymous_explanation_usage WHERE usage_date<current_date-2");}
 async function runAnalyzer(pool){
   let locked=false;const client=await pool.connect();
   try{const l=await client.query('SELECT pg_try_advisory_lock(82731492) AS locked');locked=l.rows[0].locked;if(!locked)return;

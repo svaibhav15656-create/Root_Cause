@@ -11,6 +11,12 @@ RootCause is a Node.js log-monitoring service for small teams. PostgreSQL on Neo
 
 The web process must stay online for scheduled analysis and alert delivery. For production, run behind an HTTPS reverse proxy, set `HOST=0.0.0.0` and `COOKIE_SECURE=true`, use a durable secret store for environment variables, and configure health checks against `/health`. Set `TRUST_PROXY=true` only when the proxy overwrites `X-Forwarded-For`; otherwise leave it off so clients cannot spoof the rate-limit address. Use a production Neon project and backups before customers rely on the service.
 
+## Deploy with Docker
+
+Build the image with `docker build -t rootcause .`. Run it on an always-on host that provides the environment variables from `.env.example` through its secret manager. The image listens on port `3000`, binds to `0.0.0.0`, and includes a `/health` container check. Terminate HTTPS at the host's trusted proxy and set `COOKIE_SECURE=true`; only set `TRUST_PROXY=true` when that proxy replaces `X-Forwarded-For`. Configure the host's health probe to use `/health`, and keep one production Neon URL and stable encryption/rate-limit secrets across restarts. Do not bake `.env` or provider credentials into the image.
+
+For a local container smoke run, make a private environment file outside source control and pass it to Docker with `--env-file`; do not use the development `.env` defaults for an internet-facing deployment.
+
 ## Send logs
 
 The public `/integrations.html` guide includes HTTP, Vector, Fluent Bit and Node/Python examples. The HTTP endpoint accepts both JSON batches and newline-delimited JSON records.
@@ -31,7 +37,7 @@ The API accepts 1–100 events per batch. Supported levels are TRACE, DEBUG, INF
 - App keys are high-entropy random values stored only as SHA-256 hashes. Keys can be revoked by rotating them.
 - Instant deduplicated incidents for ERROR/FATAL logs, with redacted evidence and a rule-based explanation. Unknown signatures can use the optional OpenAI Responses API fallback; text is redacted first and sent with storage disabled. Results are cached by normalized signature.
 - A database-backed analyzer runs at startup and every 60 seconds. It compares 15-minute windows for rising database latency plus retries, retry spikes, memory/GC pressure and unexpected log silence. Warnings state a likely consequence, show evidence and use cautious confidence ratings.
-- Email (SMTP), Slack incoming webhooks and Telegram bot notifications, with a 30-minute per-incident/channel cooldown. Slack/Telegram credentials are encrypted using AES-256-GCM with `APP_ENCRYPTION_KEY`.
+- Email (SMTP), Slack incoming webhooks and Telegram bot notifications, with a 30-minute per-incident/channel cooldown. Slack/Telegram credentials are encrypted using AES-256-GCM with `APP_ENCRYPTION_KEY`. Workspace settings include a dedicated SMTP test email and a test-alert action for configured channels.
 - Warning scorecard judges whether a real error followed a warning within 60 minutes and reports accuracy and average lead time.
 - Account-data deletion, app deletion, one-time key display, and key rotation.
 - Razorpay subscription checkout and signed webhook processing. Billing is off by default; only a verified webhook changes a tenant's plan. Browser checkout success is never trusted.
@@ -54,3 +60,5 @@ Tables are created idempotently by `db.js`: tenants, sessions, apps, API keys, l
 ## Security limits and launch checklist
 
 Redaction uses common patterns and is best-effort; inspect your own log formats and never send credentials or unnecessary personal data. The local setup is for development. Before public use, review the privacy and terms pages with qualified counsel, verify Indian privacy/tax requirements, configure TLS and backups, add a trusted proxy/WAF and external alerting, rotate all secrets, test tenant isolation and payment webhooks, and arrange an independent security review. SMTP/OpenAI/Razorpay/Neon accounts and credentials are external setup requirements and are not bundled with this repository.
+
+- Password recovery uses single-use, 30-minute tokens, revokes existing sessions on success, and requires the configured SMTP service. Set APP_BASE_URL to the canonical HTTPS site origin in production. The recovery response does not disclose whether an email address has an account.

@@ -17,6 +17,11 @@ CREATE TABLE IF NOT EXISTS sessions (
   expires_at timestamptz NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS sessions_tenant_idx ON sessions(tenant_id);
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  token_hash text PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  expires_at timestamptz NOT NULL, used_at timestamptz, created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS password_reset_tenant_idx ON password_reset_tokens(tenant_id);
 CREATE TABLE IF NOT EXISTS apps (
   id uuid PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
   name text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(), last_seen timestamptz,
