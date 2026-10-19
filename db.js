@@ -103,8 +103,8 @@ CREATE TABLE IF NOT EXISTS plans (
   app_limit integer NOT NULL, explanation_limit integer NOT NULL, retention_days integer NOT NULL
 );
 INSERT INTO plans(code,price_inr,log_limit,app_limit,explanation_limit,retention_days) VALUES
- ('starter',299,100000,5,10,30), ('team',999,1000000,20,100,90)
-ON CONFLICT(code) DO NOTHING;
+ ('starter',0,10,5,10,30), ('team',199,50,20,100,90)
+ON CONFLICT(code) DO UPDATE SET price_inr=EXCLUDED.price_inr,log_limit=EXCLUDED.log_limit;
 CREATE TABLE IF NOT EXISTS subscriptions (
   tenant_id uuid PRIMARY KEY REFERENCES tenants(id) ON DELETE CASCADE,
   razorpay_subscription_id text UNIQUE, status text NOT NULL DEFAULT 'trialing',

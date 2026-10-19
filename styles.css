@@ -53,3 +53,6 @@ dialog{background:#1b241d;color:#e8eee7;border-color:#39453a}dialog::backdrop{ba
 .sample-log-static>label,.sample-explanation>label{color:#a7b7a8}.sample-log-static pre{color:#dce6dc}.sample-explanation{border-color:#344035;color:#e8eee7}.sample-explanation h3{color:#eef1ed}.sample-explanation p,.sample-next{color:#b7c3b7}.sample-next strong{color:#e3ebe3}.sample-explanation code{color:#d4e1d5}
 .prices .highlight{border-color:#516b54;box-shadow:none}
 .trust b,.trust strong,.trust small{color:#59645a!important}
+.prices{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1160px;align-items:stretch}.prices article,.prices article.highlight{min-width:0;border:1px solid #344035;box-shadow:none}.prices article h3{margin-top:12px}
+@media(max-width:900px){.prices{grid-template-columns:repeat(2,minmax(0,1fr))}.prices article:last-child{grid-column:1/-1}}
+@media(max-width:620px){.prices{grid-template-columns:1fr}.prices article:last-child{grid-column:auto}}
