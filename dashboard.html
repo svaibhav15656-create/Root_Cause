@@ -67,13 +67,40 @@
           <p class="guide-note">The ingest endpoint must stay available. A sleeping host can miss logs sent while it wakes up. Use an always-on instance for dependable monitoring.</p>
         </section>
 
-        <section id="account-billing" class="account-panel" data-account-panel="billing" hidden><h2>Billing and payments</h2><button id="billing-banner" class="billing-banner" type="button"><span class="soon-tag">Coming soon</span><strong>24/7 continuous monitoring</strong><span>Free during early access. Payments aren't enabled yet. Select to learn more.</span></button></section>
+        <section id="account-billing" class="account-panel" data-account-panel="billing" hidden>
+          <h2>Billing and payments</h2>
+          <div class="billing-plans" aria-label="RootCause plans">
+            <article class="billing-plan">
+              <span class="plan-kicker">QUICK EXPLAIN</span><h3>Free</h3>
+              <p>For that one error you just can't decipher.</p>
+              <ul><li>Plain-English explanations</li><li>Likely cause and fix steps</li><li>Evidence and confidence level</li><li>10 explanations each day</li></ul>
+            </article>
+            <article class="billing-plan billing-plan-featured">
+              <span class="soon-tag">Coming soon</span><span class="plan-kicker">ALWAYS-ON MONITORING</span>
+              <h3>Root_Cause Plus</h3><p class="plan-price">₹699 <small>/ month*</small></p><p>Everything your small team needs to sleep better.</p>
+              <ul><li>Continuous log monitoring while the service is available</li><li>Immediate alert attempt for new errors</li><li>Early warning patterns</li><li>Incident history and evidence</li><li>Accuracy scorecard</li></ul>
+            </article>
+          </div>
+          <section class="checkout-preview" aria-label="Preview of future payment options">
+            <div class="checkout-preview-heading"><span>PAYMENT OPTIONS</span><span class="soon-tag">Coming soon</span></div>
+            <h3>Start your Root_Cause Plus plan</h3>
+            <div class="checkout-preview-layout">
+              <div class="checkout-methods" aria-hidden="true">
+                <p>Pay with</p><div class="preview-methods"><span>▰ &nbsp; Card</span><span>UPI</span></div>
+                <div class="preview-field">Card number <span>VISA &nbsp; ●●</span></div>
+                <div class="preview-field-pair"><div class="preview-field">Expiration date</div><div class="preview-field">Security code</div></div>
+                <div class="preview-save"><span></span> Save payment details for future purchases</div>
+                <button class="preview-subscribe" type="button" disabled>Subscribe</button>
+              </div>
+              <aside class="checkout-summary"><h4>Root_Cause Plus</h4><p>Top features</p><ul><li>Continuous log monitoring</li><li>Early error alerts</li><li>Plain-language explanations</li><li>Incident history and trends</li></ul><div class="summary-total"><span>Monthly subscription</span><strong>₹699.00</strong></div></aside>
+            </div>
+            <p class="preview-caption">Payment checkout preview. Payments are not available yet.</p>
+          </section>
+        </section>
         <section id="account-signout" class="account-panel" data-account-panel="signout" hidden><h2>Sign out</h2><p>Sign out of rootcause on this device.</p><button id="account-signout-button" class="button outline" type="button">Sign out</button></section>
       </div>
     </div>
   </section>
-
-   <dialog id="billing-dialog" class="modal-dialog"><button class="modal-x" type="button" data-close-dialog aria-label="Close">×</button><span class="soon-tag">Coming soon</span><h2>24/7 continuous monitoring</h2><p>Connect your app once. We watch your logs around the clock and alert you the moment something breaks.</p><ul><li>Live log collection</li><li>Error grouping and spike alerts</li><li>Explained and delivered: plain-language fixes by email, Slack or Telegram</li></ul><p class="fine-print">Free during early access. Planned price after that: Starter, ₹699/month. Payments are not enabled yet.</p><p class="fine-print">Monthly log limit: <strong id="billing-log-limit">Loading…</strong></p><form id="notify-form"><button class="button outline" type="button" data-close-dialog>Close</button><button id="notify-button" class="button primary" type="submit">Notify me when it opens</button></form><p id="notify-status" class="status-message" role="status"></p></dialog>
 
    <dialog id="key-dialog" class="modal-dialog"><button class="modal-x" type="button" data-close-dialog aria-label="Close">×</button><h2>Create API key</h2><form id="api-key-form"><label>App name<input name="name" maxlength="80" required placeholder="my-store-api"></label><button class="button primary" type="submit">Create API key</button></form><div id="new-key-panel" hidden><p>Copy it now. You won't see it again.</p><div class="key-display"><code id="new-key-value"></code><button class="button outline" id="copy-new-key" type="button">Copy</button></div><button class="button primary" id="key-finished" type="button">I've saved my key</button></div><p id="key-status" class="status-message" role="status"></p></dialog>
 

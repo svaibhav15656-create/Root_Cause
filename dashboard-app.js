@@ -54,10 +54,6 @@ $$('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{try{
 async function loadLimits(){const targets=[$('#monthly-log-limit'),$('#billing-log-limit')].filter(Boolean);try{const data=await api('/api/account/limits');const label=`${Number(data.monthlyLogs).toLocaleString()} logs per month`;targets.forEach(target=>target.textContent=label)}catch{targets.forEach(target=>target.textContent='100,000 logs per month')}}
 $('#account-page').addEventListener('click',e=>{if(e.target.matches('[data-copy]'))return});
 $$('[data-close-dialog]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
-$('#billing-banner').addEventListener('click',()=>$('#billing-dialog').showModal());
-$('#billing-dialog').addEventListener('click',e=>{if(e.target===$('#billing-dialog'))$('#billing-dialog').close()});
-$('#notify-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('#notify-button');button.disabled=true;try{await api('/api/notifications/interest',{method:'POST',body:JSON.stringify({})});status($('#notify-status'),'You’re on the list. We’ll email your account address when it opens.')}catch(err){status($('#notify-status'),err.message,true)}finally{button.disabled=false}});
-
 $('#open-delete-confirm').addEventListener('click',()=>{const dialog=$('#delete-dialog');dialog.showModal();$('#delete-confirm-button').disabled=true;$('#delete-form').reset();status($('#delete-status'),'')});
 $('#delete-form [name="password"]').addEventListener('input',e=>{$('#delete-confirm-button').disabled=e.target.value.length===0});
 $('#delete-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('#delete-confirm-button');button.disabled=true;try{await api('/api/account',{method:'DELETE',body:JSON.stringify({password:new FormData(e.currentTarget).get('password')})});location.assign('/')}catch(err){status($('#delete-status'),err.message,true);button.disabled=false}});
