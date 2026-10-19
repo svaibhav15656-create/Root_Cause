@@ -56,9 +56,13 @@ const rules = [
   { id:'A10', severity:'medium', title:'Possible shell command injection', re:/\b(?:exec|execSync|spawn|system|popen)\s*\([^\n]*(?:\+\s*\w+|\$\{[^}]+\}|\%s)/i, fix:'Prefer argument arrays and fixed executables; validate input and avoid invoking a shell.' }
 ];
 
-function scanFiles(files) {
+function scanFiles(files, pathFilter = '') {
+  const normalizedFilter=String(pathFilter||'').replace(/\\/g,'/').replace(/^\/+|\/+$/g,'');
+  if(normalizedFilter.split('/').includes('..'))throw new Error('Review path cannot contain parent-directory segments.');
+  const candidates=normalizedFilter?files.filter(file=>{const path=file.path.replace(/\\/g,'/').replace(/^\/+/,''),withoutRoot=path.replace(/^[^/]+\//,'');return path===normalizedFilter||withoutRoot===normalizedFilter||path.endsWith(`/${normalizedFilter}`)||withoutRoot.startsWith(`${normalizedFilter}/`)}):files;
+  if(normalizedFilter&&!candidates.length)throw new Error('That folder or file was not found in the repository archive.');
   const findings = [], seen = new Set();
-  for (const file of files.slice(0, MAX_FILES)) {
+  for (const file of candidates.slice(0, MAX_FILES)) {
     const lines = file.text.split(/\r?\n/);
     for (let index = 0; index < lines.length; index++) {
       for (const rule of rules) {
@@ -77,7 +81,7 @@ function scanFiles(files) {
   }
   const rank = { critical:0, high:1, medium:2, low:3 };
   findings.sort((a,b)=>(rank[a.severity]??9)-(rank[b.severity]??9));
-  return { filesScanned:files.length, findings, disclaimer:'Automated pattern checks can miss vulnerabilities and may flag safe code. Review each finding in context; this is not a full penetration test or security certification.', checkedAt:new Date().toISOString() };
+  return { filesScanned:Math.min(candidates.length,MAX_FILES), findings, disclaimer:'Automated pattern checks can miss vulnerabilities and may flag safe code. Review each finding in context; this is not a full penetration test or security certification.', checkedAt:new Date().toISOString() };
 }
 
 module.exports = { unzipTextFiles, scanFiles, MAX_ARCHIVE_BYTES };

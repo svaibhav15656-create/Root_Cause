@@ -10,13 +10,18 @@ const schema = `
 CREATE TABLE IF NOT EXISTS tenants (
   id uuid PRIMARY KEY, email text NOT NULL UNIQUE, name text NOT NULL,
   salt text NOT NULL, password_hash text NOT NULL, plan text NOT NULL DEFAULT 'starter',
-  phone text, github_id text, github_username text, github_token_enc text,
+  phone text, avatar_data text, github_id text, github_username text, github_token_enc text,
+  totp_enabled boolean NOT NULL DEFAULT false, totp_secret_enc text, totp_pending_enc text,
   created_at timestamptz NOT NULL DEFAULT now(), deleted_at timestamptz
 );
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS phone text;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS avatar_data text;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_id text;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_username text;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_token_enc text;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS totp_enabled boolean NOT NULL DEFAULT false;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS totp_secret_enc text;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS totp_pending_enc text;
 CREATE TABLE IF NOT EXISTS github_oauth_states (
   state_hash text PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
   expires_at timestamptz NOT NULL
@@ -26,6 +31,11 @@ CREATE TABLE IF NOT EXISTS sessions (
   expires_at timestamptz NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS sessions_tenant_idx ON sessions(tenant_id);
+CREATE TABLE IF NOT EXISTS login_challenges (
+  token_hash text PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  expires_at timestamptz NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS login_challenges_tenant_idx ON login_challenges(tenant_id);
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
   token_hash text PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
   expires_at timestamptz NOT NULL, used_at timestamptz, created_at timestamptz NOT NULL DEFAULT now()
@@ -43,6 +53,8 @@ CREATE TABLE IF NOT EXISTS api_keys (
   prefix text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(), revoked_at timestamptz
 );
 CREATE INDEX IF NOT EXISTS api_keys_app_idx ON api_keys(app_id) WHERE revoked_at IS NULL;
+ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS last_four text NOT NULL DEFAULT '????';
+CREATE UNIQUE INDEX IF NOT EXISTS api_keys_one_active_per_app_idx ON api_keys(app_id) WHERE revoked_at IS NULL;
 CREATE TABLE IF NOT EXISTS logs (
   id bigserial PRIMARY KEY, tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
   app_id uuid NOT NULL REFERENCES apps(id) ON DELETE CASCADE, event_at timestamptz NOT NULL,
@@ -105,6 +117,10 @@ CREATE TABLE IF NOT EXISTS payment_events (
 );
 CREATE TABLE IF NOT EXISTS explanation_cache (
   signature text PRIMARY KEY, explanation jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS notification_interests (
+  tenant_id uuid PRIMARY KEY REFERENCES tenants(id) ON DELETE CASCADE,
+  email text NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
 );
 `;
 
