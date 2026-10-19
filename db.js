@@ -98,13 +98,19 @@ CREATE TABLE IF NOT EXISTS anonymous_explanation_usage (
   client_hash text NOT NULL, usage_date date NOT NULL, explanation_count integer NOT NULL DEFAULT 0,
   PRIMARY KEY(client_hash,usage_date)
 );
+CREATE TABLE IF NOT EXISTS account_explanation_usage (
+  tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  usage_date date NOT NULL,
+  explanation_count integer NOT NULL DEFAULT 0,
+  PRIMARY KEY(tenant_id,usage_date)
+);
 CREATE TABLE IF NOT EXISTS plans (
   code text PRIMARY KEY, price_inr integer NOT NULL, log_limit bigint NOT NULL,
   app_limit integer NOT NULL, explanation_limit integer NOT NULL, retention_days integer NOT NULL
 );
 INSERT INTO plans(code,price_inr,log_limit,app_limit,explanation_limit,retention_days) VALUES
- ('starter',0,10,5,10,30), ('team',199,50,20,100,90)
-ON CONFLICT(code) DO UPDATE SET price_inr=EXCLUDED.price_inr,log_limit=EXCLUDED.log_limit;
+ ('starter',0,1000,5,5,30), ('team',199,10000,20,15,90), ('prime',299,10000,20,30,90)
+ON CONFLICT(code) DO UPDATE SET price_inr=EXCLUDED.price_inr,log_limit=EXCLUDED.log_limit,explanation_limit=EXCLUDED.explanation_limit;
 CREATE TABLE IF NOT EXISTS subscriptions (
   tenant_id uuid PRIMARY KEY REFERENCES tenants(id) ON DELETE CASCADE,
   razorpay_subscription_id text UNIQUE, status text NOT NULL DEFAULT 'trialing',
