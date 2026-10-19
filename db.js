@@ -115,8 +115,11 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   tenant_id uuid PRIMARY KEY REFERENCES tenants(id) ON DELETE CASCADE,
   razorpay_subscription_id text UNIQUE, status text NOT NULL DEFAULT 'trialing',
   plan_code text NOT NULL REFERENCES plans(code), current_period_end timestamptz,
+  cancel_at_cycle_end boolean NOT NULL DEFAULT false, checkout_verified_at timestamptz,
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS cancel_at_cycle_end boolean NOT NULL DEFAULT false;
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS checkout_verified_at timestamptz;
 CREATE TABLE IF NOT EXISTS payment_events (
   razorpay_event_id text PRIMARY KEY, event_type text NOT NULL, payload jsonb NOT NULL,
   processed_at timestamptz NOT NULL DEFAULT now()

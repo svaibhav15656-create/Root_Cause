@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f5f7f3">
   <meta name="description" content="Explain one error at a time with RootCause. Plus and Prime plans are opening after early access."><title>RootCause · Workspace</title>
-  <link rel="stylesheet" href="/dashboard-page.css?v=20261019-account-v2"><script src="/dashboard-app.js?v=20261019-account-v2" defer></script>
+  <link rel="stylesheet" href="/dashboard-page.css?v=20261019-billing-v1"><script src="/razorpay-checkout-client.js?v=20261019-billing-v1" defer></script><script src="/dashboard-app.js?v=20261019-billing-v1" defer></script>
 </head>
 <body>
   <header class="topbar" id="top">
@@ -75,15 +75,15 @@
               <ul><li>5 error explanations per day</li><li>One error or stack trace per paste</li><li>What happened and how to fix it</li><li>No card needed</li><li>Resets at 12:00 AM IST</li></ul>
             </article>
             <article class="billing-plan">
-              <span class="soon-tag">Opens after early access</span><span class="plan-kicker">PLUS</span><h3>Plus</h3><p class="plan-price">₹199 <small>/ month · planned</small></p>
-              <p>Everything in Free, with 3× the daily explanations.</p><ul><li>15 error explanations per day</li><li>One error or stack trace per paste</li><li>What happened and how to fix it</li><li>Resets at 12:00 AM IST</li></ul><button class="button outline" type="button" disabled>Upgrade · Coming soon</button>
+              <span class="soon-tag" id="plus-plan-tag">Opens after early access</span><span class="plan-kicker">PLUS</span><h3>Plus</h3><p class="plan-price">₹199 <small>/ month</small></p>
+              <p>Everything in Free, with 3× the daily explanations.</p><ul><li>15 error explanations per day</li><li>One error or stack trace per paste</li><li>What happened and how to fix it</li><li>Resets at 12:00 AM IST</li></ul><button id="plus-checkout-button" class="button outline" type="button" disabled>Upgrade · Coming soon</button><button id="cancel-subscription-button" class="button outline" type="button" hidden>Cancel at period end</button>
             </article>
             <article class="billing-plan">
               <span class="soon-tag">Opens after early access</span><span class="plan-kicker">PRIME</span><h3>Prime</h3><p class="plan-price">₹299 <small>/ one month · planned</small></p>
               <ul><li>30 error explanations per day</li><li>Everything in Plus</li><li>Resets at 12:00 AM IST</li><li>OWASP Top 10 code review · Coming soon</li><li>24/7 monitoring and email, Slack and Telegram alerts · Coming soon</li><li>Priority support · planned</li></ul><button class="button outline" type="button" disabled>Upgrade · Coming soon</button>
             </article>
           </div>
-          <p class="fine-print">Alerts may be delayed or missed. Don’t use RootCause as your only monitoring.</p>
+          <p id="billing-status" class="status-message" role="status" aria-live="polite">Free during early access. Billing is not available yet.</p><p class="fine-print">Alerts may be delayed or missed. Don’t use RootCause as your only monitoring.</p>
           <section class="checkout-preview" aria-label="Preview of future payment options">
             <div class="checkout-preview-heading"><span>PAYMENT OPTIONS</span><span class="soon-tag">Opens after early access</span></div>
             <h3>Billing is not available yet</h3><p class="fine-print">Planned prices are subject to change. Plus is planned as a monthly plan; Prime is planned as a one-month purchase with no automatic renewal. Tax treatment will be shown before billing opens.</p>
