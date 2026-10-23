@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400&display=swap');
+/* RootCause pitch-black Earth homepage */
+:root{color-scheme:dark;--ink:#f1f2f4;--line:#ffffff20;--serif:Georgia,'Times New Roman',serif}
+html,body{width:100%;min-height:100%;margin:0;background:#000!important;color:#f1f2f4;overflow-x:hidden;overflow-y:auto}
+body{font-family:Inter,Arial,sans-serif}
+.nav.wrap{position:absolute;z-index:5;top:0;left:0;width:100%;max-width:none;height:76px;padding:0 clamp(24px,5vw,84px);border:0;background:transparent}
+.nav .brand{font-size:17px;color:#f1f2f4}.nav .brand b{color:#101115;background:#e8eaed}.nav nav{color:#c5c7cc}.nav nav a:hover{color:white}.nav .plain{color:#e9eaed}.nav .dark{background:#e9eaed;color:#111318;border-radius:999px}.nav .dark:hover{background:#fff}
+.hero.wrap{position:relative;display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);align-items:center;gap:1vw;width:100%;height:100svh;min-height:560px;max-width:none;margin:0;padding:76px clamp(24px,5vw,88px) 28px clamp(24px,7vw,112px);overflow:hidden;background:#000}
+.hero-copy{position:relative;z-index:2;width:min(100%,650px);max-width:650px;margin:0;text-shadow:none}
+.hero-brand{display:none}
+.hero-copy>label{display:block;color:#a9afb9;font-size:10px;letter-spacing:1.2px;font-weight:700}
+.hero h1{font:500 clamp(48px,6vw,86px)/1.02 Georgia,'Times New Roman',serif;letter-spacing:-2.5px;margin:24px 0 20px;color:#f5f5f6}
+.hero h1 .hero-title-primary{color:#f6f6f7}.hero h1 em{font-style:italic;font-weight:400;color:#a7adb7;letter-spacing:-2.5px}
+.hero-copy>p{max-width:465px;color:#b3b6bd;font-size:16px;line-height:1.75;margin:0 0 28px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero .btn{border-radius:999px}.hero .btn.dark{background:#f0f1f3;color:#101115}.hero .btn.dark:hover{background:#fff}.hero .btn.outline{border-color:#565a63;color:#eceef1}.hero .btn.outline:hover{background:#141519}
+.hero-copy>small{display:block;margin-top:20px;color:#888d97;font-size:12px}
+.earth-stage{position:relative;isolation:isolate;width:min(100%,760px);aspect-ratio:1;margin:0 0 0 auto;overflow:hidden;background:transparent}#earth-root{position:absolute;inset:0;width:100%;display:flex;align-items:center;justify-content:flex-end}
+@media(min-width:851px){.earth-stage{transform:translateX(-2.5vw)}}
+/* Keep only the requested single-screen hero; auth dialogs remain available. */
+main>:not(.hero){display:block!important}.footer{display:none!important}
+dialog{max-height:calc(100svh - 24px);overflow:auto;background:#121318;color:#f1f2f4;border-color:#343740}dialog::backdrop{background:#000c;backdrop-filter:blur(5px)}dialog h2{color:#f1f2f4}dialog>p{color:#b1b5bd}dialog>form>label{color:#c6cad1}dialog input{background:#090a0d;color:#f1f2f4;border-color:#363941}dialog .close button,dialog #auth-switch,dialog .forgot-link{color:#b6c9de}
+@media(max-width:850px){.nav nav{display:none}.nav.wrap{height:64px}.hero.wrap{grid-template-columns:1fr;grid-template-rows:auto minmax(220px,42vh);align-content:center;gap:0;padding:72px 28px 15px}.hero-copy{align-self:end}.hero h1{font-size:clamp(45px,10vw,68px);margin:17px 0}.hero-copy>p{font-size:14px;max-width:560px;margin-bottom:19px}.hero-copy>small{margin-top:12px}#earth-root{justify-content:center}.earth-stage{width:min(68vw,420px);align-self:start;margin:-3vh auto 0}}
+@media(max-width:560px){.nav.wrap{padding-inline:18px}.hero.wrap{height:100svh;min-height:100svh;padding:72px 22px 10px;grid-template-rows:auto minmax(200px,39vh)}.hero h1{font-size:clamp(42px,11vw,58px);letter-spacing:-1.6px}.hero h1 em{letter-spacing:-1.7px}.hero-copy>p{font-size:13px;line-height:1.6}.earth-stage{width:min(88vw,390px);margin-top:-1vh}.nav>div>.btn{padding:10px 13px}}
+/* A quiet star field across the full black landing page. */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;background-image:radial-gradient(1px 1px at 18% 22%,#eaf1ff 98%,transparent),radial-gradient(1px 1px at 72% 70%,#fff 98%,transparent),radial-gradient(.7px .7px at 44% 50%,#dbe8ff 98%,transparent);background-size:19vw 21vh,23vw 19vh,16vw 17vh;background-position:0 0,7vw 5vh,3vw 11vh;background-repeat:repeat}
+main{position:relative;z-index:1}.hero.wrap{background:transparent}
+
+/* Restore the full RootCause navigation without changing the Earth hero. */
+.home-nav{display:flex;align-items:center;justify-content:space-between}
+.home-nav .home-links{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:clamp(18px,2.4vw,40px);white-space:nowrap}
+.home-nav .home-links a{color:#adb8c8;font-size:13px;transition:color .2s ease}
+.home-nav .home-links a:hover{color:#eff6ff}
+.home-nav-actions{display:flex;align-items:center;gap:10px}
+.home-nav-actions button{padding:10px 17px}
+@media(max-width:1000px){.home-nav .home-links{gap:15px}.home-nav .home-links a{font-size:11px}}
+@media(max-width:850px){.home-nav .home-links{display:none}.home-nav-actions{margin-left:auto}}
+/* Keep the restored navigation accessible while moving through page content. */
+.nav.wrap.home-nav{position:fixed;top:0;left:0;z-index:20;background:linear-gradient(180deg,#000 0%,#000e 76%,#0000 100%);backdrop-filter:blur(10px)}.home-nav .home-links a.nav-feature-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-color:#497ca5;color:#f2f5f9;font-size:12px}
+.home-nav .home-links a.nav-feature-btn:hover{color:#fff}
+.hero-wordmark{margin:0 0 clamp(14px,2vw,24px);font:500 clamp(64px,8vw,112px)/.92 'Instrument Serif',Georgia,'Times New Roman',serif;letter-spacing:-.045em;color:#f5f7fb;text-shadow:0 0 32px #81bfff22}
+.hero h1{font:400 clamp(34px,4.2vw,58px)/1.08 Georgia,'Times New Roman',serif;letter-spacing:-1.6px;margin:0 0 20px;color:#f0f2f6}
+.hero h1 .hero-title-primary{color:#f1f3f7}
+.hero h1 em{color:#aeb6c3;letter-spacing:-1.5px}
+@media(max-width:850px){.hero-wordmark{font-size:clamp(58px,12vw,82px);margin-bottom:12px}.hero h1{font-size:clamp(32px,7.5vw,46px);margin:0 0 15px}}
+@media(max-width:560px){.hero-wordmark{font-size:clamp(52px,13vw,66px)}.hero h1{font-size:clamp(30px,8vw,40px);letter-spacing:-1px}.hero h1 em{letter-spacing:-1px}}
+/* Keep the wordmark and supporting headline aligned and fully within the copy column. */
+.hero-copy{width:100%;max-width:650px;min-width:0;text-align:left}
+.hero-wordmark{width:100%;max-width:100%;font-size:clamp(46px,6vw,86px);line-height:.98;overflow-wrap:anywhere}
+.hero h1{width:100%;max-width:100%;font-size:clamp(30px,3.6vw,50px);line-height:1.08;letter-spacing:-1.25px;overflow-wrap:anywhere}
+.hero h1 em{letter-spacing:-1.1px}
+@media(max-width:850px){.hero-wordmark{font-size:clamp(46px,11vw,70px)}.hero h1{font-size:clamp(30px,7.5vw,42px)}}
+@media(max-width:560px){.hero-wordmark{font-size:clamp(44px,12vw,58px)}.hero h1{font-size:clamp(29px,7.6vw,36px)}}
+/* Scrollable landing sections reached by the fixed same-page navigation. */
+#home>section:not(.hero),#home>.trust{scroll-margin-top:92px}
+#explainer .expbox textarea{display:block;width:100%;min-height:130px;resize:vertical;padding:14px;background:#050505;color:#f1f3f6;border:1px solid #2a3039;border-radius:9px;font:13px/1.6 Consolas,monospace}
+#explainer .counter{display:flex;justify-content:space-between;gap:12px;margin:8px 0 14px;color:#aab5c5;font-size:10px}
+#explainer .explanation{margin-top:16px;padding:18px;border:1px solid #263448;border-radius:9px;background:#080a0e;color:#edf1f8;line-height:1.65}
+#explainer .snippet{margin-top:15px;padding:12px 14px;background:#06070a;border:1px solid #252b34;border-radius:8px}
+#explainer .snippet pre{margin:9px 0 0;white-space:pre-wrap;color:#cbd8e9;font:12px/1.6 Consolas,monospace}
+#connect .btn{margin-top:20px}@media(max-width:850px){
+  .nav.wrap.home-nav{height:108px;padding:10px 18px;align-items:flex-start}
+  .home-nav .home-links{display:flex;left:18px;right:18px;top:58px;transform:none;gap:8px;overflow-x:auto;justify-content:flex-start;scrollbar-width:none;padding-bottom:4px}
+  .home-nav .home-links::-webkit-scrollbar{display:none}
+  .home-nav .home-links .nav-feature-btn{flex:0 0 auto;padding:7px 10px;font-size:10px}
+  .home-nav-actions{margin-left:auto}
+  .hero.wrap{padding-top:112px}
+}
+#pricing .prices{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:900px){#pricing .prices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){#pricing .prices{grid-template-columns:1fr}}
+/* Homepage typography: fine, airy geometric lettering from the reference. */
+.hero-wordmark{
+  font-family:'Josefin Sans',Arial,sans-serif;
+  font-weight:300;
+  font-size:clamp(48px,6.2vw,84px);
+  line-height:1.02;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+  text-shadow:0 0 28px #a9caff20;
+  overflow-wrap:normal;
+}
+.hero h1{
+  font-family:'Josefin Sans',Arial,sans-serif;
+  font-size:clamp(27px,3.25vw,43px);
+  font-weight:300;
+  line-height:1.2;
+  letter-spacing:.025em;
+  text-transform:uppercase;
+}
+.hero h1 em{
+  font-family:'Josefin Sans',Arial,sans-serif;
+  font-weight:300;
+  font-style:normal;
+  letter-spacing:.025em;
+  color:#aab4c5;
+}
+@media(max-width:850px){
+  .hero-wordmark{font-size:clamp(42px,9vw,66px);letter-spacing:.025em}
+  .hero h1{font-size:clamp(25px,5.8vw,36px);letter-spacing:.012em}
+}
+.static-example{align-self:start}
+.sample-heading{margin:18px 0 9px;color:#dfe7f3;font-size:13px}
+.sample-log{margin:0;padding:14px;border:1px solid #202226;border-radius:8px;background:#030405;color:#c8d8ed;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.65 Consolas,monospace}
+.sample-explanation{margin-top:20px;padding-top:17px;border-top:1px solid #262a30;color:#c2c9d4;font-size:13px;line-height:1.7}
+.sample-explanation h3{margin:0 0 8px;color:#f0f2f5;font:500 20px/1.3 Georgia,'Times New Roman',serif}
+.sample-explanation h3:not(:first-child){margin-top:20px}
+.sample-explanation p{margin:0 0 12px}
+.sample-explanation ol{padding-left:20px;margin:8px 0}
+.sample-explanation li{padding-left:3px;margin:0 0 8px}
+.sample-explanation code{color:#dce8fb}
+.sample-explanation .sample-caveat{margin-top:17px;color:#9ca7b8;font-size:11px}

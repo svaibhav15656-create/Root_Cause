@@ -1,0 +1,73 @@
+/* Shared pitch-black, blue-glow visual system for every RootCause page. */
+:root{color-scheme:dark}
+html{background:#030407;scrollbar-color:#263248 #030407}
+body{isolation:isolate;background:#030407!important;background-image:radial-gradient(ellipse at 76% 17%,#0b1b31 0,transparent 36%),radial-gradient(ellipse at 14% 72%,#0a1424 0,transparent 34%)!important;background-attachment:fixed!important;color:#edf1f8!important}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.48;background-image:radial-gradient(1px 1px at 18% 22%,#eaf1ff 98%,transparent),radial-gradient(1px 1px at 72% 70%,#fff 98%,transparent),radial-gradient(.7px .7px at 44% 50%,#dbe8ff 98%,transparent);background-size:19vw 21vh,23vw 19vh,16vw 17vh;background-position:0 0,7vw 5vh,3vw 11vh;background-repeat:repeat}
+body[data-theme],body[data-theme="dark"],body[data-theme="light"]{color-scheme:dark;--paper:#030407!important;--surface:#0b0e14!important;--ink:#edf1f8!important;--muted:#a4adbd!important;--line:#263143!important;--green:#dbe9ff!important;--green-soft:#111b2a!important;--accent:#8cbcff!important;--danger:#ff9c97!important;--danger-line:#874b52!important;--shadow:0 20px 70px #000b,0 0 36px #3177cb12!important}
+body,body[data-theme]{color:#edf1f8!important}
+body>header,body>main,body>footer,body>section{position:relative;z-index:1}
+.nav,.topbar,.account-page-header{color:#edf1f8!important;background:rgba(4,6,10,.84)!important;border-color:#ffffff20!important;backdrop-filter:blur(16px)}
+.nav a,.topbar a,.site-footer a{color:#d4dbea}.nav a:hover,.topbar a:hover,.site-footer a:hover{color:#a8ceff}
+.brand{color:#f2f5fb!important}.brand b{background:#111b2a!important;color:#cfe3ff!important}.brand b span{color:#8cbcff!important}
+.btn.dark,.button.primary{background:#dceaff!important;color:#070b12!important;border-color:#dceaff!important}.btn.dark:hover,.button.primary:hover{background:#f0f6ff!important;box-shadow:0 0 24px #78b5ff35}
+.btn.outline,.button.outline,.button.text-button{color:#e2e9f5!important;border-color:#344257!important;background:#0a0e15!important}.btn.outline:hover,.button.outline:hover{border-color:#83b6ff!important;background:#111a28!important}
+button:disabled,.button:disabled{opacity:.55}
+input,select,textarea,.explain-input-area textarea,.review-source textarea{background:#090d14!important;color:#edf1f8!important;border-color:#2c394d!important}
+input::placeholder,textarea::placeholder{color:#78869c!important}
+article,.features article,.prices article,.billing-plan,.checkout-summary,.account-card,.account-panel,.review-finding,.expbox,.snippet,.code-example pre,.billing-banner,.ingest-box{background-color:#090d14!important;border-color:#263448!important;color:#e9eef8}
+.account-page{background:rgba(3,4,7,.965)!important;color:#edf1f8!important}
+.account-nav button:hover,.account-nav button.active,.review-tabs button.active,.guide-tabs button.active{background:#121d2c!important;color:#f0f5ff!important}
+.result-block,.account-card,.product-section,.guide-section,.review-workspace,.site-footer,.checkout-preview{border-color:#263143!important}
+.result-block h2,.result-content h3,.section-intro h1,.section-intro h2,.account-page h2,.account-card h3,.billing-plan h3,.checkout-summary h4,.modal-dialog h2,.legal h1,.legal h2,.workspace-section h2{color:#f0f3fa!important}
+.result-content p,.section-intro>p:last-child,.account-panel>p,.account-card>p,.fine-print,.status-message,.guide-section ol,.legal p,.legal li{color:#aab4c4!important}
+.guide-note,.review-evidence,.guide-section code,.key-display{background:#111b2a!important;color:#c5d9f6!important;border-color:#31435c!important}
+.billing-plan-featured{border-color:#6898d1!important;box-shadow:0 0 28px #3d80d51a!important}
+.modal-dialog,dialog{background:#0a0e15!important;color:#edf1f8!important;border-color:#344257!important;box-shadow:0 24px 90px #000c,0 0 38px #3779c21c!important}
+.modal-dialog::backdrop,dialog::backdrop{background:#000b!important;backdrop-filter:blur(6px)}
+.global-status{background:#0a0e15!important;color:#edf1f8!important;border-color:#344257!important}
+.reset-card{background:#090d14!important;border-color:#263448!important;color:#edf1f8!important;box-shadow:0 20px 70px #000b,0 0 40px #3879c21c!important}
+.topline,.trust{background:#05070b!important;color:#aab4c4!important;border-color:#222b39!important}
+.trust strong{color:#d2deef!important}.trust b,.trust small{color:#8794a8!important}
+.explainer,.pricing,.cta{background-color:#05070b!important;color:#edf1f8!important;border-color:#263143!important}
+.prices article{box-shadow:0 12px 40px #0005,0 0 20px #3678c30d}
+table td,table th{border-color:#263143!important}table th{color:#bac7dc!important}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline-color:#91c2ff!important}
+@media(prefers-reduced-motion:reduce){body::before{opacity:.35}}
+/* Pitch-black pass: keep every surface near true black across all routes. */
+html,body{background:#000!important;background-image:none!important;color:#f1f3f6!important}
+body::before{opacity:.2;background-size:24vw 24vh,28vw 24vh,20vw 21vh}
+.nav,.topbar,.account-page-header{background:#030303!important;border-color:#17191d!important}
+.account-page,.modal-dialog,dialog,.reset-card,.global-status{background:#030303!important}
+article,.features article,.prices article,.billing-plan,.checkout-summary,.account-card,.account-panel,.review-finding,.expbox,.snippet,.code-example pre,.billing-banner,.ingest-box,.app-row,.scorecard,.incident-card pre,.explanation,.data-notice,.guide-note,.review-evidence,.key-display,.monitoring-warning,.trust,.cta,.explainer,.pricing,.checkout-preview,.review-workspace,.product-section,.guide-section{background-color:#050505!important}
+input,select,textarea,.explain-input-area textarea,.review-source textarea,.workspace-section form input:not([type=checkbox]),.plan-actions select,.expbox textarea,dialog input{background:#050505!important;color:#f1f3f6!important;border-color:#202226!important}
+.result-block,.account-card,.product-section,.guide-section,.review-workspace,.site-footer,.checkout-preview,.workspace-section,.incident-list,.incident-card,.steps article,.prices article,.features article,.expbox,.result-block{border-color:#1b1d21!important}
+.nav,.topbar,.account-page-header,.footer,.site-footer,.trust,.topline{border-color:#181a1e!important}
+.account-nav button:hover,.account-nav button.active,.review-tabs button.active,.guide-tabs button.active{background:#0b0b0c!important}
+button:disabled,.button:disabled{background:#080808!important}
+/* Uniform star spacing on every route. */
+body::before{z-index:0;opacity:.18;background-image:radial-gradient(1px 1px at 45px 45px,rgba(235,243,255,.7) 98%,transparent 100%);background-size:90px 90px;background-position:0 0;background-repeat:repeat}
+/* Subtle magnetic button movement and blue-white click arcs. */
+.cursor-magnetic{translate:var(--magnet-x,0px) var(--magnet-y,0px);transition:translate 180ms cubic-bezier(.2,.8,.2,1),box-shadow 180ms ease}
+.button-spark{fill:none;stroke:#70b8ff;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round;opacity:0;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px #55aaff) drop-shadow(0 0 15px #287cff);animation:button-spark-out 300ms ease-out var(--spark-delay,0ms) both}
+.button-spark-core{stroke:#f5fbff;stroke-width:2.2}
+@keyframes button-spark-out{0%{opacity:0;stroke-dasharray:0 90}18%{opacity:1}100%{opacity:0;stroke-dasharray:90 0}}
+@media(prefers-reduced-motion:reduce){.cursor-magnetic{translate:none!important}.button-spark{display:none}}
+/* Glossy black buttons everywhere; preserve each button's current text color. */
+button,.btn,.button{background:linear-gradient(180deg,#262a30 0%,#111317 18%,#030304 58%,#0b0c10 100%)!important;box-shadow:inset 0 1px 1px #ffffff40,inset 0 -1px 2px #000b,0 4px 14px #000a,0 0 14px #66aaff12!important}
+button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled){background:linear-gradient(180deg,#363b43 0%,#171a20 20%,#050608 62%,#101318 100%)!important;box-shadow:inset 0 1px 1px #ffffff55,inset 0 -1px 2px #000b,0 5px 18px #000b,0 0 20px #66aaff2b!important}
+button:active:not(:disabled),.btn:active:not(:disabled),.button:active:not(:disabled){background:linear-gradient(180deg,#08090b,#171a20)!important;box-shadow:inset 0 2px 5px #000c,0 2px 8px #0009!important}
+button:disabled,.btn:disabled,.button:disabled{background:linear-gradient(180deg,#17191d,#050506)!important}
+.btn.dark,.button.primary{color:#f4f7fb!important}
+/* Black pill buttons with the fine blue edge and glow from the reference. */
+button,.btn,.button{border:1px solid #497ca5!important;border-radius:999px!important;color:#f2f5f9!important;background:linear-gradient(180deg,#13171d 0%,#07090d 55%,#030405 100%)!important;box-shadow:inset 0 1px 0 #d8edff27,0 0 0 1px #0a1724,0 0 11px #4a9eff22!important}
+button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled){border-color:#79b9ec!important;background:linear-gradient(180deg,#1b222b 0%,#080b10 60%,#030405 100%)!important;box-shadow:inset 0 1px 0 #e6f5ff4a,0 0 0 1px #14283b,0 0 16px #54a9ff55!important}
+button:active:not(:disabled),.btn:active:not(:disabled),.button:active:not(:disabled){background:#05070a!important;box-shadow:inset 0 2px 5px #000d,0 0 8px #4897e533!important}
+button:disabled,.btn:disabled,.button:disabled{border-color:#29415a!important;background:linear-gradient(180deg,#11151a,#050608)!important;color:#f2f5f9!important}/* Ensure primary CTA buttons use the same glossy black finish as other controls. */
+.btn.dark,.button.primary,.hero .btn.dark{background:linear-gradient(180deg,#13171d 0%,#07090d 55%,#030405 100%)!important;border:1px solid #497ca5!important;border-radius:999px!important;color:#f2f5f9!important;box-shadow:inset 0 1px 0 #d8edff27,0 0 0 1px #0a1724,0 0 11px #4a9eff22!important}
+.btn.dark:hover:not(:disabled),.button.primary:hover:not(:disabled),.hero .btn.dark:hover:not(:disabled){background:linear-gradient(180deg,#1b222b 0%,#080b10 60%,#030405 100%)!important;border-color:#79b9ec!important;box-shadow:inset 0 1px 0 #e6f5ff4a,0 0 0 1px #14283b,0 0 16px #54a9ff55!important}
+/* Per-visit, randomized stars across all page backgrounds. */
+body::before{display:none!important}
+.site-starfield{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;contain:strict}
+.site-star{position:absolute;display:block;width:var(--star-size);height:var(--star-size);border-radius:50%;background:#e6f1ff;opacity:var(--star-opacity);box-shadow:0 0 4px #9bcaff75,0 0 9px #328bff40;animation:star-twinkle var(--twinkle-duration) ease-in-out var(--twinkle-delay) infinite alternate}
+.site-starfield-static .site-star{animation:none}
+@keyframes star-twinkle{from{opacity:.12}to{opacity:var(--star-opacity)}}

@@ -4,13 +4,20 @@
   "private": true,
   "description": "Plain-English log monitoring for small teams.",
   "scripts": {
-    "start": "node --env-file=.env server.js"
+    "build": "esbuild src/earth-root.tsx --bundle --format=esm --target=es2020 --jsx=automatic --outfile=earth-root.js",
+    "start": "npm run build && node --env-file=.env server.js"
   },
   "engines": {
     "node": ">=20.6"
   },
   "dependencies": {
+    "esbuild": "^0.25.11",
     "nodemailer": "^10.1.6",
-    "pg": "^8.23.1"
+    "pg": "^8.23.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }

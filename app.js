@@ -1,5 +1,5 @@
 const $=s=>document.querySelector(s);
-const mainNav=$('.nav nav');if(mainNav){const guide=document.createElement('a');guide.href='/integrations.html';guide.textContent='Connect an app';mainNav.append(guide)}
+const mainNav=$('.nav nav');if(mainNav&&!mainNav.querySelector('a[href="#connect"]')){const guide=document.createElement('a');guide.href='/integrations.html';guide.textContent='Connect an app';mainNav.append(guide)}
 const dialogs=['auth-dialog','key-dialog','app-dialog','workspace-dialog'].reduce((a,id)=>(a[id]=$(('#'+id)),a),{});
 let authMode='register';
 async function api(url,options={}){const r=await fetch(url,{credentials:'same-origin',...options,headers:{'content-type':'application/json',...(options.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.error||'Request failed.');return d}
@@ -37,5 +37,4 @@ if(publicLogInput&&publicExplainButton&&publicExplanation){
   publicLogInput.addEventListener('input',e=>$('#char-count').textContent=`${e.target.value.length.toLocaleString()} / 12,000`);
   publicExplainButton.addEventListener('click',async()=>{const text=publicLogInput.value.trim(),box=publicExplanation;if(!text){box.textContent='Paste a log or error message first.';box.classList.remove('hidden');return}const btn=publicExplainButton;btn.disabled=true;btn.textContent='Reading your log…';try{const d=await api('/api/explain',{method:'POST',body:JSON.stringify({text})}),x=d.explanation;box.replaceChildren();box.append(node('h3','',x.title),node('p','',x.cause),node('b','','What to try'));const list=node('ul');for(const step of x.steps)list.append(node('li','',step));box.append(list,node('p','',`Confidence: ${x.confidence} · General guidance based on redacted log text; verify against your system.`),node('p','fine-print',`${d.remaining} explanations remaining today · resets at 12:00 AM IST.`));box.classList.remove('hidden')}catch(err){box.textContent=err.message;box.classList.remove('hidden')}finally{btn.disabled=false;btn.textContent='Explain this log'}});
 }
-$('#copy-snippet').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('.snippet pre').innerText);$('#copy-snippet').textContent='Copied!';setTimeout(()=>$('#copy-snippet').textContent='Copy example',1600)}catch{$('#copy-snippet').textContent='Select to copy'}});
 

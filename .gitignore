@@ -1,6 +1,14 @@
 data/
 node_modules/
 *.log
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
+.DS_Store
+Thumbs.db
 
 # real secrets
 .env
@@ -9,3 +17,4 @@ node_modules/
 # placeholder templates are safe to commit
 !.env.example
 !.env.production.example
+earth-root.js

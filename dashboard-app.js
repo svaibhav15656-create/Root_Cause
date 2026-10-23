@@ -100,3 +100,4 @@ async function boot(){try{const [profile]=await Promise.all([loadProfile(),loadA
 function notify(message){const old=$('#global-status');if(old)old.remove();const box=el('div','global-status',message);box.id='global-status';box.setAttribute('role','status');document.body.append(box);setTimeout(()=>box.remove(),5000)}
 function showAccountResult(){const result=new URLSearchParams(location.search).get('github');if(result){toggleAccount(true,'general');history.replaceState(null,'',location.pathname+'#account');setTimeout(()=>notify(result==='connected'?'GitHub repository access connected.':'GitHub connection did not complete.'),100)}}
 setTheme();$('#account-page').addEventListener('transitionend',()=>{});boot();loadLimits();showAccountResult();
+if(location.hash==='#pricing')toggleAccount(true,'billing');
