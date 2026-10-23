@@ -22,3 +22,12 @@ body.high-contrast{--muted:#4c584d;--line:#9ca89c}body[data-theme="dark"].high-c
 #cancel-subscription-button[hidden],#plus-checkout-button[hidden],#plus-plan-tag[hidden],.checkout-preview[hidden]{display:none}
 @media(max-width:800px){.billing-plans{grid-template-columns:repeat(2,minmax(0,1fr))}.billing-plan:last-child{grid-column:1/-1}}
 @media(max-width:620px){.billing-plans{grid-template-columns:1fr}.billing-plan:last-child{grid-column:auto}}
+
+/* Compact, content-aware log input and explanation loading/reveal states. */
+.explain-input-area textarea{min-height:92px;max-height:min(45vh,420px);overflow-y:hidden;resize:none;padding:13px 15px;transition:height .12s ease}
+.explanation-loader{display:flex;align-items:center;gap:12px;min-height:72px;color:var(--muted);font-size:13px}
+.explanation-loader-mark{width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:explanation-spin .8s linear infinite;flex:none}
+@keyframes explanation-spin{to{transform:rotate(360deg)}}
+.typewriter-cursor::after{content:'\25AE';display:inline-block;margin-left:2px;color:var(--accent);animation:typewriter-blink .85s steps(2,start) infinite}
+@keyframes typewriter-blink{to{visibility:hidden}}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
