@@ -28,6 +28,7 @@ article,.features article,.prices article,.billing-plan,.checkout-summary,.accou
 .reset-card{background:#090d14!important;border-color:#263448!important;color:#edf1f8!important;box-shadow:0 20px 70px #000b,0 0 40px #3879c21c!important}
 .topline,.trust{background:#05070b!important;color:#aab4c4!important;border-color:#222b39!important}
 .trust strong{color:#d2deef!important}.trust b,.trust small{color:#8794a8!important}
+.trust>div>b,.trust>div>strong,.trust>div>small{display:block!important;color:#d2deef!important;font-family:'Josefin Sans',Arial,sans-serif!important;font-size:12px!important;font-weight:300!important;letter-spacing:.07em!important;line-height:1.35!important}
 .explainer,.pricing,.cta{background-color:#05070b!important;color:#edf1f8!important;border-color:#263143!important}
 .prices article{box-shadow:0 12px 40px #0005,0 0 20px #3678c30d}
 table td,table th{border-color:#263143!important}table th{color:#bac7dc!important}

@@ -1,5 +1,12 @@
 node_modules
 .git
 .env
+.env.*
 data
 *.log
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
