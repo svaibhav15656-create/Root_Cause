@@ -1,1 +1,63 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connect your app · RootCause</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/dashboard.css"><link rel="stylesheet" href="/site-theme.css?v=20261024-dark-glow"></head><body><header class="nav wrap"><a class="brand" href="/"><b>r<span>.</span></b> rootcause</a><a href="/">← Back home</a></header><main class="section wrap legal"><label>INTEGRATION PREVIEW · PRIME FEATURE COMING SOON</label><h1>Prepare to connect your app.</h1><p>The API documentation is provided as a setup preview. The monitoring dashboard, 24/7 analysis, and alert delivery are not live yet; they are planned for Prime after early access. Keep an independent monitor for critical systems.</p><p class="guide-note">RootCause attempts to process logs sent to the API, but that does not mean continuous monitoring or successful alert delivery is active.</p><section class="workspace-section"><h2>Planned plan limits</h2><p>Free includes 5 explanations per day, Plus is planned for 15 per day, and Prime is planned for 30 per day. The daily limit resets at 12:00 AM IST. One explanation accepts one error or its stack trace.</p></section><section class="workspace-section"><h2>1. Direct HTTP (any language)</h2><p>Send one event or a batch of up to 100. Keep the key in a server-side environment variable.</p><div class="snippet"><pre>curl -X POST "$ROOTCAUSE_URL/v1/logs" &#10;  -H "Authorization: Bearer $ROOTCAUSE_API_KEY" &#10;  -H "Content-Type: application/json" &#10;  -d '{"logs":[{"level":"WARN","service":"orders","message":"Database operation took 900 ms","durationMs":900}]}'</pre></div></section><section class="workspace-section"><h2>2. Vector log forwarder</h2><p>Use Vector's HTTP sink with newline-delimited JSON. Normalize source fields to <code>message</code>, <code>level</code> and optionally <code>service</code>, <code>timestamp</code>, <code>duration_ms</code>, and <code>status_code</code>. Common aliases such as <code>log</code>, <code>severity</code>, and <code>time</code> are accepted.</p><div class="snippet"><pre>[sinks.rootcause]&#10;type = "http"&#10;inputs = ["your_normalized_logs"]&#10;uri = "${ROOTCAUSE_URL}/v1/logs"&#10;method = "post"&#10;batch.max_events = 100&#10;batch.max_bytes = 240000&#10;&#10;[sinks.rootcause.auth]&#10;strategy = "bearer"&#10;token = "${ROOTCAUSE_API_KEY}"&#10;&#10;[sinks.rootcause.encoding]&#10;codec = "json"&#10;&#10;[sinks.rootcause.framing]&#10;method = "newline_delimited"&#10;&#10;[sinks.rootcause.request]&#10;headers.Content-Type = "application/x-ndjson"</pre></div></section><section class="workspace-section"><h2>3. Fluent Bit HTTP output</h2><p>Forward structured records with JSON-lines encoding. Inject the key from your container or secret manager; never commit the real value.</p><div class="snippet"><pre>[OUTPUT]&#10;    Name          http&#10;    Match         *&#10;    Host          your-rootcause-host.example&#10;    Port          443&#10;    URI           /v1/logs&#10;    TLS           On&#10;    Format        json_lines&#10;    Json_Date_Key timestamp&#10;    Json_Date_Format iso8601&#10;    Header        Authorization Bearer REPLACE_WITH_PRIVATE_APP_KEY&#10;    Header        Content-Type application/x-ndjson</pre></div></section><section class="workspace-section"><h2>4. Standard HTTPS clients</h2><p>All languages can call the same endpoint. Queue logs asynchronously in your application so monitoring does not block request handling.</p><div class="snippet"><small>NODE.JS</small><pre>await fetch(`${process.env.ROOTCAUSE_URL}/v1/logs`, { method:"POST", headers:{Authorization:`Bearer ${process.env.ROOTCAUSE_API_KEY}`,"Content-Type":"application/json"}, body:JSON.stringify({logs:[{level:"ERROR",service:"checkout",message:"Database timeout"}]}), signal:AbortSignal.timeout(3000) });</pre><small>PYTHON</small><pre>requests.post(os.environ["ROOTCAUSE_URL"]+"/v1/logs", headers={"Authorization":"Bearer "+os.environ["ROOTCAUSE_API_KEY"]}, json={"logs":[{"level":"ERROR","service":"checkout","message":"Database timeout"}]}, timeout=3)</pre></div></section><section class="workspace-section"><h2>Limits and responses</h2><p>Batch: 1–100 events. HTTP body: 256 KiB. Responses include 202 accepted, 401 invalid or revoked key, 413 payload too large, and 429 for rate limits or monthly log quota. Timestamps more than 24 hours from server time are replaced with receipt time. Start with WARN and above if your app emits a high volume of INFO logs.</p><p>Rotate keys from your workspace; rotation immediately invalidates the old key. Never expose keys in browser code, public repositories or logs.</p></section></main><footer class="footer wrap"><a class="brand" href="/"><b>r<span>.</span></b> rootcause</a><a href="/privacy.html">Privacy</a></footer><script src="/button-effects.js" defer></script><script src="/starfield.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect your app · RootCause</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/dashboard.css">
+  <link rel="stylesheet" href="/site-theme.css?v=20261024-dark-glow">
+</head>
+<body>
+  <header class="nav wrap">
+    <a class="brand" href="/"><b>r<span>.</span></b> rootcause</a>
+    <a href="/">← Back home</a>
+  </header>
+
+  <main class="section wrap legal integration-guide">
+    <label>APP CONNECTION GUIDE</label>
+    <h1>Connect your app.</h1>
+    <p>Send structured logs from your app’s server to RootCause over HTTPS. You’ll need a server or log forwarder that can keep a private API key secret.</p>
+
+    <section class="workspace-section">
+      <h2>1. Create an app and get its key</h2>
+      <p>Sign in to RootCause, open your workspace, and choose <strong>Add an app</strong>. Give it a name, then copy the private API key when it appears. RootCause shows the key once; if you lose it, rotate the key in your workspace.</p>
+      <p><a class="btn outline" href="/?login=1">Sign in to your workspace</a> <a class="btn dark" href="/">Create an account</a></p>
+    </section>
+
+    <section class="workspace-section">
+      <h2>2. Save the key on your server</h2>
+      <p>In your hosting provider’s server-side environment or secrets settings, add:</p>
+      <div class="snippet"><pre>ROOTCAUSE_URL=https://rootcause-vzts.onrender.com
+ROOTCAUSE_API_KEY=your_private_app_key</pre></div>
+      <p>Use the key only on a server or trusted log forwarder. Never put it in browser JavaScript, a public repository, or a mobile app. If your site has no backend or secure place for secrets, don’t connect it directly: use the free explainer to paste one log at a time, or add a backend/log forwarder first.</p>
+    </section>
+
+    <section class="workspace-section">
+      <h2>3. Send a test log</h2>
+      <p>From your server, send a request to <code>https://rootcause-vzts.onrender.com/v1/logs</code> with the key as a Bearer token. For Node.js:</p>
+      <div class="snippet"><pre>await fetch(`${process.env.ROOTCAUSE_URL}/v1/logs`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.ROOTCAUSE_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    logs: [{
+      level: "ERROR",
+      service: "checkout",
+      message: "Database connection timed out"
+    }]
+  })
+});</pre></div>
+      <p>A successful request returns <code>202 Accepted</code>. Your workspace will show the app as connected after it receives the first log. The API accepts structured logs; it does not automatically read logs from your app until you configure a sender.</p>
+    </section>
+
+    <p class="guide-note"><strong>Monitoring status:</strong> RootCause can receive logs, but continuous 24/7 monitoring and alert delivery are not live. Keep your existing monitor for critical systems.</p>
+  </main>
+
+  <footer class="footer wrap"><a class="brand" href="/"><b>r<span>.</span></b> rootcause</a><a href="/privacy.html">Privacy</a></footer>
+  <script src="/button-effects.js" defer></script>
+  <script src="/starfield.js" defer></script>
+</body>
+</html>

@@ -47,12 +47,9 @@ input,select,textarea,.explain-input-area textarea,.review-source textarea,.work
 button:disabled,.button:disabled{background:#080808!important}
 /* Uniform star spacing on every route. */
 body::before{z-index:0;opacity:.18;background-image:radial-gradient(1px 1px at 45px 45px,rgba(235,243,255,.7) 98%,transparent 100%);background-size:90px 90px;background-position:0 0;background-repeat:repeat}
-/* Subtle magnetic button movement and blue-white click arcs. */
+/* Subtle magnetic button movement on hover. */
 .cursor-magnetic{translate:var(--magnet-x,0px) var(--magnet-y,0px);transition:translate 180ms cubic-bezier(.2,.8,.2,1),box-shadow 180ms ease}
-.button-spark{fill:none;stroke:#70b8ff;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round;opacity:0;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px #55aaff) drop-shadow(0 0 15px #287cff);animation:button-spark-out 300ms ease-out var(--spark-delay,0ms) both}
-.button-spark-core{stroke:#f5fbff;stroke-width:2.2}
-@keyframes button-spark-out{0%{opacity:0;stroke-dasharray:0 90}18%{opacity:1}100%{opacity:0;stroke-dasharray:90 0}}
-@media(prefers-reduced-motion:reduce){.cursor-magnetic{translate:none!important}.button-spark{display:none}}
+@media(prefers-reduced-motion:reduce){.cursor-magnetic{translate:none!important}}
 /* Glossy black buttons everywhere; preserve each button's current text color. */
 button,.btn,.button{background:linear-gradient(180deg,#262a30 0%,#111317 18%,#030304 58%,#0b0c10 100%)!important;box-shadow:inset 0 1px 1px #ffffff40,inset 0 -1px 2px #000b,0 4px 14px #000a,0 0 14px #66aaff12!important}
 button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled){background:linear-gradient(180deg,#363b43 0%,#171a20 20%,#050608 62%,#101318 100%)!important;box-shadow:inset 0 1px 1px #ffffff55,inset 0 -1px 2px #000b,0 5px 18px #000b,0 0 20px #66aaff2b!important}
@@ -72,3 +69,8 @@ body::before{display:none!important}
 .site-star{position:absolute;display:block;width:var(--star-size);height:var(--star-size);border-radius:50%;background:#e6f1ff;opacity:var(--star-opacity);box-shadow:0 0 4px #9bcaff75,0 0 9px #328bff40;animation:star-twinkle var(--twinkle-duration) ease-in-out var(--twinkle-delay) infinite alternate}
 .site-starfield-static .site-star{animation:none}
 @keyframes star-twinkle{from{opacity:.12}to{opacity:var(--star-opacity)}}
+/* Keep the auth screen fully opaque so home page content never shows through. */
+dialog#auth-dialog{background:radial-gradient(1px 1px at 8% 18%,#dcecffb8 0,transparent 1.5px),radial-gradient(1px 1px at 79% 28%,#dcecff9c 0,transparent 1.5px),radial-gradient(1px 1px at 63% 82%,#dcecff80 0,transparent 1.5px),radial-gradient(ellipse at 103% -8%,#777a7d22 0,transparent 34%),radial-gradient(ellipse at -12% 110%,#777a7d1a 0,transparent 38%),#030406!important;background-color:#030406!important;background-size:211px 173px,283px 227px,337px 293px,auto,auto,auto!important}
+dialog#auth-dialog::backdrop{background:#030406!important;backdrop-filter:none!important}
+/* Form labels use display:grid, so explicitly override it when fields are hidden. */
+dialog#auth-dialog #name-wrap.hidden,dialog#auth-dialog #totp-wrap.hidden,dialog#auth-dialog #forgot-password.hidden,dialog#auth-dialog #auth-kicker.hidden,dialog#auth-dialog #auth-form label.hidden{display:none!important}
