@@ -351,6 +351,18 @@ const PATTERNS = [
     confidence: 'High',
   },
   {
+    test: /connection\s+pool\s+(?:usage|utili[sz]ation)\s*(?:is\s+|at\s+|[:=]\s*)?(\d{1,3}(?:\.\d+)?)\s*%/i,
+    title: m => `Database connection pool is heavily used (${m[1]}%)`,
+    cause: m => `The log reports that ${m[1]}% of the database connection pool is in use. The pool is not necessarily exhausted yet, but if this level persists or rises, requests may wait for a connection and eventually time out. This line alone does not show whether users are already affected.`,
+    steps: [
+      'Check whether utilization stays high or was only a brief spike; compare it with your normal traffic and alert threshold.',
+      'Inspect the pool maximum, active and idle connection counts, wait queue, and connection-acquire timeout around this timestamp.',
+      'Look for slow queries or long transactions holding connections; check that every acquired connection is released on success and error paths.',
+      'Before increasing the pool, calculate the total possible connections across all app instances and compare it with the database limit and other clients.',
+    ],
+    confidence: 'Medium',
+  },
+  {
     test: /too many connections|max_connections|connection pool exhausted|cannot acquire connection/i,
     title: () => 'Database connection pool exhausted',
     cause: 'All available database connections are in use. New requests cannot acquire a connection and time out.',
@@ -595,7 +607,7 @@ function known(message, level) {
     if (match) {
       return {
         title: typeof pattern.title === 'function' ? pattern.title(match) : pattern.title,
-        cause: pattern.cause,
+        cause: typeof pattern.cause === 'function' ? pattern.cause(match) : pattern.cause,
         steps: pattern.steps,
         confidence: pattern.confidence,
       };
