@@ -75,3 +75,25 @@ dialog#auth-dialog #name-wrap.hidden,dialog#auth-dialog #totp-wrap.hidden,dialog
 /* Keep the home feature cards compact. */
 .features article{min-height:210px;padding:18px}
 @media(max-width:600px){.features article{min-height:0;padding:18px}}
+
+/* Match the type size across the four homepage trust-strip labels. */
+#home .trust>div>b,#home .trust>div>strong,#home .trust>div>small{font-size:13px!important}
+
+/* Keep account settings cards and controls clean and non-glowing. */
+#account-page .account-card,#account-page .danger-card{box-shadow:none!important}
+#account-page button,#account-page .button{box-shadow:none!important}
+#account-page button:not(.danger-button),#account-page .button:not(.danger-button){border:1px solid #30343a!important;border-radius:6px!important;background:#090a0c!important;color:#e9edf3!important;box-shadow:none!important}
+#account-page button:not(.danger-button):hover:not(:disabled),#account-page .button:not(.danger-button):hover:not(:disabled){border-color:#4b5058!important;background:#111317!important;box-shadow:none!important}
+#account-page .danger-button:hover:not(:disabled){box-shadow:none!important}
+#account-page .button.text-button{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
+#account-page .account-nav button{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
+#account-page .account-nav button.active,#account-page .account-nav button:hover{border-color:#30343a!important;background:#101114!important;box-shadow:none!important}
+
+/* Smooth, non-modal transition into account security settings. */
+#account-page .account-panel{animation:account-panel-arrive .34s cubic-bezier(.2,.7,.25,1) both}
+.security-privacy-note{margin:0 0 22px!important;padding:14px 16px;border:1px solid #292d33;border-radius:7px;background:#090a0c;color:#c5ccd6!important;font-size:13px!important;line-height:1.6;animation:privacy-note-arrive .65s cubic-bezier(.2,.7,.25,1) both}
+@keyframes account-panel-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes privacy-note-arrive{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+#account-page .account-nav button{border:1px solid transparent!important;border-radius:6px!important;box-shadow:none!important}
+#account-page .account-nav button.active{border-color:#292d33!important;background:#101114!important}
+@media(prefers-reduced-motion:reduce){#account-page .account-panel,.security-privacy-note{animation:none!important}}
