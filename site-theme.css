@@ -47,9 +47,6 @@ input,select,textarea,.explain-input-area textarea,.review-source textarea,.work
 button:disabled,.button:disabled{background:#080808!important}
 /* Uniform star spacing on every route. */
 body::before{z-index:0;opacity:.18;background-image:radial-gradient(1px 1px at 45px 45px,rgba(235,243,255,.7) 98%,transparent 100%);background-size:90px 90px;background-position:0 0;background-repeat:repeat}
-/* Subtle magnetic button movement on hover. */
-.cursor-magnetic{translate:var(--magnet-x,0px) var(--magnet-y,0px);transition:translate 180ms cubic-bezier(.2,.8,.2,1),box-shadow 180ms ease}
-@media(prefers-reduced-motion:reduce){.cursor-magnetic{translate:none!important}}
 /* Glossy black buttons everywhere; preserve each button's current text color. */
 button,.btn,.button{background:linear-gradient(180deg,#262a30 0%,#111317 18%,#030304 58%,#0b0c10 100%)!important;box-shadow:inset 0 1px 1px #ffffff40,inset 0 -1px 2px #000b,0 4px 14px #000a,0 0 14px #66aaff12!important}
 button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled){background:linear-gradient(180deg,#363b43 0%,#171a20 20%,#050608 62%,#101318 100%)!important;box-shadow:inset 0 1px 1px #ffffff55,inset 0 -1px 2px #000b,0 5px 18px #000b,0 0 20px #66aaff2b!important}
@@ -59,7 +56,7 @@ button:disabled,.btn:disabled,.button:disabled{background:linear-gradient(180deg
 /* Black pill buttons with the fine blue edge and glow from the reference. */
 button,.btn,.button{border:1px solid #497ca5!important;border-radius:999px!important;color:#f2f5f9!important;background:linear-gradient(180deg,#13171d 0%,#07090d 55%,#030405 100%)!important;box-shadow:inset 0 1px 0 #d8edff27,0 0 0 1px #0a1724,0 0 11px #4a9eff22!important}
 button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled){border-color:#79b9ec!important;background:linear-gradient(180deg,#1b222b 0%,#080b10 60%,#030405 100%)!important;box-shadow:inset 0 1px 0 #e6f5ff4a,0 0 0 1px #14283b,0 0 16px #54a9ff55!important}
-button:active:not(:disabled),.btn:active:not(:disabled),.button:active:not(:disabled){background:#05070a!important;box-shadow:inset 0 2px 5px #000d,0 0 8px #4897e533!important}
+button:active:not(:disabled),.btn:active:not(:disabled),.button:active:not(:disabled){background:#05070a!important;box-shadow:inset 0 2px 5px #000d!important}
 button:disabled,.btn:disabled,.button:disabled{border-color:#29415a!important;background:linear-gradient(180deg,#11151a,#050608)!important;color:#f2f5f9!important}/* Ensure primary CTA buttons use the same glossy black finish as other controls. */
 .btn.dark,.button.primary,.hero .btn.dark{background:linear-gradient(180deg,#13171d 0%,#07090d 55%,#030405 100%)!important;border:1px solid #497ca5!important;border-radius:999px!important;color:#f2f5f9!important;box-shadow:inset 0 1px 0 #d8edff27,0 0 0 1px #0a1724,0 0 11px #4a9eff22!important}
 .btn.dark:hover:not(:disabled),.button.primary:hover:not(:disabled),.hero .btn.dark:hover:not(:disabled){background:linear-gradient(180deg,#1b222b 0%,#080b10 60%,#030405 100%)!important;border-color:#79b9ec!important;box-shadow:inset 0 1px 0 #e6f5ff4a,0 0 0 1px #14283b,0 0 16px #54a9ff55!important}
@@ -74,3 +71,7 @@ dialog#auth-dialog{background:radial-gradient(1px 1px at 8% 18%,#dcecffb8 0,tran
 dialog#auth-dialog::backdrop{background:#030406!important;backdrop-filter:none!important}
 /* Form labels use display:grid, so explicitly override it when fields are hidden. */
 dialog#auth-dialog #name-wrap.hidden,dialog#auth-dialog #totp-wrap.hidden,dialog#auth-dialog #forgot-password.hidden,dialog#auth-dialog #auth-kicker.hidden,dialog#auth-dialog #auth-form label.hidden{display:none!important}
+
+/* Keep the home feature cards compact. */
+.features article{min-height:210px;padding:18px}
+@media(max-width:600px){.features article{min-height:0;padding:18px}}
