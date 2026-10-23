@@ -1,0 +1,1871 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>RootCause Launch — Sequential Code Scan, Vulnerability Ticker & Output</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Manrope:wght@400;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,600&family=JetBrains+Mono:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #070908;
+        color: #f8fafc;
+        font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Master Viewport Container (16:9 Landscape @ 1920x1080) */
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        background: radial-gradient(circle at 50% 30%, #0d1510 0%, #080c09 60%, #040605 100%);
+        overflow: hidden;
+      }
+
+      /* Master Dynamic Camera Rig for Premiere Pro / After Effects Style Smooth Cinematics */
+      #camera-rig {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      /* Subtle Luxury Dark Matrix Dot Pattern */
+      .ambient-grid {
+        position: absolute;
+        inset: 0;
+        background-size: 36px 36px;
+        background-image: radial-gradient(rgba(29, 185, 84, 0.15) 1.2px, transparent 1.2px);
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* Rich Spotify Emerald Ambient Auras */
+      .ambient-orb {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(140px);
+        z-index: 2;
+      }
+      .orb-center-top {
+        width: 900px;
+        height: 900px;
+        top: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(circle, rgba(29, 185, 84, 0.22) 0%, rgba(16, 185, 129, 0.08) 45%, transparent 70%);
+      }
+      .orb-bottom-corner {
+        width: 800px;
+        height: 800px;
+        bottom: -250px;
+        right: -100px;
+        background: radial-gradient(circle, rgba(29, 185, 84, 0.18) 0%, rgba(5, 150, 105, 0.05) 50%, transparent 70%);
+      }
+
+      /* Persistent Top Navigation Bar */
+      .top-nav {
+        position: absolute;
+        top: 40px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+      }
+      .brand-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 24px;
+        color: #ffffff;
+      }
+      .brand-badge b {
+        background: #1db954;
+        color: #040d06;
+        padding: 4px 12px;
+        border-radius: 10px;
+        font-size: 24px;
+        box-shadow: 0 0 20px rgba(29, 185, 84, 0.4);
+      }
+      .brand-badge b span {
+        color: #040d06;
+      }
+      .top-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(18, 26, 20, 0.85);
+        border: 1.5px solid rgba(29, 185, 84, 0.3);
+        padding: 8px 18px;
+        border-radius: 999px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #cbd5e1;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      }
+      .top-tag .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #1db954;
+        box-shadow: 0 0 10px #1db954;
+      }
+
+      /* Scene Layouts */
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        padding: 0 80px;
+        will-change: transform, opacity;
+      }
+
+      /* Storyboard Status Pills (>=40px tall rule) */
+      .status-pill {
+        height: 42px;
+        min-height: 42px;
+        padding: 0 24px;
+        border-radius: 999px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        z-index: 30;
+      }
+      .status-pill.live {
+        background: #1db954;
+        color: #040d06;
+        box-shadow: 0 0 25px rgba(29, 185, 84, 0.5);
+      }
+      .status-pill.live .indicator-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #040d06;
+      }
+      .status-pill.soon {
+        background: rgba(226, 232, 240, 0.12);
+        color: #cbd5e1;
+        border: 1px solid rgba(226, 232, 240, 0.35);
+        backdrop-filter: blur(12px);
+      }
+      .status-pill.soon .indicator-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #94a3b8;
+      }
+
+      /* Spotify Motion Floating Pills */
+      .floating-pill {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 24px;
+        border-radius: 999px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        pointer-events: none;
+        z-index: 25;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      }
+      .pill-solid-spotify {
+        background: #1db954;
+        color: #040d06;
+        box-shadow: 0 0 25px rgba(29, 185, 84, 0.35);
+      }
+      .pill-outline-dark {
+        background: rgba(14, 21, 16, 0.85);
+        color: #f1f5f9;
+        border: 1.5px solid rgba(29, 185, 84, 0.35);
+        backdrop-filter: blur(14px);
+      }
+
+      /* Floating Developer Reviews */
+      .review-badge {
+        position: absolute;
+        background: rgba(14, 21, 16, 0.9);
+        border: 1.5px solid rgba(29, 185, 84, 0.3);
+        border-radius: 16px;
+        padding: 16px 20px;
+        max-width: 340px;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+        z-index: 25;
+        pointer-events: none;
+      }
+      .review-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .review-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #1db954;
+        color: #040d06;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 12px;
+      }
+      .review-info {
+        display: flex;
+        flex-direction: column;
+      }
+      .review-name {
+        font-weight: 700;
+        font-size: 14px;
+        color: #ffffff;
+      }
+      .review-role {
+        font-size: 12px;
+        color: #94a3b8;
+      }
+      .review-stars {
+        color: #1db954;
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+      .review-quote {
+        font-size: 13px;
+        color: #cbd5e1;
+        line-height: 1.4;
+        font-style: italic;
+      }
+
+      /* Animated Simulated Cursor */
+      .sim-cursor {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        z-index: 60;
+        pointer-events: none;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+      }
+
+      /* Tactile Tap Ripple Shockwave */
+      .tap-ripple {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #1db954;
+        background: rgba(29, 185, 84, 0.35);
+        pointer-events: none;
+        z-index: 55;
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+
+      /* Typography */
+      .hero-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1.1;
+        text-align: center;
+        color: #ffffff;
+        margin-bottom: 16px;
+        letter-spacing: -1.5px;
+      }
+      .hero-title em {
+        font-family: 'Newsreader', serif;
+        font-style: italic;
+        font-weight: 400;
+        color: #1db954;
+      }
+      .hero-subtitle {
+        font-size: 24px;
+        color: #94a3b8;
+        text-align: center;
+        max-width: 820px;
+        margin-bottom: 34px;
+        line-height: 1.4;
+      }
+
+      /* Typewriter Cursor */
+      .type-cursor {
+        display: inline-block;
+        color: #1db954;
+        font-weight: 300;
+        animation: blink 0.7s infinite;
+        margin-left: 2px;
+      }
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      /* Clean Dark Cards */
+      .clean-card {
+        background: #090e0b;
+        border: 1.5px solid #1a281e;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(29, 185, 84, 0.08);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* ================================================= */
+      /* SCENE 0: Rising Dot & Blast to Concentric Circles */
+      /* ================================================= */
+      #scene0 {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 15;
+      }
+
+      .intro-rising-dot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 50;
+        pointer-events: none;
+        will-change: transform, opacity;
+      }
+      .dot-head {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 0 20px #ffffff, 0 0 40px #1db954, 0 0 80px #1db954;
+      }
+      .dot-tail {
+        width: 4px;
+        height: 90px;
+        background: linear-gradient(180deg, #1db954 0%, rgba(29, 185, 84, 0.3) 60%, transparent 100%);
+        opacity: 0.85;
+        filter: blur(1.5px);
+      }
+
+      .blast-shockwave {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid #1db954;
+        background: radial-gradient(circle, rgba(29, 185, 84, 0.45) 0%, transparent 75%);
+        box-shadow: 0 0 40px #1db954, 0 0 80px rgba(29, 185, 84, 0.6);
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 45;
+        will-change: transform, opacity;
+      }
+
+      .orbital-stage {
+        position: relative;
+        width: 720px;
+        height: 720px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform-origin: 50% 50%;
+        will-change: transform, opacity;
+      }
+
+      .orbital-svg {
+        position: absolute;
+        inset: 0;
+        width: 720px;
+        height: 720px;
+        filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.8));
+      }
+
+      .orbital-track-outer { fill: none; stroke: #18221b; stroke-width: 3.5; }
+      .orbital-track-mid { fill: none; stroke: #1e2c22; stroke-width: 4; }
+      .orbital-track-inner { fill: none; stroke: #223528; stroke-width: 4.5; }
+
+      .orbital-arc-1 { fill: none; stroke: #1db954; stroke-width: 3.5; stroke-linecap: round; opacity: 0.6; }
+      .orbital-arc-2 { fill: none; stroke: #ffffff; stroke-width: 4; stroke-linecap: round; opacity: 0.45; }
+
+      .orbital-ring-container {
+        position: absolute;
+        border-radius: 50%;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .ring-c-outer { width: 620px; height: 620px; }
+      .ring-c-mid { width: 440px; height: 440px; }
+      .ring-c-inner { width: 270px; height: 270px; }
+
+      .orbital-node {
+        position: absolute;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 0 16px #ffffff, 0 0 35px #1db954, 0 0 60px rgba(29, 185, 84, 0.7);
+        transform: translate(-50%, -50%);
+      }
+      .node-outer { top: 0%; left: 50%; width: 22px; height: 22px; }
+      .node-mid { bottom: 0%; left: 50%; width: 18px; height: 18px; }
+      .node-inner {
+        top: 50%; right: 0%; width: 15px; height: 15px; background: #1db954;
+        box-shadow: 0 0 20px #1db954, 0 0 40px #1db954;
+      }
+
+      .orbital-center-card {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px;
+      }
+      .orbital-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        color: #1db954;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        background: rgba(29, 185, 84, 0.1);
+        border: 1px solid rgba(29, 185, 84, 0.3);
+        padding: 4px 14px;
+        border-radius: 999px;
+      }
+      .orbital-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 44px;
+        font-weight: 800;
+        letter-spacing: -1.2px;
+        color: #ffffff;
+        margin-bottom: 8px;
+      }
+      .orbital-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 18px;
+        color: #94a3b8;
+        letter-spacing: -0.2px;
+      }
+
+      /* Scene 1: Error Terminal */
+      .s1-box {
+        width: 1180px;
+        padding: 32px 40px;
+      }
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #162219;
+        margin-bottom: 24px;
+      }
+      .term-dots {
+        display: flex;
+        gap: 8px;
+      }
+      .term-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .dot-red { background: #ef4444; }
+      .dot-yellow { background: #f59e0b; }
+      .dot-green { background: #10b981; }
+      .term-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        color: #94a3b8;
+      }
+      .error-badge-pill {
+        background: #450a0a;
+        color: #fca5a5;
+        border: 1px solid #991b1b;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .error-code-line {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 25px;
+        font-weight: 600;
+        color: #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 0;
+      }
+      .error-code-line .red {
+        color: #f87171;
+      }
+
+      /* Typewriter viewport for error log — keep written chars visible (no clip-away) */
+      .typewriter-viewport {
+        width: 100%;
+        overflow: visible;
+        position: relative;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+      .typewriter-track {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        position: relative;
+        will-change: transform;
+        transform: none;
+      }
+      .tw-log-char {
+        display: inline-block;
+        opacity: 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 22px;
+        font-weight: 600;
+        visibility: visible;
+      }
+      .tw-log-char.red {
+        color: #f87171;
+      }
+      .tw-log-char.white {
+        color: #f1f5f9;
+      }
+      .tw-log-cursor {
+        display: inline-block;
+        width: 3px;
+        height: 28px;
+        background: #1db954;
+        margin-left: 2px;
+        animation: blink 0.6s infinite;
+        vertical-align: middle;
+        box-shadow: 0 0 8px rgba(29, 185, 84, 0.6);
+      }
+
+      /* Scene 2: Plain-English Fix Card */
+      .s2-card {
+        width: 1040px;
+        padding: 38px 46px;
+      }
+      .s2-kicker {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        color: #1db954;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .s2-headline {
+        font-size: 32px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 26px;
+        line-height: 1.3;
+      }
+      .check-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #0d140f;
+        border: 1px solid #1a281e;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-size: 17px;
+        color: #cbd5e1;
+      }
+      .check-item .icon {
+        color: #1db954;
+        font-weight: 900;
+        font-size: 18px;
+      }
+
+      /* ============================================================== */
+      /* SCENE 3: Code Security Review (Scan Code -> Ticker -> Output)  */
+      /* ============================================================== */
+      .security-grid {
+        display: flex;
+        gap: 32px;
+        width: 1200px;
+      }
+
+      /* Left Side: Real Code View with Line Numbers & Laser Scanner */
+      .code-inspect-panel {
+        flex: 1.15;
+        padding: 26px 30px;
+        position: relative;
+        overflow: hidden;
+      }
+      .code-editor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #162219;
+        margin-bottom: 18px;
+      }
+      .code-filename {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .code-filename b {
+        color: #1db954;
+      }
+      .code-lines-wrapper {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14.5px;
+        line-height: 1.65;
+        color: #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        position: relative;
+      }
+      .code-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+      .row-num {
+        color: #475569;
+        user-select: none;
+        width: 20px;
+        text-align: right;
+        font-size: 12px;
+      }
+      .kw { color: #f43f5e; font-weight: 600; }
+      .fn { color: #38bdf8; }
+      .str { color: #a3e635; }
+      .comment { color: #64748b; font-style: italic; }
+      .vuln-line {
+        background: rgba(239, 68, 68, 0.15);
+        border-left: 3px solid #ef4444;
+      }
+      .vuln-highlight {
+        color: #f87171;
+        font-weight: 700;
+      }
+
+      /* Laser Scanner Beam sweeping across code */
+      .laser-scanner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #1db954;
+        box-shadow: 0 0 20px #1db954, 0 0 35px #1db954, 0 0 60px rgba(29, 185, 84, 0.7);
+        pointer-events: none;
+        opacity: 0;
+        will-change: transform;
+        z-index: 20;
+      }
+
+      /* Right Side: Dynamic Container (Stage 2 Ticker -> Stage 3 Output) */
+      .security-right-panel {
+        flex: 1.05;
+        position: relative;
+        min-height: 380px;
+      }
+
+      /* Stage 2: Scrolling Vulnerabilities Ticker */
+      #s3-ticker-card {
+        position: absolute;
+        inset: 0;
+        padding: 26px 30px;
+        display: flex;
+        flex-direction: column;
+      }
+      .ticker-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #162219;
+      }
+      .ticker-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12.5px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #1db954;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .ticker-count {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+      .vuln-viewport {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+        mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+      }
+      .vuln-scroll-track {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        will-change: transform;
+      }
+      .vuln-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #0d140f;
+        border: 1px solid #1a281e;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #cbd5e1;
+      }
+      .vuln-item-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+      .vuln-item.critical {
+        background: #180909;
+        border-color: #7f1d1d;
+        color: #ffffff;
+      }
+      .vuln-item.critical .vuln-item-tag {
+        background: #ef4444;
+        color: #ffffff;
+      }
+
+      /* Stage 3: Settled Output Card */
+      #s3-output-card {
+        position: absolute;
+        inset: 0;
+        padding: 26px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        opacity: 0;
+        transform-origin: 50% 50%;
+      }
+      .owasp-heading {
+        font-size: 12.5px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #ef4444;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .owasp-ring-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+      .owasp-ring {
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+      .ring-circle {
+        position: absolute;
+        inset: 0;
+        border: 5px solid #1a281e;
+        border-radius: 50%;
+      }
+      .ring-active {
+        position: absolute;
+        inset: 0;
+        border: 5px solid #ef4444;
+        border-radius: 50%;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        transform: rotate(45deg);
+      }
+      .ring-center-txt {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: #94a3b8;
+      }
+      .ring-center-txt b {
+        font-size: 18px;
+        color: #ef4444;
+        line-height: 1;
+      }
+      .vuln-card {
+        background: #140909;
+        border: 1px solid #7f1d1d;
+        border-radius: 12px;
+        padding: 16px 20px;
+      }
+      .vuln-tag {
+        font-size: 11px;
+        font-weight: 800;
+        color: #f87171;
+        margin-bottom: 4px;
+        letter-spacing: 1px;
+      }
+      .vuln-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 6px;
+      }
+      .vuln-fix {
+        font-size: 13.5px;
+        color: #10b981;
+        font-weight: 600;
+      }
+
+      /* Scene 4: Monitoring Waveform */
+      .s4-box {
+        width: 1040px;
+        padding: 38px 46px;
+      }
+      .s4-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 28px;
+      }
+      .s4-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .s4-live-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 800;
+        color: #1db954;
+      }
+      .pulse-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #1db954;
+        box-shadow: 0 0 12px #1db954;
+      }
+      .waveform-container {
+        height: 140px;
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+        padding: 10px 0;
+        margin-bottom: 26px;
+        border-bottom: 1px solid #162219;
+      }
+      .wave-bar {
+        flex: 1;
+        background: linear-gradient(180deg, #1db954 0%, #0d1e13 100%);
+        border-radius: 4px;
+        transform-origin: bottom;
+        box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
+      }
+      .incident-card {
+        background: #181205;
+        border: 1px solid #78350f;
+        border-radius: 14px;
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .incident-meta {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .incident-pill {
+        background: #d97706;
+        color: #000000;
+        font-size: 11px;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 6px;
+      }
+      .incident-text {
+        font-size: 16px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .incident-channels {
+        display: flex;
+        gap: 8px;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+      .incident-channel {
+        background: #0d1510;
+        border: 1px solid #1a281e;
+        padding: 4px 10px;
+        border-radius: 6px;
+      }
+
+      /* Scene 5: Outro */
+      .s5-outro-card {
+        width: 900px;
+        padding: 50px 60px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .brand-mark-large {
+        font-family: 'Manrope', sans-serif;
+        font-size: 54px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 14px;
+      }
+      .brand-mark-large b {
+        background: #1db954;
+        color: #040d06;
+        padding: 6px 18px;
+        border-radius: 16px;
+        box-shadow: 0 0 35px rgba(29, 185, 84, 0.6);
+      }
+      .s5-claim {
+        font-family: 'Manrope', sans-serif;
+        font-size: 34px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 14px;
+      }
+      .s5-claim em {
+        font-family: 'Newsreader', serif;
+        font-style: italic;
+        color: #1db954;
+      }
+      .s5-sub {
+        font-size: 20px;
+        color: #94a3b8;
+        max-width: 640px;
+        margin-bottom: 30px;
+        line-height: 1.4;
+      }
+      .s5-cta-btn {
+        background: #1db954;
+        color: #040d06;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+        padding: 16px 38px;
+        border-radius: 999px;
+        box-shadow: 0 0 35px rgba(29, 185, 84, 0.6);
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root-cause-launch" data-width="1920" data-height="1080" data-duration="27.0" data-fps="30">
+      <!-- Ambient Visuals -->
+      <div class="ambient-grid"></div>
+      <div class="ambient-orb orb-center-top"></div>
+      <div class="ambient-orb orb-bottom-corner"></div>
+
+      <!-- Persistent Top Bar -->
+      <div class="top-nav">
+        <div id="brand-badge" class="brand-badge" data-layout-allow-overlap="true" data-layout-allow-occlusion="true">
+          <b>Root<span>_</span>Cause</b>
+        </div>
+        <div id="top-tag" class="top-tag" data-layout-allow-overlap="true" data-layout-allow-occlusion="true">
+          <span class="dot"></span>
+          <span>INTELLIGENT DEBUGGING PLATFORM</span>
+        </div>
+      </div>
+
+      <!-- AUDIO: Copyright-Safe Royalty-Free Modern Tech Business Beat -->
+      <audio
+        id="bg-music"
+        src="assets/music/happy-beats-business-moves-vol-10-by-ende-dot-app.mp3"
+        data-start="0"
+        data-duration="27.0"
+        data-volume="0.80"
+        data-fade-in="0.2"
+        data-fade-out="1.5"
+      ></audio>
+
+      <!-- SFX FOR EVERY SINGLE MOMENT (Exact duration matched) -->
+      <!-- Intro: Rising Dot & Blast SFX -->
+      <audio id="sfx-s0-rise" src="assets/sfx/rollover1.ogg" data-start="0.05" data-duration="0.23" data-volume="0.65"></audio>
+      <audio id="sfx-s0-blast" src="assets/sfx/impactPunch_medium_001.ogg" data-start="0.75" data-duration="0.40" data-volume="0.80"></audio>
+      <audio id="sfx-s0-chime" src="assets/sfx/impactBell_heavy_004.ogg" data-start="0.80" data-duration="0.30" data-volume="0.70"></audio>
+      <audio id="sfx-s0-zoom" src="assets/sfx/drop_002.ogg" data-start="2.8" data-duration="0.19" data-volume="0.75"></audio>
+
+      <!-- Scene 1 SFX -->
+      <audio id="sfx-s1-type" src="assets/sfx/keypress-005.wav" data-start="3.6" data-duration="0.18" data-volume="0.55"></audio>
+      <audio id="sfx-s1-type2" src="assets/sfx/keypress-005.wav" data-start="4.2" data-duration="0.18" data-volume="0.55"></audio>
+      <audio id="sfx-s1-drop" src="assets/sfx/drop_001.ogg" data-start="4.9" data-duration="0.11" data-volume="0.65"></audio>
+      <!-- Log typewriter key clacks (from ~5.0s) -->
+      <audio id="sfx-s1-log1" src="assets/sfx/keypress-005.wav" data-start="5.05" data-duration="0.12" data-volume="0.7"></audio>
+      <audio id="sfx-s1-log2" src="assets/sfx/keypress-005.wav" data-start="5.35" data-duration="0.12" data-volume="0.65"></audio>
+      <audio id="sfx-s1-log3" src="assets/sfx/keypress-005.wav" data-start="5.65" data-duration="0.12" data-volume="0.7"></audio>
+      <audio id="sfx-s1-log4" src="assets/sfx/keypress-005.wav" data-start="5.95" data-duration="0.12" data-volume="0.65"></audio>
+      <audio id="sfx-s1-log5" src="assets/sfx/keypress-005.wav" data-start="6.25" data-duration="0.12" data-volume="0.7"></audio>
+      <audio id="sfx-s1-log6" src="assets/sfx/keypress-005.wav" data-start="6.55" data-duration="0.12" data-volume="0.65"></audio>
+      <audio id="sfx-s1-log7" src="assets/sfx/keypress-005.wav" data-start="6.85" data-duration="0.12" data-volume="0.7"></audio>
+      <audio id="sfx-s1-pan" src="assets/sfx/drop_002.ogg" data-start="5.2" data-duration="0.19" data-volume="0.45"></audio>
+      <!-- Click: hard zoom into cursor -->
+      <audio id="sfx-s1-tap" src="assets/sfx/mouseclick1.ogg" data-start="7.25" data-duration="0.12" data-volume="0.95"></audio>
+      <audio id="sfx-s1-tap2" src="assets/sfx/click_002.ogg" data-start="7.26" data-duration="0.08" data-volume="0.85"></audio>
+      <audio id="sfx-s1-pill" src="assets/sfx/impactSoft_medium_001.ogg" data-start="7.85" data-duration="0.18" data-volume="0.55"></audio>
+      <audio id="sfx-s1-glide" src="assets/sfx/glitch_002.ogg" data-start="8.2" data-duration="0.03" data-volume="0.65"></audio>
+
+      <!-- Scene 2 SFX -->
+      <audio id="sfx-s2-slam" src="assets/sfx/switch_004.ogg" data-start="8.6" data-duration="0.50" data-volume="0.7"></audio>
+      <audio id="sfx-s2-tap" src="assets/sfx/mouseclick1.ogg" data-start="10.35" data-duration="0.12" data-volume="0.95"></audio>
+      <audio id="sfx-s2-tap2" src="assets/sfx/click_002.ogg" data-start="10.36" data-duration="0.08" data-volume="0.85"></audio>
+      <audio id="sfx-s2-chk1" src="assets/sfx/click_002.ogg" data-start="11.0" data-duration="0.01" data-volume="0.65"></audio>
+      <audio id="sfx-s2-chk2" src="assets/sfx/click_002.ogg" data-start="11.8" data-duration="0.01" data-volume="0.65"></audio>
+      <audio id="sfx-s2-chk3" src="assets/sfx/click_002.ogg" data-start="12.5" data-duration="0.01" data-volume="0.65"></audio>
+      <audio id="sfx-s2-punch" src="assets/sfx/impactPunch_medium_001.ogg" data-start="13.1" data-duration="0.40" data-volume="0.7"></audio>
+      <audio id="sfx-s2-glide" src="assets/sfx/drop_001.ogg" data-start="13.8" data-duration="0.11" data-volume="0.65"></audio>
+
+      <!-- Scene 3 SFX: 1) Code Scan, 2) Ticker Scroll, 3) Breach Output -->
+      <audio id="sfx-s3-pill" src="assets/sfx/switch_004.ogg" data-start="14.1" data-duration="0.50" data-volume="0.7"></audio>
+      <audio id="sfx-s3-laser" src="assets/sfx/rollover1.ogg" data-start="14.3" data-duration="0.23" data-volume="0.75"></audio>
+      <audio id="sfx-s3-warn" src="assets/sfx/error_005.ogg" data-start="15.85" data-duration="0.50" data-volume="0.75"></audio>
+      <audio id="sfx-s3-glide" src="assets/sfx/drop_002.ogg" data-start="18.4" data-duration="0.19" data-volume="0.6"></audio>
+
+      <!-- Scene 4 SFX -->
+      <audio id="sfx-s4-pill" src="assets/sfx/switch_004.ogg" data-start="19.0" data-duration="0.50" data-volume="0.7"></audio>
+      <audio id="sfx-s4-zoom" src="assets/sfx/drop_001.ogg" data-start="19.6" data-duration="0.11" data-volume="0.65"></audio>
+      <audio id="sfx-s4-pulse" src="assets/sfx/rollover1.ogg" data-start="20.0" data-duration="0.23" data-volume="0.55"></audio>
+      <audio id="sfx-s4-pan" src="assets/sfx/drop_002.ogg" data-start="21.0" data-duration="0.19" data-volume="0.65"></audio>
+      <audio id="sfx-s4-alert" src="assets/sfx/impactSoft_medium_001.ogg" data-start="21.6" data-duration="0.18" data-volume="0.7"></audio>
+      <audio id="sfx-s4-glide" src="assets/sfx/drop_001.ogg" data-start="23.0" data-duration="0.11" data-volume="0.65"></audio>
+
+      <!-- Scene 5 SFX -->
+      <audio id="sfx-s5-impact" src="assets/sfx/impactPunch_medium_001.ogg" data-start="23.5" data-duration="0.40" data-volume="0.75"></audio>
+      <audio id="sfx-s5-bell" src="assets/sfx/impactBell_heavy_004.ogg" data-start="24.0" data-duration="0.30" data-volume="0.75"></audio>
+      <audio id="sfx-s5-btn" src="assets/sfx/switch_004.ogg" data-start="24.8" data-duration="0.50" data-volume="0.65"></audio>
+
+      <!-- MASTER CAMERA RIG -->
+      <div id="camera-rig" data-layout-allow-overflow="true" data-layout-allow-overlap="true">
+
+        <!-- ============================================================== -->
+        <!-- SCENE 0: Single Dot Shoots Up & Blasts into Circle (0.0s-3.5s) -->
+        <!-- ============================================================== -->
+        <div id="scene0" class="scene clip" data-start="0" data-duration="3.5" data-layout-allow-overflow="true" data-layout-allow-overlap="true">
+          <!-- Rising Dot from bottom of page -->
+          <div id="intro-rising-dot" class="intro-rising-dot" data-layout-allow-overlap="true" data-layout-allow-occlusion="true">
+            <div class="dot-head"></div>
+            <div class="dot-tail"></div>
+          </div>
+
+          <!-- Expanding Blast Shockwave -->
+          <div id="blast-shockwave" class="blast-shockwave" data-layout-allow-overlap="true" data-layout-allow-occlusion="true"></div>
+
+          <!-- Floating Pills -->
+          <div id="s0-pill-1" class="floating-pill pill-solid-spotify" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 170px; left: 180px;">
+            ● Autonomous Intelligence
+          </div>
+          <div id="s0-pill-2" class="floating-pill pill-outline-dark" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="bottom: 180px; right: 200px;">
+            ( Predictive Observability )
+          </div>
+
+          <!-- Concentric Orbital Motion Stage -->
+          <div id="orbital-stage" class="orbital-stage">
+            <svg class="orbital-svg" viewBox="0 0 720 720">
+              <circle class="orbital-track-outer" cx="360" cy="360" r="310" />
+              <path class="orbital-arc-1" d="M 360 50 A 310 310 0 0 1 670 360" />
+              <circle class="orbital-track-mid" cx="360" cy="360" r="220" />
+              <path class="orbital-arc-2" d="M 140 360 A 220 220 0 0 1 360 140" />
+              <circle class="orbital-track-inner" cx="360" cy="360" r="135" />
+            </svg>
+
+            <div id="ring-outer" class="orbital-ring-container ring-c-outer">
+              <div class="orbital-node node-outer"></div>
+            </div>
+            <div id="ring-mid" class="orbital-ring-container ring-c-mid">
+              <div class="orbital-node node-mid"></div>
+            </div>
+            <div id="ring-inner" class="orbital-ring-container ring-c-inner">
+              <div class="orbital-node node-inner"></div>
+            </div>
+
+            <div id="orbital-center-card" class="orbital-center-card">
+              <span class="orbital-tag">OBSERVABILITY ENGINE</span>
+              <h1 class="orbital-title">Root_Cause</h1>
+              <p class="orbital-sub">Intelligent and secure log analysis.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SCENE 1: The Raw Error Terminal & Typewriter (3.5s - 8.5s)     -->
+        <!-- ============================================================== -->
+        <div id="scene1" class="scene clip" data-start="3.5" data-duration="5.0" data-layout-allow-overflow="true" data-layout-allow-overlap="true">
+          <!-- Floating Spotify Bouncy Pills -->
+          <div id="s1-pill-1" class="floating-pill pill-solid-spotify" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 170px; left: 160px;">
+            ● Cryptic Stack Trace
+          </div>
+          <div id="s1-pill-2" class="floating-pill pill-outline-dark" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 240px; right: 180px;">
+            ( 500 Internal Error )
+          </div>
+          <div id="s1-pill-3" class="floating-pill pill-solid-spotify" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="bottom: 160px; right: 260px;">
+            ● 0% Context
+          </div>
+
+          <!-- Floating Developer Review Badge -->
+          <div id="s1-review-1" class="review-badge" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 280px; left: 90px;">
+            <div class="review-header">
+              <div class="review-avatar">SK</div>
+              <div class="review-info">
+                <span class="review-name">Sarah K.</span>
+                <span class="review-role">Lead DevOps</span>
+              </div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+            <div class="review-quote">"We spent hours deciphering raw node dumps..."</div>
+          </div>
+
+          <h1 id="s1-title" class="hero-title">
+            <span class="tw-word"><span class="tw-char">M</span><span class="tw-char">a</span><span class="tw-char">n</span><span class="tw-char">u</span><span class="tw-char">a</span><span class="tw-char">l</span><span class="tw-char">l</span><span class="tw-char">y</span></span> <span class="tw-word"><span class="tw-char">m</span><span class="tw-char">o</span><span class="tw-char">n</span><span class="tw-char">i</span><span class="tw-char">t</span><span class="tw-char">o</span><span class="tw-char">r</span><span class="tw-char">i</span><span class="tw-char">n</span><span class="tw-char">g</span></span> <span class="tw-word"><span class="tw-char">l</span><span class="tw-char">o</span><span class="tw-char">g</span><span class="tw-char">s</span></span> <span class="tw-word"><span class="tw-char">2</span><span class="tw-char">4</span><span class="tw-char">/</span><span class="tw-char">7</span><span class="tw-char">?</span></span><span class="type-cursor">|</span>
+          </h1>
+          <p id="s1-subtitle" class="hero-subtitle">
+            Hunting errors across millions of log lines is hectic. Meet RootCause.
+          </p>
+
+          <div id="s1-card" class="clean-card s1-box" style="position: relative;">
+            <div class="terminal-header">
+              <div class="term-dots">
+                <span class="term-dot dot-red"></span>
+                <span class="term-dot dot-yellow"></span>
+                <span class="term-dot dot-green"></span>
+              </div>
+              <span class="term-title">api-gateway / stderr</span>
+              <span class="error-badge-pill">HTTP 500</span>
+            </div>
+            <div id="s1-error-line" class="error-code-line">
+              <div class="typewriter-viewport">
+                <div id="tw-track" class="typewriter-track">
+                  <!-- Red chars: "connect ECONNREFUSED " -->
+                  <span class="tw-log-char red">c</span><span class="tw-log-char red">o</span><span class="tw-log-char red">n</span><span class="tw-log-char red">n</span><span class="tw-log-char red">e</span><span class="tw-log-char red">c</span><span class="tw-log-char red">t</span><span class="tw-log-char red">&nbsp;</span><span class="tw-log-char red">E</span><span class="tw-log-char red">C</span><span class="tw-log-char red">O</span><span class="tw-log-char red">N</span><span class="tw-log-char red">N</span><span class="tw-log-char red">R</span><span class="tw-log-char red">E</span><span class="tw-log-char red">F</span><span class="tw-log-char red">U</span><span class="tw-log-char red">S</span><span class="tw-log-char red">E</span><span class="tw-log-char red">D</span><span class="tw-log-char red">&nbsp;</span>
+                  <!-- White chars: "127.0.0.1:5432 · HTTP 500" -->
+                  <span class="tw-log-char white">1</span><span class="tw-log-char white">2</span><span class="tw-log-char white">7</span><span class="tw-log-char white">.</span><span class="tw-log-char white">0</span><span class="tw-log-char white">.</span><span class="tw-log-char white">0</span><span class="tw-log-char white">.</span><span class="tw-log-char white">1</span><span class="tw-log-char white">:</span><span class="tw-log-char white">5</span><span class="tw-log-char white">4</span><span class="tw-log-char white">3</span><span class="tw-log-char white">2</span><span class="tw-log-char white">&nbsp;</span><span class="tw-log-char white">·</span><span class="tw-log-char white">&nbsp;</span><span class="tw-log-char white">H</span><span class="tw-log-char white">T</span><span class="tw-log-char white">T</span><span class="tw-log-char white">P</span><span class="tw-log-char white">&nbsp;</span><span class="tw-log-char white">5</span><span class="tw-log-char white">0</span><span class="tw-log-char white">0</span>
+                  <span class="tw-log-cursor"></span>
+                </div>
+              </div>
+            </div>
+            <div id="s1-tap-ripple" class="tap-ripple" style="top: 48px; right: 60px;"></div>
+          </div>
+
+          <svg id="s1-cursor" class="sim-cursor" viewBox="0 0 24 24" fill="none" style="opacity: 0;">
+            <path d="M4 3L11 21L14.5 13.5L22 10L4 3Z" fill="#1db954" stroke="#ffffff" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SCENE 2: The Plain-English Fix (8.5s - 14.0s)                  -->
+        <!-- ============================================================== -->
+        <div id="scene2" class="scene clip" data-start="8.5" data-duration="5.5" data-layout-allow-overflow="true" data-layout-allow-overlap="true">
+          <div id="s2-status-pill" class="status-pill live">
+            <span class="indicator-dot"></span>
+            <span>LIVE NOW</span>
+          </div>
+
+          <!-- Floating Pills -->
+          <div id="s2-pill-1" class="floating-pill pill-solid-spotify" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 150px; left: 180px;">
+            ● Instant Plain English
+          </div>
+          <div id="s2-pill-2" class="floating-pill pill-outline-dark" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 220px; right: 180px;">
+            ( Zero Friction )
+          </div>
+          <div id="s2-pill-3" class="floating-pill pill-solid-spotify" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="bottom: 130px; left: 240px;">
+            ● 3-Second Fix
+          </div>
+          <div id="s2-pill-4" class="floating-pill pill-outline-dark" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="bottom: 170px; right: 200px;">
+            ( Accelerate Understanding )
+          </div>
+
+          <h2 id="s2-title" class="hero-title" data-layout-allow-overlap="true">
+            <span class="tw-word"><span class="tw-char">T</span><span class="tw-char">h</span><span class="tw-char">e</span></span> <span class="tw-word"><span class="tw-char">P</span><span class="tw-char">l</span><span class="tw-char">a</span><span class="tw-char">i</span><span class="tw-char">n</span><span class="tw-char">-</span><span class="tw-char">E</span><span class="tw-char">n</span><span class="tw-char">g</span><span class="tw-char">l</span><span class="tw-char">i</span><span class="tw-char">s</span><span class="tw-char">h</span></span> <em><span class="tw-word"><span class="tw-char">F</span><span class="tw-char">i</span><span class="tw-char">x</span><span class="tw-char">.</span></span></em><span class="type-cursor">|</span>
+          </h2>
+          <p id="s2-caption" class="hero-subtitle" data-layout-allow-overlap="true" style="font-size: 22px; margin-bottom: 24px;">
+            Paste an error. Get the why and the fix in seconds.
+          </p>
+
+          <div id="s2-card" class="clean-card s2-card" style="position: relative;">
+            <div class="s2-kicker">Root Cause Identified</div>
+            <div id="s2-diagnostic-focus" class="s2-headline">
+              Checkout cannot connect to Postgres.
+            </div>
+            <div class="check-list">
+              <div id="s2-check-1" class="check-item">
+                <span class="icon">✓</span>
+                <span>Postgres service running on host 127.0.0.1:5432</span>
+              </div>
+              <div id="s2-check-2" class="check-item">
+                <span class="icon">✓</span>
+                <span>DATABASE_URL environment variable verified</span>
+              </div>
+              <div id="s2-check-3" class="check-item">
+                <span class="icon">✓</span>
+                <span>Security group inbound port 5432 rule active</span>
+              </div>
+            </div>
+            <div id="s2-tap-ripple" class="tap-ripple" style="top: 36px; right: 80px;"></div>
+          </div>
+
+          <svg id="s2-cursor" class="sim-cursor" viewBox="0 0 24 24" fill="none" style="opacity: 0;">
+            <path d="M4 3L11 21L14.5 13.5L22 10L4 3Z" fill="#1db954" stroke="#ffffff" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SCENE 3: Code Security Review (14.0s - 19.0s)                  -->
+        <!-- Stage 1: Scanning Code -> Stage 2: Scroll Breaches -> Stage 3: Output -->
+        <!-- ============================================================== -->
+        <div id="scene3" class="scene clip" data-start="14.0" data-duration="5.0" data-layout-allow-overflow="true" data-layout-allow-overlap="true">
+          <div id="s3-status-pill" class="status-pill soon">
+            <span class="indicator-dot"></span>
+            <span>COMING SOON</span>
+          </div>
+
+          <h2 id="s3-title" class="hero-title">
+            <span class="tw-word"><span class="tw-char">C</span><span class="tw-char">o</span><span class="tw-char">d</span><span class="tw-char">e</span></span> <span class="tw-word"><span class="tw-char">S</span><span class="tw-char">e</span><span class="tw-char">c</span><span class="tw-char">u</span><span class="tw-char">r</span><span class="tw-char">i</span><span class="tw-char">t</span><span class="tw-char">y</span></span> <em><span class="tw-word"><span class="tw-char">R</span><span class="tw-char">e</span><span class="tw-char">v</span><span class="tw-char">i</span><span class="tw-char">e</span><span class="tw-char">w</span><span class="tw-char">.</span></span></em>
+          </h2>
+          <p id="s3-caption" class="hero-subtitle">
+            Scanning source code against 20+ critical attack vectors.
+          </p>
+
+          <div class="security-grid">
+            <!-- Stage 1: Actual Code Editor Panel with Laser Scanner -->
+            <div id="s3-code-panel" class="clean-card code-inspect-panel">
+              <div id="s3-laser" class="laser-scanner"></div>
+              <div class="code-editor-header">
+                <div class="term-dots">
+                  <span class="term-dot dot-red"></span>
+                  <span class="term-dot dot-yellow"></span>
+                  <span class="term-dot dot-green"></span>
+                </div>
+                <div class="code-filename">
+                  <span>repo:</span> <b>acme/checkout.ts</b>
+                </div>
+                <div style="font-size: 11px; color: #1db954; font-weight: 700; background: rgba(29, 185, 84, 0.15); padding: 2px 8px; border-radius: 4px;">
+                  SCANNING
+                </div>
+              </div>
+
+              <!-- Actual Code Lines being scanned -->
+              <div class="code-lines-wrapper">
+                <div class="code-row"><span class="row-num">1</span><span><span class="kw">import</span> { db } <span class="kw">from</span> <span class="str">"../db/client"</span>;</span></div>
+                <div class="code-row"><span class="row-num">2</span><span><span class="kw">export async function</span> <span class="fn">getOrder</span>(req: Request) {</span></div>
+                <div class="code-row"><span class="row-num">3</span><span>&nbsp;&nbsp;<span class="kw">const</span> { orderId } = req.params;</span></div>
+                <div class="code-row vuln-line"><span class="row-num">4</span><span>&nbsp;&nbsp;<span class="comment">// ⚠️ Unsanitized query string</span></span></div>
+                <div class="code-row vuln-line"><span class="row-num">5</span><span>&nbsp;&nbsp;<span class="kw">const</span> sql = <span class="str">"SELECT * FROM orders WHERE id = '"</span> + <span class="vuln-highlight">orderId</span> + <span class="str">"'"</span>;</span></div>
+                <div class="code-row"><span class="row-num">6</span><span>&nbsp;&nbsp;<span class="kw">return await</span> db.<span class="fn">raw</span>(sql);</span></div>
+                <div class="code-row"><span class="row-num">7</span><span>}</span></div>
+              </div>
+            </div>
+
+            <!-- Right Dynamic Panel: Stage 2 Ticker -> Stage 3 Output -->
+            <div class="security-right-panel">
+              <!-- Stage 2: Scrolling 20 Security Breaches Ticker -->
+              <div id="s3-ticker-card" class="clean-card">
+                <div class="ticker-header">
+                  <div class="ticker-title">
+                    <span class="pulse-dot"></span>
+                    <span>VULNERABILITY ENGINE</span>
+                  </div>
+                  <div class="ticker-count">20 Attack Vectors</div>
+                </div>
+
+                <div class="vuln-viewport" data-layout-allow-occlusion="true">
+                  <div id="s3-vuln-track" class="vuln-scroll-track" data-layout-allow-occlusion="true">
+                    <div class="vuln-item critical"><span>SQL Injection (SQLi)</span><span class="vuln-item-tag">CRITICAL</span></div>
+                    <div class="vuln-item"><span>Distributed Denial-of-Service (DDoS)</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Cross-Site Scripting (XSS)</span><span class="vuln-item-tag">MED</span></div>
+                    <div class="vuln-item"><span>Cross-Site Request Forgery (CSRF)</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Broken Authentication</span><span class="vuln-item-tag">CRITICAL</span></div>
+                    <div class="vuln-item"><span>Broken Access Control (IDOR)</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Brute-Force Attack</span><span class="vuln-item-tag">MED</span></div>
+                    <div class="vuln-item"><span>Credential Stuffing</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Man-in-the-Middle (MITM)</span><span class="vuln-item-tag">MED</span></div>
+                    <div class="vuln-item"><span>Phishing Vector</span><span class="vuln-item-tag">MED</span></div>
+                    <div class="vuln-item"><span>Directory Traversal</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Server-Side Request Forgery (SSRF)</span><span class="vuln-item-tag">CRITICAL</span></div>
+                    <div class="vuln-item"><span>Remote Code Execution (RCE)</span><span class="vuln-item-tag">CRITICAL</span></div>
+                    <div class="vuln-item"><span>Insecure Deserialization</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Security Misconfiguration</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>XML External Entity (XXE) Attack</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Insecure Direct Object Reference</span><span class="vuln-item-tag">HIGH</span></div>
+                    <div class="vuln-item"><span>Server-Side Template Injection (SSTI)</span><span class="vuln-item-tag">CRITICAL</span></div>
+                    <div class="vuln-item"><span>DNS Spoofing</span><span class="vuln-item-tag">MED</span></div>
+                    <div class="vuln-item"><span>Clickjacking</span><span class="vuln-item-tag">LOW</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Stage 3: Settled Output Card -->
+              <div id="s3-output-card" class="clean-card">
+                <div class="owasp-heading">
+                  <span class="pulse-dot" style="background:#ef4444; box-shadow:0 0 10px #ef4444;"></span>
+                  <span>BREACH IDENTIFIED</span>
+                </div>
+                <div class="owasp-ring-wrapper">
+                  <div class="owasp-ring">
+                    <div class="ring-circle"></div>
+                    <div class="ring-active"></div>
+                    <div class="ring-center-txt">
+                      <b>A03</b>
+                      <span>HIGH</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-weight: 800; color: #ffffff; font-size: 19px; margin-bottom: 4px;">SQL Injection (SQLi)</div>
+                    <div style="color: #94a3b8; font-size: 13.5px;">Unsanitized SQL concatenation in checkout.ts:L5</div>
+                  </div>
+                </div>
+                <div class="vuln-card">
+                  <div class="vuln-tag">AUTOMATED PATCH READY</div>
+                  <div class="vuln-title">Raw SQL query in checkout.ts</div>
+                  <div class="vuln-fix">Suggested Fix: Use parameterized query db('orders').where({ id })</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SCENE 4: 24/7 Continuous Monitoring (19.0s - 23.5s)            -->
+        <!-- ============================================================== -->
+        <div id="scene4" class="scene clip" data-start="19.0" data-duration="4.5" data-layout-allow-overflow="true" data-layout-allow-overlap="true">
+          <div id="s4-status-pill" class="status-pill soon">
+            <span class="indicator-dot"></span>
+            <span>COMING SOON</span>
+          </div>
+
+          <h2 id="s4-title" class="hero-title">
+            <span class="tw-word"><span class="tw-char">2</span><span class="tw-char">4</span><span class="tw-char">/</span><span class="tw-char">7</span></span> <span class="tw-word"><span class="tw-char">L</span><span class="tw-char">o</span><span class="tw-char">g</span></span> <em><span class="tw-word"><span class="tw-char">M</span><span class="tw-char">o</span><span class="tw-char">n</span><span class="tw-char">i</span><span class="tw-char">t</span><span class="tw-char">o</span><span class="tw-char">r</span><span class="tw-char">i</span><span class="tw-char">n</span><span class="tw-char">g</span><span class="tw-char">.</span></span></em>
+          </h2>
+          <p id="s4-caption" class="hero-subtitle">
+            Autonomous anomaly detection with instant team alerts.
+          </p>
+
+          <div id="s4-card" class="clean-card s4-box">
+            <div class="s4-header">
+              <span class="s4-title">Live Production Telemetry</span>
+              <div class="s4-live-indicator">
+                <span class="pulse-dot"></span>
+                <span>STREAMING</span>
+              </div>
+            </div>
+
+            <!-- Animated Waveform Bars -->
+            <div class="waveform-container">
+              <div class="wave-bar" style="height: 40%;"></div>
+              <div class="wave-bar" style="height: 65%;"></div>
+              <div class="wave-bar" style="height: 35%;"></div>
+              <div class="wave-bar" style="height: 80%;"></div>
+              <div class="wave-bar" style="height: 55%;"></div>
+              <div class="wave-bar" style="height: 90%;"></div>
+              <div class="wave-bar" style="height: 45%;"></div>
+              <div class="wave-bar" style="height: 70%;"></div>
+              <div class="wave-bar" style="height: 85%;"></div>
+              <div class="wave-bar" style="height: 60%;"></div>
+              <div class="wave-bar" style="height: 100%;"></div>
+              <div class="wave-bar" style="height: 75%;"></div>
+            </div>
+
+            <!-- Incident Alert Popup -->
+            <div id="s4-incident-card" class="incident-card">
+              <div class="incident-meta">
+                <span class="incident-pill">INCIDENT</span>
+                <span class="incident-text">Spike detected: 42 database timeout exceptions</span>
+              </div>
+              <div class="incident-channels">
+                <span class="incident-channel">Slack</span>
+                <span class="incident-channel">Telegram</span>
+                <span class="incident-channel">Email</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SCENE 5: Radiant Outro & Promise (23.5s - 27.0s)               -->
+        <!-- ============================================================== -->
+        <div id="scene5" class="scene clip" data-start="23.5" data-duration="3.5" data-layout-allow-overflow="true" data-layout-allow-overlap="true">
+          <!-- Floating Spotify Bouncy Pills -->
+          <div id="s5-pill-1" class="floating-pill pill-solid-spotify" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 180px; left: 200px;">
+            ● Explain Errors Free
+          </div>
+          <div id="s5-pill-2" class="floating-pill pill-outline-dark" data-layout-allow-overlap="true" data-layout-allow-occlusion="true" style="top: 250px; right: 220px;">
+            ( Code Review Soon )
+          </div>
+
+          <div id="s5-outro-card" class="clean-card s5-outro-card">
+            <div id="s5-brand" class="brand-mark-large">
+              <b>Root<span>_</span>Cause</b>
+            </div>
+            <div id="s5-claim" class="s5-claim">
+              Know what broke. <em>Know what to do next.</em>
+            </div>
+            <div class="s5-sub">
+              Try it free: explain errors today. Automated code review and 24/7 monitoring coming soon.
+            </div>
+            <div id="s5-cta" class="s5-cta-btn">
+              <span>Start Debugging Free</span>
+              <span>→</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- End #camera-rig -->
+    </div><!-- End #root -->
+
+    <script>
+      /* ==================================================================== */
+      /* GSAP TIMELINE: PREMIERE PRO / AFTER EFFECTS STYLE MOTION GRAPHICS    */
+      /* ==================================================================== */
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.inOut" } });
+
+      // Register timeline for Hyperframes runtime discovery
+      window.__timelines = window.__timelines || {};
+      window.__timelines["root-cause-launch"] = tl;
+
+      // Initial Scene Visibility Setup (immediate outside timeline)
+      gsap.set(["#scene1", "#scene2", "#scene3", "#scene4", "#scene5"], { opacity: 0 });
+      gsap.set("#orbital-stage", { scale: 0, opacity: 0, transformOrigin: "50% 50%" });
+      gsap.set(["#s0-pill-1", "#s0-pill-2"], { opacity: 0, scale: 0.5 });
+      gsap.set("#blast-shockwave", { scale: 0, opacity: 0 });
+      gsap.set("#intro-rising-dot", { y: 650, opacity: 1, scale: 1 });
+      gsap.set("#s3-output-card", { opacity: 0, scale: 0.85 });
+
+      tl.set("#scene0", { opacity: 1 });
+
+      // --------------------------------------------------------------------
+      // SCENE 0: Single Dot Shoots Up & Blasts into Circle (0.0s - 3.5s)
+      // --------------------------------------------------------------------
+      tl.to("#intro-rising-dot", {
+        y: 0,
+        duration: 0.75,
+        ease: "power2.out"
+      }, 0);
+
+      // 0.75s: Dot impact and instantaneous blast into concentric circles
+      tl.to("#intro-rising-dot", {
+        scale: 2.8,
+        opacity: 0,
+        duration: 0.1,
+        ease: "power2.in"
+      }, 0.75);
+
+      tl.fromTo("#blast-shockwave",
+        { scale: 0.2, opacity: 1 },
+        { scale: 7.5, opacity: 0, duration: 0.7, ease: "power2.out" },
+        0.75
+      );
+
+      tl.to("#orbital-stage", {
+        scale: 1.0,
+        opacity: 1,
+        duration: 0.85,
+        ease: "back.out(1.5)"
+      }, 0.75);
+
+      tl.fromTo("#orbital-center-card",
+        { scale: 0.4, opacity: 0 },
+        { scale: 1.0, opacity: 1, duration: 0.65, ease: "back.out(1.8)" },
+        0.82
+      );
+
+      tl.to("#ring-outer", { rotation: 360, duration: 2.75, ease: "none" }, 0.75);
+      tl.to("#ring-mid", { rotation: -380, duration: 2.75, ease: "none" }, 0.75);
+      tl.to("#ring-inner", { rotation: 420, duration: 2.75, ease: "none" }, 0.75);
+
+      tl.to("#s0-pill-1", { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.8)" }, 0.9);
+      tl.to("#s0-pill-2", { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.8)" }, 0.95);
+
+      // Smooth zoom plunge out of intro
+      tl.to("#orbital-stage", {
+        scale: 4.2,
+        opacity: 0,
+        filter: "blur(10px)",
+        duration: 1.0,
+        ease: "sine.inOut"
+      }, 2.55);
+      tl.to("#scene0", { opacity: 0, duration: 0.45, ease: "sine.out" }, 3.2);
+
+      // --------------------------------------------------------------------
+      // SCENE 1: The Raw Error Terminal & Typewriter (3.5s - 8.5s)
+      // --------------------------------------------------------------------
+      tl.set("#scene1", { opacity: 1 }, 3.4);
+      tl.fromTo("#scene1", 
+        { scale: 0.88, opacity: 0 },
+        { scale: 1.0, opacity: 1, duration: 0.7, ease: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        3.4
+      );
+
+      tl.from("#s1-pill-1", { y: -30, opacity: 0, duration: 0.6, ease: "back.out(1.7)" }, 3.7);
+      tl.from("#s1-pill-2", { y: 30, opacity: 0, duration: 0.6, ease: "back.out(1.7)" }, 3.9);
+      tl.from("#s1-pill-3", { x: 30, opacity: 0, duration: 0.6, ease: "back.out(1.7)" }, 4.1);
+      tl.from("#s1-review-1", { x: -40, opacity: 0, duration: 0.6, ease: "back.out(1.7)" }, 4.3);
+
+      tl.from("#s1-title .tw-char", {
+        opacity: 0,
+        stagger: 0.03,
+        duration: 0.05,
+        ease: "none"
+      }, 3.6);
+
+      // ---- TYPEWRITER: chars stay visible; camera zooms + pans RIGHT as more text appears ----
+      gsap.set(".tw-log-char", { opacity: 0 });
+      gsap.set("#tw-track", { x: 0, clearProps: "x" });
+      gsap.set(".tw-log-cursor", { opacity: 0 });
+
+      (function() {
+        const chars = document.querySelectorAll('.tw-log-char');
+        const totalChars = chars.length;
+        const typeStart = 5.0;
+        const typeDuration = 2.05;
+        const charDelay = typeDuration / Math.max(totalChars, 1);
+
+        tl.set(".tw-log-cursor", { opacity: 1 }, typeStart);
+        // Keep track pinned — never slide typed text off-screen
+        tl.set("#tw-track", { x: 0 }, typeStart);
+
+        chars.forEach((char, i) => {
+          tl.to(char, {
+            opacity: 1,
+            duration: 0.04,
+            ease: "none"
+          }, typeStart + (i * charDelay));
+        });
+
+        // One continuous zoom + RIGHT pan while typing (no stepped pauses)
+        tl.set("#camera-rig", { transformOrigin: "42% 55%" }, typeStart);
+        tl.to("#camera-rig", {
+          scale: 2.2,
+          x: 320,
+          y: -120,
+          duration: typeDuration,
+          ease: "sine.inOut"
+        }, typeStart);
+
+        tl.to("#s1-card", {
+          x: 36,
+          scale: 1.04,
+          duration: typeDuration,
+          ease: "sine.inOut"
+        }, typeStart);
+      })();
+
+      // Cursor click + ripple only — no zoom punch around ~8s
+      tl.set("#s1-cursor", { x: 1280, y: 720, opacity: 0, scale: 1 }, 6.95);
+      tl.to("#s1-cursor", {
+        x: 1040,
+        y: 560,
+        opacity: 1,
+        duration: 0.35,
+        ease: "sine.out"
+      }, 7.0);
+
+      tl.to("#s1-cursor", { scale: 0.78, duration: 0.1, yoyo: true, repeat: 1, ease: "sine.inOut" }, 7.28);
+      tl.fromTo("#s1-tap-ripple",
+        { scale: 0, opacity: 0.85 },
+        { scale: 5.2, opacity: 0, duration: 0.55, ease: "sine.out" },
+        7.28
+      );
+      // Ease out of typing zoom only (no extra zoom-in)
+      tl.to("#camera-rig", {
+        scale: 1.0,
+        x: 0,
+        y: 0,
+        duration: 0.75,
+        ease: "sine.inOut"
+      }, 7.25);
+      tl.to("#s1-card", { x: 0, scale: 1, duration: 0.7, ease: "sine.inOut" }, 7.25);
+      tl.to("#s1-cursor", { opacity: 0, duration: 0.35, ease: "sine.out" }, 7.7);
+      tl.set("#camera-rig", { transformOrigin: "50% 50%" }, 8.0);
+
+      tl.to("#scene1", {
+        x: -220,
+        opacity: 0,
+        filter: "blur(6px)",
+        duration: 0.65,
+        ease: "sine.inOut"
+      }, 7.95);
+
+      // --------------------------------------------------------------------
+      // SCENE 2: The Plain-English Fix (8.5s - 14.0s)
+      // --------------------------------------------------------------------
+      tl.set("#scene2", { opacity: 1, x: 0 }, 8.4);
+      tl.fromTo("#scene2", 
+        { x: 300, opacity: 0, filter: "blur(8px)" },
+        { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "power2.out" },
+        8.4
+      );
+
+      tl.from("#s2-status-pill", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 8.6);
+      tl.from("#s2-title .tw-char", {
+        opacity: 0,
+        stagger: 0.03,
+        duration: 0.05,
+        ease: "none"
+      }, 8.7);
+
+      tl.from("#s2-pill-1", { y: -25, opacity: 0, duration: 0.5, ease: "back.out(1.7)" }, 8.9);
+      tl.from("#s2-pill-2", { y: 25, opacity: 0, duration: 0.5, ease: "back.out(1.7)" }, 9.1);
+      tl.from("#s2-pill-3", { x: -25, opacity: 0, duration: 0.5, ease: "back.out(1.7)" }, 9.3);
+      tl.from("#s2-pill-4", { x: 25, opacity: 0, duration: 0.5, ease: "back.out(1.7)" }, 9.5);
+
+      // Scene 2: no camera zoom (~8s / ~10s punches removed)
+      tl.set("#camera-rig", { scale: 1, x: 0, y: 0, transformOrigin: "50% 50%" }, 8.4);
+
+      tl.set("#s2-cursor", { x: 760, y: 780, opacity: 0, scale: 1 }, 10.0);
+      tl.to("#s2-cursor", {
+        x: 1020,
+        y: 470,
+        opacity: 1,
+        duration: 0.4,
+        ease: "sine.out"
+      }, 10.0);
+
+      // Click + ripple only — no zoom
+      tl.to("#s2-cursor", { scale: 0.78, duration: 0.1, yoyo: true, repeat: 1, ease: "sine.inOut" }, 10.35);
+      tl.fromTo("#s2-tap-ripple",
+        { scale: 0, opacity: 0.85 },
+        { scale: 5.2, opacity: 0, duration: 0.55, ease: "sine.out" },
+        10.35
+      );
+      tl.to("#s2-cursor", { opacity: 0, duration: 0.35, ease: "sine.out" }, 10.75);
+
+      tl.from("#s2-check-1", { x: -40, opacity: 0, duration: 0.4, ease: "sine.out" }, 11.1);
+      tl.from("#s2-check-2", { x: -40, opacity: 0, duration: 0.4, ease: "sine.out" }, 11.75);
+      tl.from("#s2-check-3", { x: -40, opacity: 0, duration: 0.4, ease: "sine.out" }, 12.4);
+      tl.to("#scene2", {
+        y: -250,
+        opacity: 0,
+        filter: "blur(8px)",
+        duration: 0.6,
+        ease: "power2.in"
+      }, 13.4);
+
+      // --------------------------------------------------------------------
+      // SCENE 3: Code Security Review (14.0s - 19.0s)
+      // EXACT USER SPECIFICATION:
+      // 1) First: Scanning the code (laser line sweeps across real code lines)
+      // 2) Then: 20 security breaches list scrolling animation
+      // 3) Then: Output shown (Injection vulnerability breach detected + fix)
+      // --------------------------------------------------------------------
+      tl.set("#scene3", { opacity: 1, y: 0 }, 13.9);
+      tl.fromTo("#scene3",
+        { y: 250, opacity: 0, filter: "blur(8px)" },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power2.out" },
+        13.9
+      );
+
+      tl.from("#s3-status-pill", { scale: 0, opacity: 0, duration: 0.45, ease: "back.out(2)" }, 14.1);
+      // 14–18s: no camera zoom — stay locked to normal framing
+      tl.set("#camera-rig", { scale: 1, x: 0, y: 0, transformOrigin: "50% 50%" }, 14.0);
+
+      tl.fromTo("#s3-laser",
+        { y: 0, opacity: 1 },
+        { y: 240, opacity: 1, duration: 1.0, ease: "sine.inOut", onComplete: () => gsap.set("#s3-laser", { opacity: 0 }) },
+        14.2
+      );
+      tl.to(".vuln-line", {
+        backgroundColor: "rgba(239, 68, 68, 0.35)",
+        duration: 0.25,
+        yoyo: true,
+        repeat: 1,
+        ease: "sine.inOut"
+      }, 14.7);
+      tl.to("#s3-vuln-track", {
+        y: -480,
+        duration: 1.2,
+        ease: "sine.inOut"
+      }, 14.5);
+
+      tl.to("#s3-ticker-card", {
+        opacity: 0,
+        scale: 0.96,
+        duration: 0.35,
+        ease: "sine.inOut"
+      }, 15.75);
+      tl.to("#s3-output-card", {
+        opacity: 1,
+        scale: 1.0,
+        duration: 0.4,
+        ease: "sine.out"
+      }, 15.8);
+      tl.to("#scene3", {
+        x: -300,
+        opacity: 0,
+        filter: "blur(8px)",
+        duration: 0.6,
+        ease: "power2.in"
+      }, 18.4);
+
+      // --------------------------------------------------------------------
+      // SCENE 4: 24/7 Continuous Monitoring (19.0s - 23.5s)
+      // --------------------------------------------------------------------
+      tl.set("#scene4", { opacity: 1, x: 0 }, 18.9);
+      tl.fromTo("#scene4",
+        { x: 300, opacity: 0, filter: "blur(8px)" },
+        { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power2.out" },
+        18.9
+      );
+
+      tl.from("#s4-status-pill", { scale: 0, opacity: 0, duration: 0.45, ease: "back.out(2)" }, 19.1);
+
+      // Smooth waveform focus → glide to incident (continuous)
+      tl.to("#camera-rig", {
+        scale: 1.38,
+        x: 0,
+        y: -85,
+        duration: 0.8,
+        ease: "sine.inOut"
+      }, 19.2);
+
+      tl.from(".wave-bar", {
+        scaleY: 0.1,
+        stagger: 0.05,
+        duration: 0.65,
+        ease: "sine.out"
+      }, 19.3);
+
+      tl.to("#camera-rig", {
+        scale: 1.65,
+        x: 35,
+        y: 30,
+        duration: 0.85,
+        ease: "sine.inOut"
+      }, 20.7);
+      tl.from("#s4-incident-card", {
+        scale: 0.94,
+        y: 16,
+        opacity: 0,
+        duration: 0.6,
+        ease: "sine.out"
+      }, 20.9);
+
+      tl.to("#camera-rig", {
+        scale: 1.0,
+        x: 0,
+        y: 0,
+        duration: 0.75,
+        ease: "sine.inOut"
+      }, 22.5);
+      tl.to("#scene4", {
+        scale: 0.85,
+        opacity: 0,
+        filter: "blur(8px)",
+        duration: 0.6,
+        ease: "power2.in"
+      }, 22.9);
+
+      // --------------------------------------------------------------------
+      // SCENE 5: Outro & Promise (23.5s - 27.0s)
+      // --------------------------------------------------------------------
+      tl.set("#scene5", { opacity: 1 }, 23.4);
+      tl.fromTo("#scene5",
+        { scale: 0.85, opacity: 0 },
+        { scale: 1.0, opacity: 1, duration: 0.7, ease: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        23.4
+      );
+
+      tl.from("#s5-pill-1", { y: -30, opacity: 0, duration: 0.5, ease: "back.out(1.8)" }, 23.8);
+      tl.from("#s5-pill-2", { y: 30, opacity: 0, duration: 0.5, ease: "back.out(1.8)" }, 24.0);
+
+      tl.from("#s5-brand", { y: -20, opacity: 0, duration: 0.5, ease: "back.out(1.7)" }, 23.7);
+      tl.from("#s5-claim", { opacity: 0, duration: 0.5 }, 24.1);
+      tl.from("#s5-cta", {
+        scale: 0.85,
+        opacity: 0,
+        boxShadow: "0 0 50px rgba(29, 185, 84, 0.9)",
+        duration: 0.5,
+        ease: "back.out(2)"
+      }, 24.4);
+
+      // Settle smoothly into static outro poster frame
+      tl.to("#scene5", { opacity: 1, duration: 2.0 }, 25.0);
+    </script>
+  </body>
+</html>
