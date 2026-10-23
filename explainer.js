@@ -16,7 +16,7 @@ const crypto = require('node:crypto');
      • Authentication / Authorization
      • Memory / Performance
      • Generic error classes
-   Falls back to OpenAI when no local pattern matches.
+   Falls back to the configured AI provider when no local pattern matches.
    ──────────────────────────────────────────────────────────────────────────── */
 
 const PATTERNS = [
@@ -644,18 +644,27 @@ async function explain(text, level, pool) {
   let value = known(text, level);
   if (value) value.source = 'rule';
 
-  // Fall back to OpenAI for unknown patterns
-  if (!value && process.env.OPENAI_API_KEY) {
+  // Use Groq when configured; otherwise use OpenAI. Both expose the Responses
+  // API shape used below. Specific local rules never send logs to a provider.
+  const groqKey = process.env.GROQ_API_KEY;
+  const providerKey = groqKey || process.env.OPENAI_API_KEY;
+  const provider = groqKey ? 'groq' : 'openai';
+  if (!value && providerKey) {
     try {
-      const response = await fetch('https://api.openai.com/v1/responses', {
+      const endpoint = provider === 'groq'
+        ? 'https://api.groq.com/openai/v1/responses'
+        : 'https://api.openai.com/v1/responses';
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
-          authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          authorization: `Bearer ${providerKey}`,
           'content-type': 'application/json',
         },
         signal: AbortSignal.timeout(15000),
         body: JSON.stringify({
-          model: process.env.OPENAI_MODEL || 'gpt-4.1-mini',
+          model: provider === 'groq'
+            ? process.env.GROQ_MODEL || 'openai/gpt-oss-20b'
+            : process.env.OPENAI_MODEL || 'gpt-4.1-mini',
           store: false,
           input: [
             {
