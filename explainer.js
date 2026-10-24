@@ -1103,7 +1103,7 @@ RULES (follow all of them):
 5. If a first_app_frame is provided, mention the specific file and line number in the cause — that is where the error originated in application code.
 6. Do not invent file names, config values, versions, or facts absent from the log.
 
-Return JSON only — no explanation, no markdown, no extra text.`,`
+Return JSON only — no explanation, no markdown, no extra text.`,
             },
             {
               role: 'user',
