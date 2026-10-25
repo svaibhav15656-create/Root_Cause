@@ -9,7 +9,8 @@
 <body>
   <aside class="workspace-sidebar" aria-label="Workspace navigation">
     <a class="brand" href="#explain" aria-label="RootCause workspace"><b>r<span>.</span></b><strong>rootcause</strong></a>
-    <button id="new-explanation" class="sidebar-new" type="button"><span aria-hidden="true">+</span> New explanation</button>
+    <nav class="sidebar-features" aria-label="RootCause features"><button class="sidebar-feature" type="button" disabled title="Code security review — coming soon"><span class="feature-icon" aria-hidden="true">⌘</span><span class="sidebar-label">Code security review</span><span class="soon-tag">Soon</span></button><button class="sidebar-feature" type="button" disabled title="Continuous monitoring — coming soon"><span class="feature-icon" aria-hidden="true">◉</span><span class="sidebar-label">Continuous monitoring</span><span class="soon-tag">Soon</span></button></nav>
+    <button id="new-explanation" class="sidebar-new" type="button"><span aria-hidden="true">+</span><span class="sidebar-label">New explanation</span></button>
     <label class="history-search"><span class="sr-only">Search explanation history</span><input id="history-search" type="search" placeholder="Search history"></label>
     <section class="sidebar-history" aria-labelledby="history-title"><div class="sidebar-section-title"><h2 id="history-title">Recent</h2><span>Session only</span></div><div id="explanation-history" class="history-list"><p class="history-empty">Your explanations will appear here.</p></div></section>
     <nav class="sidebar-tools" aria-label="Tools"><a href="#explain" data-main-link="explain"><span aria-hidden="true">✦</span> Explain an error</a><a href="#review" data-main-link="review"><span aria-hidden="true">⌘</span> Code review <span class="soon-tag">Soon</span></a><button id="sidebar-account" type="button"><span aria-hidden="true">◌</span> Settings</button></nav>
