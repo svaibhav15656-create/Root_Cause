@@ -96,4 +96,7 @@ dialog#auth-dialog #name-wrap.hidden,dialog#auth-dialog #totp-wrap.hidden,dialog
 @keyframes privacy-note-arrive{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 #account-page .account-nav button{border:1px solid transparent!important;border-radius:6px!important;box-shadow:none!important}
 #account-page .account-nav button.active{border-color:#292d33!important;background:#101114!important}
+
+/* Flat controls across the site: no blue glow, glass, or glossy gradients. */
+button,.btn,.button,.btn.dark,.button.primary,.hero .btn.dark{border:1px solid #34363b!important;border-radius:6px!important;background:#0a0a0b!important;color:#f1f1f2!important;box-shadow:none!important;filter:none!important}button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled),.btn.dark:hover:not(:disabled),.button.primary:hover:not(:disabled),.hero .btn.dark:hover:not(:disabled){border-color:#5b5d63!important;background:#151518!important;box-shadow:none!important;filter:none!important;transform:none!important}button:active:not(:disabled),.btn:active:not(:disabled),.button:active:not(:disabled){background:#050506!important;box-shadow:none!important}button:disabled,.btn:disabled,.button:disabled{background:#080809!important;box-shadow:none!important}
 @media(prefers-reduced-motion:reduce){#account-page .account-panel,.security-privacy-note{animation:none!important}}

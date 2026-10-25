@@ -78,13 +78,15 @@ logInput.addEventListener('input',e=>{$('#dashboard-log-count').textContent=`${e
 window.addEventListener('resize',resizeLogInput);resizeLogInput();
 logInput.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();$('#dashboard-explain-btn').click()}});
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const analysisPhrases=['Reading your log…','Finding the likely cause…','Mapping the error signals…','Preparing clear next steps…'];
+function startAnalysisShimmer(container){let index=0;const text=el('span','analysis-shimmer',analysisPhrases[index]);container.append(el('span','explanation-loader-mark'),text);const interval=setInterval(()=>{index=(index+1)%analysisPhrases.length;text.classList.remove('analysis-shimmer-in');void text.offsetWidth;text.textContent=analysisPhrases[index];text.classList.add('analysis-shimmer-in')},1800);return()=>clearInterval(interval)}
 async function typewriter(element,value){const text=String(value??'');element.classList.add('typewriter-cursor');if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){element.textContent=text;element.classList.remove('typewriter-cursor');return}element.textContent='';for(let i=0;i<text.length;i++){element.textContent=text.slice(0,i+1);await wait(8)}element.classList.remove('typewriter-cursor')}
 $('#dashboard-explain-btn').addEventListener('click',async e=>{
   const button=e.currentTarget,text=logInput.value.trim(),meaning=$('#explanation-meaning'),fixes=$('#explanation-fixes'),announcement=$('#explanation-announcement');
   if(!text){meaning.replaceChildren(el('p','empty-copy','Paste one error or log first. A stack trace for that error is okay.'));return}
   button.disabled=true;button.textContent='Reading your log\u2026';announcement.textContent='Analyzing the log.';
   meaning.replaceChildren(Object.assign(el('div','explanation-loader'),{role:'status'}));
-  const loader=meaning.firstElementChild;loader.append(el('span','explanation-loader-mark'),el('span','','Reading your log and finding the likely cause\u2026'));
+  const loader=meaning.firstElementChild,stopShimmer=startAnalysisShimmer(loader);
   fixes.replaceChildren(el('p','empty-copy','Preparing investigation steps\u2026'));
   const startedAt=Date.now();
   try{
@@ -100,7 +102,7 @@ $('#dashboard-explain-btn').addEventListener('click',async e=>{
     const remaining=el('p','fine-print');fixes.append(remaining);await typewriter(remaining,`${data.remaining} explanations remaining today \u00b7 resets at 12:00 AM IST.`);addToHistory({...x,steps:items},data,[source,`Confidence: ${confidence}`,'Based on redacted log text.'].filter(Boolean).join(' \u00b7 '));
     announcement.textContent='The explanation and troubleshooting steps are ready.';
   }catch(err){meaning.replaceChildren(el('p','',err.message));fixes.replaceChildren(el('p','empty-copy','No troubleshooting steps are available for this request.'));announcement.textContent='The explanation could not be loaded.'}
-  finally{button.disabled=false;button.textContent='Explain this log'}
+  finally{stopShimmer();button.disabled=false;button.textContent='Explain log'}
 });
 
 for(const dialog of $$('dialog'))dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
