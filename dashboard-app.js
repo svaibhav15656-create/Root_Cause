@@ -73,6 +73,10 @@ function addToHistory(explanation,data,meta){const item={title:explanation.title
 historySearch.addEventListener('input',renderHistory);
 $('#new-explanation').addEventListener('click',()=>{logInput.value='';$('#dashboard-log-count').textContent='0 / 12,000';$('#explanation-meaning').replaceChildren(el('p','empty-copy','Your explanation will appear here.'));$('#explanation-fixes').replaceChildren(el('p','empty-copy','Practical next steps will appear here.'));resizeLogInput();document.querySelector('#explain').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>logInput.focus(),250)});
 $('#sidebar-account').addEventListener('click',()=>toggleAccount(true));
+const workspaceViews={explain:$('#explain'),'security-review':$('#security-review'),'continuous-monitoring':$('#continuous-monitoring')};
+function showWorkspaceView(view='explain'){for(const [name,section] of Object.entries(workspaceViews))section.hidden=name!==view;$$('[data-workspace-view]').forEach(button=>button.classList.toggle('active',button.dataset.workspaceView===view));window.scrollTo({top:0,behavior:'smooth'})}
+$$('[data-workspace-view]').forEach(button=>button.addEventListener('click',()=>showWorkspaceView(button.dataset.workspaceView)));
+$('#new-explanation').addEventListener('click',()=>showWorkspaceView('explain'));
 function resizeLogInput(){const maxHeight=Math.min(window.innerHeight*.45,420);logInput.style.height='auto';const height=Math.min(logInput.scrollHeight,maxHeight);logInput.style.height=`${height}px`;logInput.style.overflowY=logInput.scrollHeight>maxHeight?'auto':'hidden'}
 logInput.addEventListener('input',e=>{$('#dashboard-log-count').textContent=`${e.target.value.length.toLocaleString()} / 12,000`;resizeLogInput()});
 window.addEventListener('resize',resizeLogInput);resizeLogInput();
