@@ -76,6 +76,7 @@ $('#sidebar-account').addEventListener('click',()=>toggleAccount(true));
 function resizeLogInput(){const maxHeight=Math.min(window.innerHeight*.45,420);logInput.style.height='auto';const height=Math.min(logInput.scrollHeight,maxHeight);logInput.style.height=`${height}px`;logInput.style.overflowY=logInput.scrollHeight>maxHeight?'auto':'hidden'}
 logInput.addEventListener('input',e=>{$('#dashboard-log-count').textContent=`${e.target.value.length.toLocaleString()} / 12,000`;resizeLogInput()});
 window.addEventListener('resize',resizeLogInput);resizeLogInput();
+logInput.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();$('#dashboard-explain-btn').click()}});
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function typewriter(element,value){const text=String(value??'');element.classList.add('typewriter-cursor');if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){element.textContent=text;element.classList.remove('typewriter-cursor');return}element.textContent='';for(let i=0;i<text.length;i++){element.textContent=text.slice(0,i+1);await wait(8)}element.classList.remove('typewriter-cursor')}
 $('#dashboard-explain-btn').addEventListener('click',async e=>{
