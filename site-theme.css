@@ -110,7 +110,7 @@ button,.btn,.button,.btn.dark,.button.primary,.hero .btn.dark{border:1px solid #
 .ihb-idle{position:relative;z-index:2;display:inline-block;transform:translateX(2px);transition:transform .3s ease,opacity .3s ease;white-space:nowrap}
 .ihb-active{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;gap:6px;transform:translateX(2.75rem);opacity:0;color:#0a0a0b;pointer-events:none;transition:transform .3s ease,opacity .3s ease}
 .ihb-active-text{white-space:nowrap}.ihb-arrow{flex:none;width:15px;height:15px}
-.ihb-blob{position:absolute;z-index:1;left:20%;top:40%;width:8px;height:8px;border-radius:8px;background:#f0f0f0;pointer-events:none;transition:left .3s ease,top .3s ease,width .3s ease,height .3s ease,transform .3s ease,background .3s ease,border-radius .3s ease}
+.ihb-blob{position:absolute;z-index:1;left:20%;top:40%;width:8px;height:8px;border-radius:8px;background:#f0f0f0;pointer-events:none;opacity:0;transition:left .3s ease,top .3s ease,width .3s ease,height .3s ease,transform .3s ease,background .3s ease,border-radius .3s ease,opacity .15s ease}
 .button.primary.ihb .ihb-blob,.btn.dark.ihb .ihb-blob,.btn.light.ihb .ihb-blob{background:#111214}
 .button.outline.ihb .ihb-blob,.btn.outline.ihb .ihb-blob,.btn.plain.ihb .ihb-blob{background:#f0f0f0}
 .button.danger-button.ihb .ihb-blob{background:#e07070}
@@ -120,7 +120,7 @@ button,.btn,.button,.btn.dark,.button.primary,.hero .btn.dark{border:1px solid #
 .ihb:hover:not(:disabled),.ihb:focus-visible:not(:disabled),.btn.ihb:hover:not(:disabled),.button.ihb:hover:not(:disabled),.btn.dark.ihb:hover:not(:disabled),.button.primary.ihb:hover:not(:disabled),.hero .btn.dark.ihb:hover:not(:disabled){border-color:transparent!important;background:transparent!important;color:inherit!important;box-shadow:none!important;transform:none!important;filter:none!important}
 .ihb:hover:not(:disabled) .ihb-idle,.ihb:focus-visible:not(:disabled) .ihb-idle{transform:translateX(2.75rem);opacity:0}
 .ihb:hover:not(:disabled) .ihb-active,.ihb:focus-visible:not(:disabled) .ihb-active{transform:translateX(-2px);opacity:1}
-.ihb:hover:not(:disabled) .ihb-blob,.ihb:focus-visible:not(:disabled) .ihb-blob{left:0;top:0;width:100%;height:100%;border-radius:999px;transform:scale(1.05)}
+.ihb:hover:not(:disabled) .ihb-blob,.ihb:focus-visible:not(:disabled) .ihb-blob{left:0;top:0;width:100%;height:100%;border-radius:999px;transform:scale(1.05);opacity:1}
 .ihb:disabled,.btn.ihb:disabled,.button.ihb:disabled{opacity:.55;cursor:not-allowed}
 .ihb:disabled .ihb-blob{opacity:.35}
 .log-composer>.button.ihb{min-width:0;min-height:34px;padding:7px 14px!important;font-size:12px}
