@@ -52,8 +52,10 @@ async function account(req,res,method,pathName){
   if(method==='POST'&&pathName==='/api/register'){
     const b=await body(req),email=String(b.email||'').trim().toLowerCase(),name=redact(b.name,80).trim(),password=String(b.password||'');
     if(email.length>254||name.length>80||!/^\S+@\S+\.\S+$/.test(email)||!name||password.length<12||password.length>200)return reply(res,400,{error:'Add a name, valid email, and password of at least 12 characters.'});
+    // Age confirmation must be sent and truthy (DPDP Act 2023 / COPPA compliance)
+    if(!b.ageConfirm)return reply(res,400,{error:'You must confirm that you are 13 years of age or older to create an account.'});
     const salt=crypto.randomBytes(16).toString('hex'),passwordHash=(await scrypt(password,salt,64)).toString('hex'),tenantId=uuid(),raw=crypto.randomBytes(32).toString('base64url');
-    try{await transaction(async c=>{await c.query('INSERT INTO tenants(id,email,name,salt,password_hash) VALUES($1,$2,$3,$4,$5)',[tenantId,email,name,salt,passwordHash]);await c.query('INSERT INTO sessions(token_hash,tenant_id,expires_at) VALUES($1,$2,now()+interval \'7 days\')',[sha(raw),tenantId]);await c.query('INSERT INTO notification_settings(tenant_id,email_enabled) VALUES($1,true)',[tenantId]);await c.query('INSERT INTO subscriptions(tenant_id,plan_code,status) VALUES($1,\'starter\',\'trialing\')',[tenantId])})}catch(e){if(e.code==='23505')return reply(res,409,{error:'An account with this email already exists.'});throw e}
+    try{await transaction(async c=>{await c.query('INSERT INTO tenants(id,email,name,salt,password_hash,consent_at) VALUES($1,$2,$3,$4,$5,now())',[tenantId,email,name,salt,passwordHash]);await c.query('INSERT INTO sessions(token_hash,tenant_id,expires_at) VALUES($1,$2,now()+interval \'7 days\')',[sha(raw),tenantId]);await c.query('INSERT INTO notification_settings(tenant_id,email_enabled) VALUES($1,true)',[tenantId]);await c.query('INSERT INTO subscriptions(tenant_id,plan_code,status) VALUES($1,\'starter\',\'trialing\')',[tenantId])})}catch(e){if(e.code==='23505')return reply(res,409,{error:'An account with this email already exists.'});throw e}
     return reply(res,201,{user:{id:tenantId,email,name,plan:'starter'},billingEnabled:BILLING_ENABLED},{'set-cookie':cookie(raw,req)});
   }
   if(method==='POST'&&pathName==='/api/login'){

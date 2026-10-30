@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS tenants (
 );
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS phone text;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS avatar_data text;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS consent_at timestamptz;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_id text;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_username text;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS github_token_enc text;

@@ -150,6 +150,9 @@ dialog#auth-dialog>#auth-form .btn{width:100%;min-height:49px;margin-top:2px;bor
 dialog#auth-dialog>#auth-form .error{margin:0;color:#ff9b9b;font-size:12px}
 dialog#auth-dialog>.auth-consent{text-align:center;color:#929499;font-size:11px;line-height:1.6;margin-top:2px}
 dialog#auth-dialog>.auth-consent a{color:#c4c5c9}
+#age-wrap{display:flex!important;flex-direction:row!important;align-items:center;gap:9px;margin:8px 0 0;font-size:12px;color:#c4c5c9;cursor:pointer}
+#age-wrap input[type=checkbox]{width:16px;height:16px;min-height:unset;accent-color:#6f8e74;flex-shrink:0;cursor:pointer}
+#age-wrap.hidden{display:none!important}
 dialog#auth-dialog>#forgot-password{text-align:center;color:#c4c5c9;margin-top:2px}
 dialog#auth-dialog>p:last-child{text-align:center;color:#a7a8ab;font-size:13px;margin-top:2px}
 dialog#auth-dialog>p:last-child button{border:0;background:none;color:#f2f2f3;font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
