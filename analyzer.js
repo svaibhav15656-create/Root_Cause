@@ -1,5 +1,5 @@
 const crypto=require('node:crypto');
-const {deliver}=require('./notifier');
+const {deliver,sendRenewalNotices}=require('./notifier');
 
 function evidence(row){return {timestamp:row.event_at,level:row.level,service:row.service,message:row.message};}
 async function addWarning(pool,app,pattern,title,cause,steps,confidence,rows){
@@ -39,7 +39,7 @@ async function runAnalyzer(pool){
   try{const l=await client.query('SELECT pg_try_advisory_lock(82731492) AS locked');locked=l.rows[0].locked;if(!locked)return;
     const apps=await pool.query('SELECT id,tenant_id,name FROM apps WHERE deleted_at IS NULL');
     for(const app of apps.rows){try{await analyzeApp(pool,app)}catch(error){console.error(`Analyzer failed for app ${app.id}:`,error.message)}}
-    await judgeOutcomes(pool);await prune(pool);
+    await judgeOutcomes(pool);await sendRenewalNotices(pool);await prune(pool);
   }finally{if(locked)await client.query('SELECT pg_advisory_unlock(82731492)').catch(()=>{});client.release();}
 }
 module.exports={runAnalyzer,judgeOutcomes};
