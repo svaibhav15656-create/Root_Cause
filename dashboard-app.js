@@ -14,7 +14,7 @@ $('#open-account').addEventListener('click',()=>toggleAccount(true));$('#close-a
 $('#workspace-theme-toggle').addEventListener('click',toggleWorkspaceTheme);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#account-page').hidden&&!document.querySelector('dialog[open]'))toggleAccount(false)});
 for(const button of $$('[data-account-page]'))button.addEventListener('click',()=>selectAccountPage(button.dataset.accountPage));
-$('#account-back').addEventListener('click',()=>$('#account-layout').classList.remove('mobile-detail'));
+$('#account-back').addEventListener('click',()=>toggleAccount(false));
 $$('[data-open-api-keys]').forEach(button=>button.addEventListener('click',()=>{selectAccountPage('security');$('#api-keys-card').scrollIntoView({behavior:'smooth',block:'start'})}));
 
 const mainLinks=$$('[data-main-link]'),sections=mainLinks.map(a=>document.getElementById(a.dataset.mainLink));
