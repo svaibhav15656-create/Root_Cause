@@ -79,3 +79,13 @@ html:has(body[data-theme="light"]),body[data-theme="light"],body[data-theme="lig
 /* The scene is fixed only as a backdrop. Keep the document itself free to grow
    and scroll as soon as an explanation is returned. */
 html,body{height:auto!important;min-height:100%;overflow-y:auto!important}.page-content{min-height:100svh!important;overflow:visible!important}.explain-section{height:auto!important;min-height:100svh!important;overflow:visible!important;overscroll-behavior:auto!important}
+
+/* Let the Mars layer show through the explainer instead of being covered by
+   the section's black fill.  It remains decorative and never blocks input. */
+.explain-section{background:transparent!important}.mars-orb{opacity:.78;box-shadow:none!important}.mars-background{background:radial-gradient(ellipse at 80% 47%,#4b21163d 0 18%,transparent 52%)}
+
+/* The collapsed rail is a row of matching circular controls. */
+.workspace-sidebar:not(:hover):not(:focus-within) .brand{width:42px;margin-inline:auto;padding:0!important}.workspace-sidebar:not(:hover):not(:focus-within) .brand b,.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-feature,.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-new,.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-account{display:grid!important;place-items:center!important;width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;margin-inline:auto!important;padding:0!important;border:1px solid #497ca5!important;border-radius:50%!important;background:#030405!important;box-shadow:none!important}.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-feature .feature-icon,.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-new>span:first-child{width:auto!important;margin:0!important}.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-account .profile-avatar{width:27px!important;height:27px!important}.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-feature:hover,.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-new:hover,.workspace-sidebar:not(:hover):not(:focus-within) .sidebar-account:hover{border-color:#79b9ec!important;background:#0b1119!important;box-shadow:none!important}
+
+/* Retain the wave but remove the blurred, glowing treatment from the heading. */
+.cover-wave::before{filter:none!important;opacity:.55!important}.cover-wave::after{display:none!important}.cover-wave span{animation:none!important}
