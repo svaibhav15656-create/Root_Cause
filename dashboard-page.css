@@ -91,3 +91,7 @@ html,body{height:auto!important;min-height:100%;overflow-y:auto!important}.page-
   padding-block:40px!important;
   justify-content:center;
 }
+/* Allow page scrolling after results appear */
+.log-composer textarea{overscroll-behavior:auto!important}
+html,body{height:auto!important;overflow-y:auto!important}
+.page-content,.explain-section,.explain-layout{height:auto!important;overflow:visible!important}
