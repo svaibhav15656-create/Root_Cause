@@ -1,4 +1,4 @@
-wheel(() => {
+(() => {
   const SKIP = [
     '.ihb-skip',
     '.modal-x',
