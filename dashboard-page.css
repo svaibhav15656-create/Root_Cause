@@ -83,5 +83,11 @@ html,body{height:auto!important;min-height:100%;overflow-y:auto!important}.page-
 /* Expanded navigation is a clean menu, not a set of outlined buttons. */
 .workspace-sidebar:hover .sidebar-feature,.workspace-sidebar:focus-within .sidebar-feature,.workspace-sidebar:hover .sidebar-new,.workspace-sidebar:focus-within .sidebar-new,.workspace-sidebar:hover .sidebar-account,.workspace-sidebar:focus-within .sidebar-account{border-color:transparent!important;border-radius:6px!important;background:transparent!important;box-shadow:none!important}.workspace-sidebar:hover .sidebar-feature:hover,.workspace-sidebar:focus-within .sidebar-feature:hover,.workspace-sidebar:hover .sidebar-feature.active,.workspace-sidebar:focus-within .sidebar-feature.active,.workspace-sidebar:hover .sidebar-new:hover,.workspace-sidebar:focus-within .sidebar-new:hover,.workspace-sidebar:hover .sidebar-account:hover,.workspace-sidebar:focus-within .sidebar-account:hover{border-color:transparent!important;background:#0a0a0b!important;box-shadow:none!important}
 
+
 /* Retain the wave but remove the blurred, glowing treatment from the heading. */
 .cover-wave::before{filter:none!important;opacity:.55!important}.cover-wave::after{display:none!important}.cover-wave span{animation:none!important}
+.explain-section{
+  min-height:100svh!important;
+  padding-block:40px!important;
+  justify-content:center;
+}
