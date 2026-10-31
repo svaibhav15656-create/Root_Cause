@@ -1,8 +1,7 @@
 :root{color-scheme:light;--paper:#f5f7f3;--surface:#fff;--ink:#243128;--muted:#738076;--line:#dfe5dc;--green:#26392d;--green-soft:#e8efe7;--accent:#6f8e74;--danger:#a14840;--danger-line:#d99c95;--danger-soft:#f3d8d4;--warning:#b9743a;--warning-soft:#f0d5b1;--shadow:0 18px 36px rgba(15,23,20,.08)}
-html,body{background:#000!important;color:#edf1f5!important} 
-body{margin:0;overflow-x:hidden} 
+html,body{background:#000!important;color:#edf1f5!important}
+body{margin:0;overflow-x:hidden}
 button,input,textarea{font:inherit}
-
 header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .section-intro,#security-review,#continuous-monitoring,.explain-results{display:none!important}
 .page-content{margin-left:0;min-height:100vh;background:#000}
 #explain{display:block!important}
@@ -17,17 +16,14 @@ header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .sec
 #dashboard-log-input::placeholder{color:#687889;opacity:1}
 #dashboard-explain-btn{position:absolute;right:14px;bottom:12px;min-width:150px;height:42px;border-radius:10px;border:1px solid rgba(122,171,221,.75);background:transparent;color:#dfeaf9;font-size:13px;font-weight:500;box-shadow:none;cursor:pointer}
 .explanation-caveat{max-width:680px;margin:22px auto 0;text-align:center;font-size:12px;line-height:1.5;color:#8a93a5}
-
 .workspace-sidebar{position:fixed;left:0;top:0;bottom:0;width:52px;background:#000;border-right:1px solid rgba(157,170,189,.18);padding:10px 8px 12px;box-sizing:border-box;display:flex;flex-direction:column;z-index:20;overflow:hidden;transition:width .18s ease}
 .workspace-sidebar:hover,.workspace-sidebar:focus-within{width:220px}
 .workspace-sidebar .brand{display:flex;align-items:center;gap:8px;padding:2px 0 12px 4px;color:#edf3ff;text-decoration:none;font-weight:500;white-space:nowrap}
 .workspace-sidebar .brand b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:7px;background:#111b2a;color:#dfeeff;font-size:13px;font-weight:700;line-height:1;box-sizing:border-box}
 .workspace-sidebar .brand strong{display:none;opacity:0;transition:opacity .18s ease;font-size:12px;letter-spacing:.02em;color:#edf3ff}
 .workspace-sidebar:hover .brand strong,.workspace-sidebar:focus-within .brand strong{display:inline;opacity:1}
-
 .sidebar-features,.sidebar-history,.sidebar-tools,.history-search{width:100%;opacity:0;transform:translateX(-8px);transition:opacity .18s ease,transform .18s ease;pointer-events:none}
 .workspace-sidebar:hover .sidebar-features,.workspace-sidebar:hover .sidebar-history,.workspace-sidebar:hover .sidebar-tools,.workspace-sidebar:hover .history-search,.workspace-sidebar:focus-within .sidebar-features,.workspace-sidebar:focus-within .sidebar-history,.workspace-sidebar:focus-within .sidebar-tools,.workspace-sidebar:focus-within .history-search{opacity:1;transform:translateX(0);pointer-events:auto}
-
 .sidebar-features{display:flex;flex-direction:column;gap:8px;margin-top:2px}
 .sidebar-feature,.sidebar-tools a,.sidebar-account,.sidebar-new{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid transparent;background:transparent;color:#edf3ff;cursor:pointer;text-align:left;font-size:12px;text-decoration:none;box-sizing:border-box;white-space:nowrap}
 .sidebar-feature span:first-child,.sidebar-tools a span:first-child,.sidebar-account span:first-child,.sidebar-new span:first-child{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;color:#dfeaf9;font-size:12px;flex-shrink:0}
@@ -36,53 +32,20 @@ header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .sec
 .sidebar-feature .soon-tag{display:inline-flex;align-items:center;justify-content:center;margin-left:auto;padding:2px 6px;border-radius:5px;border:1px solid rgba(154,168,187,.2);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#a9b5c4;background:rgba(255,255,255,.01)}
 .sidebar-feature:hover,.sidebar-tools a:hover,.sidebar-account:hover,.sidebar-new:hover{background:rgba(255,255,255,.02)}
 .sidebar-new{margin-top:4px;background:rgba(255,255,255,.01);border-color:rgba(255,255,255,.06)}
-.history-search{margin-top:10px}
-.history-search input{width:100%;height:32px;border:1px solid rgba(154,168,187,.26);background:#0a0e12;color:#edf3ff;border-radius:8px;padding:0 10px;box-sizing:border-box;font-size:12px;outline:none}
-.history-search input::placeholder{color:#7b8798}
-
+.history-search{display:none!important}
 .sidebar-history{margin-top:12px;border-top:1px solid rgba(154,168,187,.12);padding-top:10px}
 .sidebar-section-title{display:flex;align-items:center;justify-content:space-between;padding:0 6px 8px;color:#7f8ea3;font-size:9px;letter-spacing:.18em;text-transform:uppercase}
 .sidebar-section-title h2{font-size:9px;font-weight:600;margin:0;color:#7f8ea3;letter-spacing:.18em;text-transform:uppercase}
 .sidebar-section-title span{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#7f8ea3}
 .sidebar-history-list{display:flex;flex-direction:column;gap:6px;padding-top:2px}
 .history-item{display:none}
-
 .sidebar-tools{margin-top:auto;padding-top:12px;border-top:1px solid rgba(154,168,187,.18)}
 #workspace-theme-toggle,#open-account{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid rgba(154,168,187,.18);background:transparent;color:#edf3ff;box-sizing:border-box;font-size:12px;cursor:pointer;white-space:nowrap}
 #workspace-theme-toggle{margin-top:6px}
 #workspace-theme-toggle .theme-sky,#workspace-theme-toggle .theme-moon,#workspace-theme-toggle .theme-sun,.profile-avatar{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#0d1219;border:1px solid rgba(154,168,187,.2);color:#dfeaf9;font-size:10px;flex-shrink:0}
 #open-account .profile-avatar{background:#0d1219;border-color:rgba(154,168,187,.2);color:#dfeaf9}
 #open-account .profile-avatar, #workspace-theme-toggle .theme-sky{display:inline-flex}
-
-.workspace-sidebar .brand strong,
-.workspace-sidebar .sidebar-feature .sidebar-label,
-.workspace-sidebar .history-search,
-.workspace-sidebar .sidebar-history,
-.workspace-sidebar .sidebar-tools,
-.workspace-sidebar #workspace-theme-toggle,
-.workspace-sidebar #open-account{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,visibility .18s ease}
-.workspace-sidebar:hover .brand strong,
-.workspace-sidebar:hover .sidebar-feature .sidebar-label,
-.workspace-sidebar:hover .history-search,
-.workspace-sidebar:hover .sidebar-history,
-.workspace-sidebar:hover .sidebar-tools,
-.workspace-sidebar:hover #workspace-theme-toggle,
-.workspace-sidebar:hover #open-account,
-.workspace-sidebar:focus-within .brand strong,
-.workspace-sidebar:focus-within .sidebar-feature .sidebar-label,
-.workspace-sidebar:focus-within .history-search,
-.workspace-sidebar:focus-within .sidebar-history,
-.workspace-sidebar:focus-within .sidebar-tools,
-.workspace-sidebar:focus-within #workspace-theme-toggle,
-.workspace-sidebar:focus-within #open-account{opacity:1;visibility:visible;pointer-events:auto}
-
-@media(max-width:900px){
-  .section-intro{padding-top:64px}
-  .section-intro h1{font-size:clamp(44px,8vw,84px)}
-}
-@media(max-width:660px){
-  .workspace-sidebar{position:relative;width:100%;height:auto;border-right:none;border-bottom:1px solid rgba(157,170,189,.22)}
-  .section-intro{padding-top:40px}
-  .log-composer{flex-direction:column;align-items:stretch}
-  #dashboard-explain-btn{position:static;width:100%}
-}
+.workspace-sidebar .brand strong,.workspace-sidebar .sidebar-feature .sidebar-label,.workspace-sidebar .sidebar-history,.workspace-sidebar .sidebar-tools,.workspace-sidebar #workspace-theme-toggle,.workspace-sidebar #open-account{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,visibility .18s ease}
+.workspace-sidebar:hover .brand strong,.workspace-sidebar:hover .sidebar-feature .sidebar-label,.workspace-sidebar:hover .sidebar-history,.workspace-sidebar:hover .sidebar-tools,.workspace-sidebar:hover #workspace-theme-toggle,.workspace-sidebar:hover #open-account,.workspace-sidebar:focus-within .brand strong,.workspace-sidebar:focus-within .sidebar-feature .sidebar-label,.workspace-sidebar:focus-within .sidebar-history,.workspace-sidebar:focus-within .sidebar-tools,.workspace-sidebar:focus-within #workspace-theme-toggle,.workspace-sidebar:focus-within #open-account{opacity:1;visibility:visible;pointer-events:auto}
+@media(max-width:900px){.section-intro{padding-top:64px}.section-intro h1{font-size:clamp(44px,8vw,84px)}}
+@media(max-width:660px){.workspace-sidebar{position:relative;width:100%;height:auto;border-right:none;border-bottom:1px solid rgba(157,170,189,.22)}.section-intro{padding-top:40px}.log-composer{flex-direction:column;align-items:stretch}#dashboard-explain-btn{position:static;width:100%}}
