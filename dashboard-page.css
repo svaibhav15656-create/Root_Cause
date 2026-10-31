@@ -4,7 +4,6 @@ html,body{background:#000!important;color:#edf1f5!important}
 body{margin:0;overflow-x:hidden}
 button,input,textarea{font:inherit}
 
-/* hide the non-reference sections */
 header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .section-intro,#security-review,#continuous-monitoring,.explain-results{display:none!important}
 
 .page-content{margin-left:0;min-height:100vh;background:#000}
@@ -15,13 +14,12 @@ header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .sec
 .section-intro{margin:0 0 18px;padding-top:72px}
 .section-intro h1{margin:0 auto 18px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(54px,5vw,110px);line-height:.96;letter-spacing:-.08em;font-weight:400;color:#f3f4f6;text-align:center}
 .section-intro .cover-wave{display:inline-block}
-.log-composer{display:flex;align-items:flex-end;gap:14px;width:min(100%,720px);margin:0 auto}
-#dashboard-log-input{flex:1;min-height:150px;border:1px solid rgba(157,170,189,.35);border-radius:10px;background:rgba(11,12,15,.78);color:#edf2ff;padding:16px 18px;font-size:14px;line-height:1.5;resize:vertical;box-shadow:none;outline:none;min-width:0}
+.log-composer{position:relative;display:flex;align-items:flex-end;gap:14px;width:min(100%,720px);margin:0 auto;padding:0}
+#dashboard-log-input{flex:1;min-height:150px;border:1px solid rgba(157,170,189,.35);border-radius:10px;background:rgba(11,12,15,.78);color:#edf2ff;padding:16px 18px 52px;font-size:14px;line-height:1.5;resize:vertical;box-shadow:none;outline:none;min-width:0}
 #dashboard-log-input::placeholder{color:#687889;opacity:1}
-#dashboard-explain-btn{flex-shrink:0;min-width:150px;height:42px;border-radius:10px;border:1px solid rgba(122,171,221,.75);background:transparent;color:#dfeaf9;font-size:13px;font-weight:500;box-shadow:none;margin-bottom:4px;cursor:pointer}
+#dashboard-explain-btn{position:absolute;right:14px;bottom:12px;min-width:150px;height:42px;border-radius:10px;border:1px solid rgba(122,171,221,.75);background:transparent;color:#dfeaf9;font-size:13px;font-weight:500;box-shadow:none;cursor:pointer}
 .explanation-caveat{max-width:680px;margin:22px auto 0;text-align:center;font-size:12px;line-height:1.5;color:#8a93a5}
 
-/* collapsed IDE-style sidebar */
 .workspace-sidebar{position:fixed;left:0;top:0;bottom:0;width:52px;background:#000;border-right:1px solid rgba(157,170,189,.18);padding:10px 8px 12px;box-sizing:border-box;display:flex;flex-direction:column;z-index:20;overflow:hidden;transition:width .18s ease}
 .workspace-sidebar:hover,.workspace-sidebar:focus-within{width:220px}
 .workspace-sidebar .brand{display:flex;align-items:center;gap:8px;padding:2px 0 12px 4px;color:#edf3ff;text-decoration:none;font-weight:500;white-space:nowrap}
@@ -58,7 +56,6 @@ header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .sec
 #open-account .profile-avatar{background:#0d1219;border-color:rgba(154,168,187,.2);color:#dfeaf9}
 #open-account .profile-avatar, #workspace-theme-toggle .theme-sky{display:inline-flex}
 
-/* show collapsed mini rail icons when sidebar is closed */
 .workspace-sidebar .brand strong,
 .workspace-sidebar .sidebar-feature .sidebar-label,
 .workspace-sidebar .history-search,
@@ -90,5 +87,5 @@ header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .sec
   .workspace-sidebar{position:relative;width:100%;height:auto;border-right:none;border-bottom:1px solid rgba(157,170,189,.22)}
   .section-intro{padding-top:40px}
   .log-composer{flex-direction:column;align-items:stretch}
-  #dashboard-explain-btn{width:100%}
+  #dashboard-explain-btn{position:static;width:100%}
 }
