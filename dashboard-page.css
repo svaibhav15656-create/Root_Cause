@@ -1,11 +1,9 @@
 :root{color-scheme:light;--paper:#f5f7f3;--surface:#fff;--ink:#243128;--muted:#738076;--line:#dfe5dc;--green:#26392d;--green-soft:#e8efe7;--accent:#6f8e74;--danger:#a14840;--danger-line:#d99c95;--danger-soft:#f3d8d4;--warning:#b9743a;--warning-soft:#f0d5b1;--shadow:0 18px 36px rgba(15,23,20,.08)}
-
-html,body{background:#000!important;color:#edf1f5!important}
-body{margin:0;overflow-x:hidden}
+html,body{background:#000!important;color:#edf1f5!important} 
+body{margin:0;overflow-x:hidden} 
 button,input,textarea{font:inherit}
 
 header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .section-intro,#security-review,#continuous-monitoring,.explain-results{display:none!important}
-
 .page-content{margin-left:0;min-height:100vh;background:#000}
 #explain{display:block!important}
 .product-section.explain-section{display:block!important;padding:0;background:#000;min-height:100vh}
@@ -82,7 +80,6 @@ header.topbar,.workspace-status,.site-footer,.site-footer a,#review,#review .sec
   .section-intro{padding-top:64px}
   .section-intro h1{font-size:clamp(44px,8vw,84px)}
 }
-
 @media(max-width:660px){
   .workspace-sidebar{position:relative;width:100%;height:auto;border-right:none;border-bottom:1px solid rgba(157,170,189,.22)}
   .section-intro{padding-top:40px}
