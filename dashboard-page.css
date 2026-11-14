@@ -2291,12 +2291,39 @@ body[data-theme="light"] {
     --shadow: none !important
 }
 
+/* ── Cloud Field WebGL background canvas ── */
+.cloud-field-canvas {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+    display: block !important;
+}
+
+/* Soft bottom-radial vignette that merges the canvas into the sidebar / UI */
+.cloud-field-vignette {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+    background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(5,5,16,.45) 0%, transparent 70%) !important;
+}
+
 .workspace-sidebar,
 .topbar,
 .page-content,
 .product-section,
 .site-footer {
-    background: #000 !important
+    background: transparent !important
+}
+
+/* sidebar keeps its own dark surface so it stays readable */
+.workspace-sidebar {
+    background: rgba(8,8,12,.82) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
 }
 
 .workspace-sidebar {
@@ -2319,7 +2346,7 @@ body[data-theme="light"] {
 .topbar button {
     border: 1px solid #303136 !important;
     border-radius: 6px !important;
-    background: #000 !important;
+    background: rgba(10,10,14,.85) !important;
     color: #eeeeef !important;
     box-shadow: none !important
 }
@@ -2329,7 +2356,7 @@ body[data-theme="light"] {
 .page-content .button:hover:not(:disabled),
 .topbar button:hover:not(:disabled) {
     border-color: #5a5b61 !important;
-    background: #0a0a0a !important;
+    background: rgba(16,16,20,.9) !important;
     box-shadow: none !important
 }
 
@@ -2365,7 +2392,7 @@ body[data-theme="light"] {
 .explain-input-area textarea,
 .history-search input {
     border-color: #292a2e !important;
-    background: #000 !important;
+    background: rgba(10,10,14,.75) !important;
     box-shadow: none !important
 }
 
@@ -2375,7 +2402,7 @@ body[data-theme="light"] {
 }
 
 .account-trigger.sidebar-account {
-    background: #000 !important
+    background: transparent !important
 }
 
 .workspace-status {
@@ -2395,7 +2422,9 @@ body[data-theme="light"] {
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    background: #000 !important
+    background: transparent !important;
+    position: relative;
+    z-index: 2
 }
 
 .explain-section {
@@ -2427,7 +2456,9 @@ body[data-theme="light"] {
 .section-intro h1 {
     margin: 0;
     font-size: clamp(48px, 6vw, 76px);
-    line-height: 1.02
+    line-height: 1.02;
+    color: #f0f0f4;
+    text-shadow: 0 2px 32px rgba(140,100,230,0.18)
 }
 
 .explain-input-area textarea {
@@ -2626,17 +2657,19 @@ body[data-theme="light"] {
     width: 100% !important;
     max-width: 720px;
     margin: 0 auto;
-    border: 1px solid #272a31 !important;
+    border: 1px solid rgba(100,90,160,.35) !important;
     border-radius: 26px !important;
-    background: #0a0b0e !important;
+    background: rgba(10,10,20,.72) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
     padding: 14px 16px 10px 18px !important;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 4px 32px rgba(80,50,160,0.18), 0 2px 8px rgba(0,0,0,0.5) !important;
     transition: border-color .2s ease, box-shadow .2s ease;
 }
 
 .log-composer:focus-within {
-    border-color: #4a5160 !important;
-    box-shadow: 0 0 0 1px #4a5160, 0 8px 30px rgba(0,0,0,0.6) !important;
+    border-color: rgba(140,100,230,.7) !important;
+    box-shadow: 0 0 0 1px rgba(140,100,230,.4), 0 8px 40px rgba(80,50,160,0.28), 0 2px 8px rgba(0,0,0,0.5) !important;
 }
 
 .log-composer textarea {

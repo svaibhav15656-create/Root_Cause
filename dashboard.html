@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -8,13 +8,18 @@
   <meta name="description"
     content="Explain one error at a time with RootCause. Plus and Prime plans are opening after early access.">
   <title>RootCause · Workspace</title>
-  <link rel="stylesheet" href="/site-theme.css?v=20261115-prompt-input">
-  <link rel="stylesheet" href="/dashboard-page.css?v=20261115-prompt-input">
+  <link rel="stylesheet" href="/site-theme.css?v=20261115-cloud">
+  <link rel="stylesheet" href="/dashboard-page.css?v=20261115-cloud">
   <script src="/razorpay-checkout-client.js?v=20261019-billing-v1" defer></script>
-  <script src="/dashboard-app.js?v=20261115-prompt-input" defer></script>
+  <script src="/dashboard-app.js?v=20261115-cloud" defer></script>
+  <script src="/cloud-field.js?v=20261115-cloud" defer></script>
 </head>
 
 <body>
+  <!-- Cloud Field WebGL Background Canvas -->
+  <canvas id="cloud-canvas" class="cloud-field-canvas" aria-hidden="true"></canvas>
+  <div class="cloud-field-vignette" aria-hidden="true"></div>
+
   <aside class="workspace-sidebar" aria-label="Workspace navigation">
     <a class="brand" href="#explain"
       aria-label="RootCause workspace"><b>r<span>.</span></b><strong>rootcause</strong></a>
