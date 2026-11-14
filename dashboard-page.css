@@ -3911,3 +3911,57 @@ body[data-theme="light"] .sun-moon-toggle {
         animation: none !important;
     }
 }
+
+/* ── 4. FEATURE PAGES (Code Security Review & Continuous Monitoring) ── */
+.feature-page {
+    position: relative !important;
+    z-index: 2 !important;
+    background: transparent !important;
+    color: #ede9fe !important;
+}
+
+.feature-page .feature-hero h1 {
+    color: #f8fafc !important;
+    text-shadow: 0 4px 40px rgba(124, 58, 237, 0.35) !important;
+}
+
+.feature-page .feature-hero h1 em {
+    color: #c4b5fd !important;
+}
+
+.feature-page .feature-hero p {
+    color: rgba(237, 233, 254, 0.75) !important;
+}
+
+.feature-page .feature-grid h2 {
+    color: #f8fafc !important;
+}
+
+.feature-page .feature-grid li {
+    color: rgba(237, 233, 254, 0.72) !important;
+}
+
+.feature-page .feature-grid strong {
+    color: #ffffff !important;
+}
+
+.feature-page .feature-preview {
+    background: rgba(10, 8, 24, 0.72) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(139, 92, 246, 0.28) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+}
+
+.feature-page .launch-notice {
+    border-top: 1px solid rgba(139, 92, 246, 0.2) !important;
+}
+
+.feature-page .launch-notice h2 {
+    color: #f8fafc !important;
+}
+
+.feature-page .launch-notice p {
+    color: rgba(237, 233, 254, 0.65) !important;
+}

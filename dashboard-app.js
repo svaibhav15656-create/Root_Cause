@@ -1,120 +1,212 @@
+
 'use strict';
-const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
-async function api(path,options={}){const headers={...(options.body instanceof FormData?{}:{'content-type':'application/json'}),...(options.headers||{})};const response=await fetch(path,{credentials:'same-origin',...options,headers});let data={};try{data=await response.json()}catch{}if(!response.ok){if(response.status===401&&path!=='/api/login')location.assign('/?login=1');throw new Error(data.error||'The request could not be completed.')}return data}
-function status(node,message,error=false){node.textContent=message;node.classList.toggle('error-message',error)}
-function setTheme(){const saved=JSON.parse(localStorage.getItem('rootcause-appearance')||'{}'),mode=saved.dashboardTheme||'system',dark=mode==='dark'||(mode==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);document.body.dataset.theme=dark?'dark':'light';document.documentElement.classList.toggle('dark',dark);document.body.classList.toggle('high-contrast',saved.highContrast==='on');$('#dashboard-theme').value=mode;$('#explorer-theme').value=saved.explorerTheme||'match';$('#high-contrast').value=saved.highContrast||'off';paintThemeToggle(dark)}
-function paintThemeToggle(dark){const toggle=$('#workspace-theme-toggle');if(!toggle)return;toggle.dataset.state=dark?'dark':'light';toggle.setAttribute('aria-label',dark?'Switch to light theme':'Switch to dark theme');toggle.classList.remove('is-swapping');void toggle.offsetWidth;toggle.classList.add('is-swapping')}
-function toggleWorkspaceTheme(){const saved=JSON.parse(localStorage.getItem('rootcause-appearance')||'{}'),next=document.body.dataset.theme==='dark'?'light':'dark';saved.dashboardTheme=next;localStorage.setItem('rootcause-appearance',JSON.stringify(saved));document.body.classList.add('theme-fade');setTheme();setTimeout(()=>document.body.classList.remove('theme-fade'),950)}
-function saveTheme(){localStorage.setItem('rootcause-appearance',JSON.stringify({dashboardTheme:$('#dashboard-theme').value,explorerTheme:$('#explorer-theme').value,highContrast:$('#high-contrast').value}));setTheme()}
-function toggleAccount(open,page='general'){const overlay=$('#account-page'),layout=$('#account-layout');overlay.hidden=!open;document.body.classList.toggle('account-open',open);if(open){selectAccountPage(page);$('#close-account').focus()}else{$('#open-account').focus();layout.classList.remove('mobile-detail')}}
-function selectAccountPage(page){if(!$$(`[data-account-panel="${page}"]`).length)page='general';for(const p of $$('[data-account-panel]'))p.hidden=p.dataset.accountPanel!==page;for(const b of $$('[data-account-page]')){const active=b.dataset.accountPage===page;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false')}if(matchMedia('(max-width: 620px)').matches)$('#account-layout').classList.add('mobile-detail');$('#account-back').hidden=!matchMedia('(max-width: 620px)').matches}
-function closeDialogs(){for(const d of $$('dialog[open]'))d.close()}
-$('#open-account').addEventListener('click',()=>toggleAccount(true));$('#close-account').addEventListener('click',()=>toggleAccount(false));
-$('#workspace-theme-toggle').addEventListener('click',toggleWorkspaceTheme);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#account-page').hidden&&!document.querySelector('dialog[open]'))toggleAccount(false)});
-for(const button of $$('[data-account-page]'))button.addEventListener('click',()=>selectAccountPage(button.dataset.accountPage));
-$('#account-back').addEventListener('click',()=>$('#account-layout').classList.remove('mobile-detail'));
-$$('[data-open-api-keys]').forEach(button=>button.addEventListener('click',()=>{selectAccountPage('security');$('#api-keys-card').scrollIntoView({behavior:'smooth',block:'start'})}));
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n };
+async function api(path, options = {}) { const headers = { ...(options.body instanceof FormData ? {} : { 'content-type': 'application/json' }), ...(options.headers || {}) }; const response = await fetch(path, { credentials: 'same-origin', ...options, headers }); let data = {}; try { data = await response.json() } catch { } if (!response.ok) { if (response.status === 401 && path !== '/api/login') location.assign('/?login=1'); throw new Error(data.error || 'The request could not be completed.') } return data }
+function status(node, message, error = false) { node.textContent = message; node.classList.toggle('error-message', error) }
+function setTheme() { const saved = JSON.parse(localStorage.getItem('rootcause-appearance') || '{}'), mode = saved.dashboardTheme || 'system', dark = mode === 'dark' || (mode === 'system' && matchMedia('(prefers-color-scheme: dark)').matches); document.body.dataset.theme = dark ? 'dark' : 'light'; document.documentElement.classList.toggle('dark', dark); document.body.classList.toggle('high-contrast', saved.highContrast === 'on'); $('#dashboard-theme').value = mode; $('#explorer-theme').value = saved.explorerTheme || 'match'; $('#high-contrast').value = saved.highContrast || 'off'; paintThemeToggle(dark) }
+function paintThemeToggle(dark) { const toggle = $('#workspace-theme-toggle'); if (!toggle) return; toggle.dataset.state = dark ? 'dark' : 'light'; toggle.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme'); toggle.classList.remove('is-swapping'); void toggle.offsetWidth; toggle.classList.add('is-swapping') }
+function toggleWorkspaceTheme() { const saved = JSON.parse(localStorage.getItem('rootcause-appearance') || '{}'), next = document.body.dataset.theme === 'dark' ? 'light' : 'dark'; saved.dashboardTheme = next; localStorage.setItem('rootcause-appearance', JSON.stringify(saved)); document.body.classList.add('theme-fade'); setTheme(); setTimeout(() => document.body.classList.remove('theme-fade'), 950) }
+function saveTheme() { localStorage.setItem('rootcause-appearance', JSON.stringify({ dashboardTheme: $('#dashboard-theme').value, explorerTheme: $('#explorer-theme').value, highContrast: $('#high-contrast').value })); setTheme() }
+function toggleAccount(open, page = 'general') { const overlay = $('#account-page'), layout = $('#account-layout'); overlay.hidden = !open; document.body.classList.toggle('account-open', open); if (open) { selectAccountPage(page); $('#close-account').focus() } else { $('#open-account').focus(); layout.classList.remove('mobile-detail') } }
+function selectAccountPage(page) { if (!$$(`[data-account-panel="${page}"]`).length) page = 'general'; for (const p of $$('[data-account-panel]')) p.hidden = p.dataset.accountPanel !== page; for (const b of $$('[data-account-page]')) { const active = b.dataset.accountPage === page; b.classList.toggle('active', active); b.setAttribute('aria-current', active ? 'page' : 'false') } if (matchMedia('(max-width: 620px)').matches) $('#account-layout').classList.add('mobile-detail'); $('#account-back').hidden = !matchMedia('(max-width: 620px)').matches }
+function closeDialogs() { for (const d of $$('dialog[open]')) d.close() }
+$('#open-account').addEventListener('click', () => toggleAccount(true)); $('#close-account').addEventListener('click', () => toggleAccount(false));
+$('#workspace-theme-toggle').addEventListener('click', toggleWorkspaceTheme);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#account-page').hidden && !document.querySelector('dialog[open]')) toggleAccount(false) });
+for (const button of $$('[data-account-page]')) button.addEventListener('click', () => selectAccountPage(button.dataset.accountPage));
+$('#account-back').addEventListener('click', () => $('#account-layout').classList.remove('mobile-detail'));
+$$('[data-open-api-keys]').forEach(button => button.addEventListener('click', () => { selectAccountPage('security'); $('#api-keys-card').scrollIntoView({ behavior: 'smooth', block: 'start' }) }));
 
-const mainLinks=$$('[data-main-link]'),sections=mainLinks.map(a=>document.getElementById(a.dataset.mainLink));
-const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){for(const link of mainLinks){const active=link.hash===`#${entry.target.id}`;link.classList.toggle('active',active);if(active)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')}}},{rootMargin:'-20% 0px -65% 0px'});
-sections.forEach(section=>observer.observe(section));mainLinks.forEach(link=>link.addEventListener('click',e=>{e.preventDefault();document.querySelector(link.hash).scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'',link.hash)}));
+const mainLinks = $$('[data-main-link]'), sections = mainLinks.map(a => document.getElementById(a.dataset.mainLink)).filter(Boolean);
+const observer = new IntersectionObserver(entries => { for (const entry of entries) if (entry.isIntersecting) { for (const link of mainLinks) { const active = link.hash === `#${entry.target.id}`; link.classList.toggle('active', active); if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current') } } }, { rootMargin: '-20% 0px -65% 0px' });
+sections.forEach(section => observer.observe(section));
+mainLinks.forEach(link => link.addEventListener('click', e => {
+  e.preventDefault();
+  const targetId = link.dataset.mainLink;
+  if (targetId === 'explain' || targetId === 'review') {
+    showWorkspaceView('explain');
+  }
+  const target = document.querySelector(link.hash);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState(null, '', link.hash);
+  }
+}));
 
-async function loadProfile(){const [me,profile]=await Promise.all([api('/api/me'),api('/api/profile')]);$('#profile-name').value=profile.name||me.user.name||'';$('#profile-email').value=profile.email;paintAvatar(profile.avatarData,profile.name||me.user.name||profile.email);$('#github-access').hidden=false;$('#github-login-method').textContent=profile.githubUsername?`GitHub repository access · @${profile.githubUsername}`:'Connect GitHub to review private repositories.';$('#github-disconnect').hidden=!profile.githubUsername;$('#totp-status').textContent=profile.twoFactorEnabled?'Enabled':'Disabled';$('#totp-enable').hidden=profile.twoFactorEnabled;$('#totp-disable').hidden=!profile.twoFactorEnabled;return profile}
-function paintAvatar(data,name){const nodes=[$('#profile-avatar'),$('#header-avatar')];for(const node of nodes){node.replaceChildren();if(data){const image=document.createElement('img');image.src=data;image.alt='';node.append(image)}else node.textContent=(name||'R').trim().slice(0,1).toUpperCase()}}
-$('#profile-form').addEventListener('submit',async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;try{await api('/api/profile',{method:'PUT',body:JSON.stringify({name:$('#profile-name').value})});status($('#profile-status'),'Name saved.');await loadProfile()}catch(err){status($('#profile-status'),err.message,true)}finally{button.disabled=false}});
-$('#email-form').addEventListener('submit',async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;try{await api('/api/profile/email',{method:'PUT',body:JSON.stringify({email:$('#profile-email').value,currentPassword:$('#email-current-password').value})});$('#email-current-password').value='';status($('#profile-status'),'Email updated.');await loadProfile()}catch(err){status($('#profile-status'),err.message,true)}finally{button.disabled=false}});
-$('#avatar-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;if(file.size>1024*1024){status($('#profile-status'),'Choose an image no larger than 1 MB.',true);e.target.value='';return}try{const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)});await api('/api/profile/avatar',{method:'PUT',body:JSON.stringify({avatarData:data})});status($('#profile-status'),'Avatar saved.');await loadProfile()}catch(err){status($('#profile-status'),err.message,true)}finally{e.target.value=''}});
-$('#remove-avatar').addEventListener('click',async()=>{try{await api('/api/profile/avatar',{method:'DELETE'});status($('#profile-status'),'Avatar removed.');await loadProfile()}catch(err){status($('#profile-status'),err.message,true)}});
-for(const input of [$('#dashboard-theme'),$('#explorer-theme'),$('#high-contrast')])input.addEventListener('change',saveTheme);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if($('#dashboard-theme').value==='system')setTheme()});
+async function loadProfile() { const [me, profile] = await Promise.all([api('/api/me'), api('/api/profile')]); $('#profile-name').value = profile.name || me.user.name || ''; $('#profile-email').value = profile.email; paintAvatar(profile.avatarData, profile.name || me.user.name || profile.email); $('#github-access').hidden = false; $('#github-login-method').textContent = profile.githubUsername ? `GitHub repository access · @${profile.githubUsername}` : 'Connect GitHub to review private repositories.'; $('#github-disconnect').hidden = !profile.githubUsername; $('#totp-status').textContent = profile.twoFactorEnabled ? 'Enabled' : 'Disabled'; $('#totp-enable').hidden = profile.twoFactorEnabled; $('#totp-disable').hidden = !profile.twoFactorEnabled; return profile }
+function paintAvatar(data, name) { const nodes = [$('#profile-avatar'), $('#header-avatar')]; for (const node of nodes) { node.replaceChildren(); if (data) { const image = document.createElement('img'); image.src = data; image.alt = ''; node.append(image) } else node.textContent = (name || 'R').trim().slice(0, 1).toUpperCase() } }
+$('#profile-form').addEventListener('submit', async e => { e.preventDefault(); const button = e.submitter; button.disabled = true; try { await api('/api/profile', { method: 'PUT', body: JSON.stringify({ name: $('#profile-name').value }) }); status($('#profile-status'), 'Name saved.'); await loadProfile() } catch (err) { status($('#profile-status'), err.message, true) } finally { button.disabled = false } });
+$('#email-form').addEventListener('submit', async e => { e.preventDefault(); const button = e.submitter; button.disabled = true; try { await api('/api/profile/email', { method: 'PUT', body: JSON.stringify({ email: $('#profile-email').value, currentPassword: $('#email-current-password').value }) }); $('#email-current-password').value = ''; status($('#profile-status'), 'Email updated.'); await loadProfile() } catch (err) { status($('#profile-status'), err.message, true) } finally { button.disabled = false } });
+$('#avatar-file').addEventListener('change', async e => { const file = e.target.files[0]; if (!file) return; if (file.size > 1024 * 1024) { status($('#profile-status'), 'Choose an image no larger than 1 MB.', true); e.target.value = ''; return } try { const data = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file) }); await api('/api/profile/avatar', { method: 'PUT', body: JSON.stringify({ avatarData: data }) }); status($('#profile-status'), 'Avatar saved.'); await loadProfile() } catch (err) { status($('#profile-status'), err.message, true) } finally { e.target.value = '' } });
+$('#remove-avatar').addEventListener('click', async () => { try { await api('/api/profile/avatar', { method: 'DELETE' }); status($('#profile-status'), 'Avatar removed.'); await loadProfile() } catch (err) { status($('#profile-status'), err.message, true) } });
+for (const input of [$('#dashboard-theme'), $('#explorer-theme'), $('#high-contrast')]) input.addEventListener('change', saveTheme); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if ($('#dashboard-theme').value === 'system') setTheme() });
 
-$('#password-form').addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,values=Object.fromEntries(new FormData(form));if(values.newPassword!==values.confirmPassword){status($('#password-status'),'The new passwords do not match.',true);return}const button=e.submitter;button.disabled=true;try{await api('/api/account/password',{method:'POST',body:JSON.stringify(values)});form.reset();status($('#password-status'),'Password updated. Other active sessions have been signed out.')}catch(err){status($('#password-status'),err.message,true)}finally{button.disabled=false}});
+$('#password-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.currentTarget, values = Object.fromEntries(new FormData(form)); if (values.newPassword !== values.confirmPassword) { status($('#password-status'), 'The new passwords do not match.', true); return } const button = e.submitter; button.disabled = true; try { await api('/api/account/password', { method: 'POST', body: JSON.stringify(values) }); form.reset(); status($('#password-status'), 'Password updated. Other active sessions have been signed out.') } catch (err) { status($('#password-status'), err.message, true) } finally { button.disabled = false } });
 
-$('#github-disconnect').addEventListener('click',async()=>{if(!confirm('Disconnect GitHub repository access?'))return;try{await api('/api/integrations/github',{method:'DELETE'});await loadProfile()}catch(err){status($('#github-login-method'),err.message,true)}});
-$('#add-github-credential').addEventListener('click',()=>{$('#github-token-form').hidden=!$('#github-token-form').hidden});
-$('#github-token-form').addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,button=e.submitter;button.disabled=true;try{await api('/api/integrations/github/token',{method:'POST',body:JSON.stringify({token:new FormData(form).get('token')})});form.reset();form.hidden=true;status($('#github-token-status'),'GitHub credential saved securely.');await loadProfile()}catch(err){status($('#github-token-status'),err.message,true)}finally{button.disabled=false}});
-$('#totp-enable').addEventListener('click',async()=>{try{const data=await api('/api/account/totp/setup',{method:'POST'});$('#totp-instructions').textContent=`Add this secret to your authenticator app: ${data.secret}. Then enter the current 6-digit code.`;$('#totp-form').hidden=false;$('#totp-enable').disabled=true}catch(err){status($('#totp-status-message'),err.message,true)}});
-$('#totp-form').addEventListener('submit',async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;try{await api('/api/account/totp/enable',{method:'POST',body:JSON.stringify({code:new FormData(e.currentTarget).get('code')})});e.currentTarget.reset();e.currentTarget.hidden=true;status($('#totp-status-message'),'Two-factor authentication is enabled.');await loadProfile()}catch(err){status($('#totp-status-message'),err.message,true)}finally{button.disabled=false}});
-$('#totp-disable').addEventListener('click',async()=>{const password=prompt('Enter your password to disable two-factor authentication.');if(!password)return;const code=prompt('Enter the current authenticator code.');if(!code)return;try{await api('/api/account/totp',{method:'DELETE',body:JSON.stringify({password,code})});status($('#totp-status-message'),'Two-factor authentication disabled.');await loadProfile()}catch(err){status($('#totp-status-message'),err.message,true)}});
+$('#github-disconnect').addEventListener('click', async () => { if (!confirm('Disconnect GitHub repository access?')) return; try { await api('/api/integrations/github', { method: 'DELETE' }); await loadProfile() } catch (err) { status($('#github-login-method'), err.message, true) } });
+$('#add-github-credential').addEventListener('click', () => { $('#github-token-form').hidden = !$('#github-token-form').hidden });
+$('#github-token-form').addEventListener('submit', async e => { e.preventDefault(); const form = e.currentTarget, button = e.submitter; button.disabled = true; try { await api('/api/integrations/github/token', { method: 'POST', body: JSON.stringify({ token: new FormData(form).get('token') }) }); form.reset(); form.hidden = true; status($('#github-token-status'), 'GitHub credential saved securely.'); await loadProfile() } catch (err) { status($('#github-token-status'), err.message, true) } finally { button.disabled = false } });
+$('#totp-enable').addEventListener('click', async () => { try { const data = await api('/api/account/totp/setup', { method: 'POST' }); $('#totp-instructions').textContent = `Add this secret to your authenticator app: ${data.secret}. Then enter the current 6-digit code.`; $('#totp-form').hidden = false; $('#totp-enable').disabled = true } catch (err) { status($('#totp-status-message'), err.message, true) } });
+$('#totp-form').addEventListener('submit', async e => { e.preventDefault(); const button = e.submitter; button.disabled = true; try { await api('/api/account/totp/enable', { method: 'POST', body: JSON.stringify({ code: new FormData(e.currentTarget).get('code') }) }); e.currentTarget.reset(); e.currentTarget.hidden = true; status($('#totp-status-message'), 'Two-factor authentication is enabled.'); await loadProfile() } catch (err) { status($('#totp-status-message'), err.message, true) } finally { button.disabled = false } });
+$('#totp-disable').addEventListener('click', async () => { const password = prompt('Enter your password to disable two-factor authentication.'); if (!password) return; const code = prompt('Enter the current authenticator code.'); if (!code) return; try { await api('/api/account/totp', { method: 'DELETE', body: JSON.stringify({ password, code }) }); status($('#totp-status-message'), 'Two-factor authentication disabled.'); await loadProfile() } catch (err) { status($('#totp-status-message'), err.message, true) } });
 
-const keyDialog=$('#key-dialog');
-async function loadApiKeys(){try{const data=await api('/api/keys'),container=$('#api-key-list'),select=$('#test-log-key');container.replaceChildren();select.replaceChildren();$('#keys-empty').hidden=!!data.keys.length;if(!data.keys.length)select.append(new Option('Create an API key first',''));for(const key of data.keys){const option=new Option(key.name,key.appId);select.append(option);const row=el('article','api-key-row'),name=el('div'),title=el('strong','',key.name),date=el('small','',`Created ${new Date(key.createdAt).toLocaleDateString()}`),mask=el('code','',`••••${key.lastFour}`),remove=el('button','button outline danger-button','Remove');name.append(title,date);remove.addEventListener('click',async()=>{if(!confirm(`Remove the API key for ${key.name}? Logs sent with it will be rejected.`))return;remove.disabled=true;try{await api(`/api/keys/${encodeURIComponent(key.id)}`,{method:'DELETE'});await loadApiKeys()}catch(err){status($('#key-status'),err.message,true);remove.disabled=false}});row.append(name,mask,remove);container.append(row)}$('#send-test-log').disabled=!data.keys.length}catch(err){status($('#key-status'),err.message,true)}}
-$('#create-api-key').addEventListener('click',()=>{keyDialog.showModal();$('#api-key-form').hidden=false;$('#new-key-panel').hidden=true;status($('#key-status'),'');$('#api-key-form').reset()});
-$('#api-key-form').addEventListener('submit',async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;try{const data=await api('/api/keys',{method:'POST',body:JSON.stringify({name:new FormData(e.currentTarget).get('name')})});$('#new-key-value').textContent=data.apiKey;$('#api-key-form').hidden=true;$('#new-key-panel').hidden=false;status($('#key-status'),'');await loadApiKeys()}catch(err){status($('#key-status'),err.message,true)}finally{button.disabled=false}});
-$('#copy-new-key').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#new-key-value').textContent);status($('#key-status'),'Copied. Save it in your server environment now.')}catch{status($('#key-status'),'Copy is unavailable. Select the key and copy it manually.',true)}});
-$('#key-finished').addEventListener('click',()=>keyDialog.close());
-$('#test-log-key').addEventListener('change',e=>$('#send-test-log').disabled=!e.target.value);
-$('#send-test-log').addEventListener('click',async e=>{const button=e.currentTarget,appId=$('#test-log-key').value;if(!appId)return;button.disabled=true;status($('#test-log-status'),'Sending test error…');try{await api(`/api/apps/${encodeURIComponent(appId)}/test-log`,{method:'POST'});status($('#test-log-status'),'Test error accepted. It will appear in Monitoring → Logs when monitoring launches.')}catch(err){status($('#test-log-status'),err.message,true)}finally{button.disabled=!$('#test-log-key').value}});
+const keyDialog = $('#key-dialog');
+async function loadApiKeys() { try { const data = await api('/api/keys'), container = $('#api-key-list'), select = $('#test-log-key'); container.replaceChildren(); select.replaceChildren(); $('#keys-empty').hidden = !!data.keys.length; if (!data.keys.length) select.append(new Option('Create an API key first', '')); for (const key of data.keys) { const option = new Option(key.name, key.appId); select.append(option); const row = el('article', 'api-key-row'), name = el('div'), title = el('strong', '', key.name), date = el('small', '', `Created ${new Date(key.createdAt).toLocaleDateString()}`), mask = el('code', '', `••••${key.lastFour}`), remove = el('button', 'button outline danger-button', 'Remove'); name.append(title, date); remove.addEventListener('click', async () => { if (!confirm(`Remove the API key for ${key.name}? Logs sent with it will be rejected.`)) return; remove.disabled = true; try { await api(`/api/keys/${encodeURIComponent(key.id)}`, { method: 'DELETE' }); await loadApiKeys() } catch (err) { status($('#key-status'), err.message, true); remove.disabled = false } }); row.append(name, mask, remove); container.append(row) } $('#send-test-log').disabled = !data.keys.length } catch (err) { status($('#key-status'), err.message, true) } }
+$('#create-api-key').addEventListener('click', () => { keyDialog.showModal(); $('#api-key-form').hidden = false; $('#new-key-panel').hidden = true; status($('#key-status'), ''); $('#api-key-form').reset() });
+$('#api-key-form').addEventListener('submit', async e => { e.preventDefault(); const button = e.submitter; button.disabled = true; try { const data = await api('/api/keys', { method: 'POST', body: JSON.stringify({ name: new FormData(e.currentTarget).get('name') }) }); $('#new-key-value').textContent = data.apiKey; $('#api-key-form').hidden = true; $('#new-key-panel').hidden = false; status($('#key-status'), ''); await loadApiKeys() } catch (err) { status($('#key-status'), err.message, true) } finally { button.disabled = false } });
+$('#copy-new-key').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#new-key-value').textContent); status($('#key-status'), 'Copied. Save it in your server environment now.') } catch { status($('#key-status'), 'Copy is unavailable. Select the key and copy it manually.', true) } });
+$('#key-finished').addEventListener('click', () => keyDialog.close());
+$('#test-log-key').addEventListener('change', e => $('#send-test-log').disabled = !e.target.value);
+$('#send-test-log').addEventListener('click', async e => { const button = e.currentTarget, appId = $('#test-log-key').value; if (!appId) return; button.disabled = true; status($('#test-log-status'), 'Sending test error…'); try { await api(`/api/apps/${encodeURIComponent(appId)}/test-log`, { method: 'POST' }); status($('#test-log-status'), 'Test error accepted. It will appear in Monitoring → Logs when monitoring launches.') } catch (err) { status($('#test-log-status'), err.message, true) } finally { button.disabled = !$('#test-log-key').value } });
 
-const baseUrl=location.origin;$('#ingest-url').textContent=`${baseUrl}/ingest`;
-$('#curl-example').textContent=['curl -X POST "$ROOTCAUSE_INGEST_URL" \\','  -H "Authorization: Bearer $ROOTCAUSE_API_KEY" \\','  -H "Content-Type: application/json" \\','  -d \'{"level":"error","message":"Test error","service":"my-store-api"}\''].join('\n');
-$('#node-example').textContent='async function sendLog(level, message, stack) {\n  try {\n    await fetch(process.env.ROOTCAUSE_INGEST_URL, {\n      method: "POST",\n      headers: {\n        "Authorization": `Bearer ${process.env.ROOTCAUSE_API_KEY}`,\n        "Content-Type": "application/json"\n      },\n      body: JSON.stringify({ level, message, stack, service: "my-store-api" }),\n      signal: AbortSignal.timeout(5000)\n    });\n  } catch (err) {\n    // Never let logging crash your app\n  }\n}';
-$('#python-example').textContent='import os, requests\n\ndef send_log(level, message, stack=None):\n    try:\n        requests.post(\n            os.environ["ROOTCAUSE_INGEST_URL"],\n            headers={"Authorization": f"Bearer {os.environ[\'ROOTCAUSE_API_KEY\']}"},\n            json={"level": level, "message": message, "stack": stack, "service": "my-store-api"},\n            timeout=5,\n        )\n    except Exception:\n        pass  # Never let logging crash your app';
-for(const button of $$('[data-code-tab]'))button.addEventListener('click',()=>{const active=button.dataset.codeTab;for(const b of $$('[data-code-tab]')){const selected=b===button;b.classList.toggle('active',selected);b.setAttribute('aria-selected',String(selected))}for(const panel of $$('[data-code-panel]'))panel.hidden=panel.dataset.codePanel!==active});
-$$('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#'+button.dataset.copy).textContent);const old=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=old,1200)}catch{status($('#key-status'),'Clipboard access was denied.',true)}}));
-async function loadLimits(){const targets=[$('#monthly-log-limit'),$('#billing-log-limit')].filter(Boolean);try{const data=await api('/api/account/limits');const label=`${Number(data.monthlyLogs).toLocaleString()} logs per month`;targets.forEach(target=>target.textContent=label)}catch{targets.forEach(target=>target.textContent='1,000 logs per month')}}
-$('#account-page').addEventListener('click',e=>{if(e.target.matches('[data-copy]'))return});
-$$('[data-close-dialog]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
-$('#open-delete-confirm').addEventListener('click',()=>{const dialog=$('#delete-dialog');dialog.showModal();$('#delete-confirm-button').disabled=true;$('#delete-form').reset();status($('#delete-status'),'')});
-$('#delete-form [name="password"]').addEventListener('input',e=>{$('#delete-confirm-button').disabled=e.target.value.length===0});
-$('#delete-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('#delete-confirm-button');button.disabled=true;try{await api('/api/account',{method:'DELETE',body:JSON.stringify({password:new FormData(e.currentTarget).get('password')})});location.assign('/')}catch(err){status($('#delete-status'),err.message,true);button.disabled=false}});
-async function signOut(){try{await api('/api/logout',{method:'POST'});location.assign('/')}catch(err){notify(err.message)}}
-$('#account-signout-button').addEventListener('click',signOut);
+const baseUrl = location.origin; $('#ingest-url').textContent = `${baseUrl}/ingest`;
+$('#curl-example').textContent = ['curl -X POST "$ROOTCAUSE_INGEST_URL" \\', '  -H "Authorization: Bearer $ROOTCAUSE_API_KEY" \\', '  -H "Content-Type: application/json" \\', '  -d \'{"level":"error","message":"Test error","service":"my-store-api"}\''].join('\n');
+$('#node-example').textContent = 'async function sendLog(level, message, stack) {\n  try {\n    await fetch(process.env.ROOTCAUSE_INGEST_URL, {\n      method: "POST",\n      headers: {\n        "Authorization": `Bearer ${process.env.ROOTCAUSE_API_KEY}`,\n        "Content-Type": "application/json"\n      },\n      body: JSON.stringify({ level, message, stack, service: "my-store-api" }),\n      signal: AbortSignal.timeout(5000)\n    });\n  } catch (err) {\n    // Never let logging crash your app\n  }\n}';
+$('#python-example').textContent = 'import os, requests\n\ndef send_log(level, message, stack=None):\n    try:\n        requests.post(\n            os.environ["ROOTCAUSE_INGEST_URL"],\n            headers={"Authorization": f"Bearer {os.environ[\'ROOTCAUSE_API_KEY\']}"},\n            json={"level": level, "message": message, "stack": stack, "service": "my-store-api"},\n            timeout=5,\n        )\n    except Exception:\n        pass  # Never let logging crash your app';
+for (const button of $$('[data-code-tab]')) button.addEventListener('click', () => { const active = button.dataset.codeTab; for (const b of $$('[data-code-tab]')) { const selected = b === button; b.classList.toggle('active', selected); b.setAttribute('aria-selected', String(selected)) } for (const panel of $$('[data-code-panel]')) panel.hidden = panel.dataset.codePanel !== active });
+$$('[data-copy]').forEach(button => button.addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#' + button.dataset.copy).textContent); const old = button.textContent; button.textContent = 'Copied'; setTimeout(() => button.textContent = old, 1200) } catch { status($('#key-status'), 'Clipboard access was denied.', true) } }));
+async function loadLimits() { const targets = [$('#monthly-log-limit'), $('#billing-log-limit')].filter(Boolean); try { const data = await api('/api/account/limits'); const label = `${Number(data.monthlyLogs).toLocaleString()} logs per month`; targets.forEach(target => target.textContent = label) } catch { targets.forEach(target => target.textContent = '1,000 logs per month') } }
+$('#account-page').addEventListener('click', e => { if (e.target.matches('[data-copy]')) return });
+$$('[data-close-dialog]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
+$('#open-delete-confirm').addEventListener('click', () => { const dialog = $('#delete-dialog'); dialog.showModal(); $('#delete-confirm-button').disabled = true; $('#delete-form').reset(); status($('#delete-status'), '') });
+$('#delete-form [name="password"]').addEventListener('input', e => { $('#delete-confirm-button').disabled = e.target.value.length === 0 });
+$('#delete-form').addEventListener('submit', async e => { e.preventDefault(); const button = $('#delete-confirm-button'); button.disabled = true; try { await api('/api/account', { method: 'DELETE', body: JSON.stringify({ password: new FormData(e.currentTarget).get('password') }) }); location.assign('/') } catch (err) { status($('#delete-status'), err.message, true); button.disabled = false } });
+async function signOut() { try { await api('/api/logout', { method: 'POST' }); location.assign('/') } catch (err) { notify(err.message) } }
+$('#account-signout-button').addEventListener('click', signOut);
 
-const codeReviewForm=$('#code-review-form');let reviewMode='paste';
-for(const button of $$('[data-review-mode]'))button.addEventListener('click',()=>{reviewMode=button.dataset.reviewMode;for(const b of $$('[data-review-mode]')){const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active))}for(const field of $$('.review-source'))field.hidden=field.id!==`review-${reviewMode}-field`;$('#review-report').hidden=true;status($('#review-status'),'')});
-function renderReview(result){const report=result.report,box=$('#review-report'),head=el('h3','',result.repository?`Security review · ${result.repository}`:'Security review'),summary=el('p','',`${report.filesScanned} source files scanned · ${report.findings.length} potential finding${report.findings.length===1?'':'s'}`),list=el('div','review-findings');if(!report.findings.length)list.append(el('p','empty-copy','No matching patterns were found. This does not prove the code is secure.'));for(const finding of report.findings){const card=el('article',`review-finding severity-${finding.severity}`);card.append(el('strong','',`${finding.severity.toUpperCase()} · ${finding.title}`),el('p','',`${finding.file}:${finding.line} · OWASP ${finding.id}`),el('pre','review-evidence',finding.evidence),el('p','',finding.recommendation));list.append(card)}box.replaceChildren(head,summary,list,el('p','fine-print',report.disclaimer));box.hidden=false}
-codeReviewForm.addEventListener('submit',async e=>{e.preventDefault();const button=$('#run-code-review');button.disabled=true;button.textContent='Reviewing…';status($('#review-status'),'Reviewing code in memory. Uploaded code is not stored.');$('#review-report').hidden=true;try{let result;if(reviewMode==='paste'){result=await api('/api/code-review/text',{method:'POST',body:JSON.stringify({code:$('#review-code').value})})}else if(reviewMode==='file'){const file=$('#review-file').files[0];if(!file)throw new Error('Choose a source file or ZIP archive.');if(file.name.toLowerCase().endsWith('.zip')){const form=new FormData();form.append('archive',file);result=await api('/api/code-review/zip',{method:'POST',body:form})}else{if(file.size>250000)throw new Error('Source files must be 250 KB or smaller.');result=await api('/api/code-review/text',{method:'POST',body:JSON.stringify({code:await file.text(),filename:file.name})})}}else result=await api('/api/code-review/github',{method:'POST',body:JSON.stringify({url:$('#review-repo').value.trim(),branch:$('#review-branch').value.trim(),path:$('#review-path').value.trim()})});renderReview(result);status($('#review-status'),`Review completed · ${new Date(result.report.checkedAt).toLocaleString()}`)}catch(err){status($('#review-status'),err.message,true)}finally{button.disabled=false;button.textContent='Review code'}});
+const codeReviewForm = $('#code-review-form'); let reviewMode = 'paste';
+for (const button of $$('[data-review-mode]')) button.addEventListener('click', () => { reviewMode = button.dataset.reviewMode; for (const b of $$('[data-review-mode]')) { const active = b === button; b.classList.toggle('active', active); b.setAttribute('aria-selected', String(active)) } for (const field of $$('.review-source')) field.hidden = field.id !== `review-${reviewMode}-field`; $('#review-report').hidden = true; status($('#review-status'), '') });
+function renderReview(result) { const report = result.report, box = $('#review-report'), head = el('h3', '', result.repository ? `Security review · ${result.repository}` : 'Security review'), summary = el('p', '', `${report.filesScanned} source files scanned · ${report.findings.length} potential finding${report.findings.length === 1 ? '' : 's'}`), list = el('div', 'review-findings'); if (!report.findings.length) list.append(el('p', 'empty-copy', 'No matching patterns were found. This does not prove the code is secure.')); for (const finding of report.findings) { const card = el('article', `review-finding severity-${finding.severity}`); card.append(el('strong', '', `${finding.severity.toUpperCase()} · ${finding.title}`), el('p', '', `${finding.file}:${finding.line} · OWASP ${finding.id}`), el('pre', 'review-evidence', finding.evidence), el('p', '', finding.recommendation)); list.append(card) } box.replaceChildren(head, summary, list, el('p', 'fine-print', report.disclaimer)); box.hidden = false }
+codeReviewForm.addEventListener('submit', async e => { e.preventDefault(); const button = $('#run-code-review'); button.disabled = true; button.textContent = 'Reviewing…'; status($('#review-status'), 'Reviewing code in memory. Uploaded code is not stored.'); $('#review-report').hidden = true; try { let result; if (reviewMode === 'paste') { result = await api('/api/code-review/text', { method: 'POST', body: JSON.stringify({ code: $('#review-code').value }) }) } else if (reviewMode === 'file') { const file = $('#review-file').files[0]; if (!file) throw new Error('Choose a source file or ZIP archive.'); if (file.name.toLowerCase().endsWith('.zip')) { const form = new FormData(); form.append('archive', file); result = await api('/api/code-review/zip', { method: 'POST', body: form }) } else { if (file.size > 250000) throw new Error('Source files must be 250 KB or smaller.'); result = await api('/api/code-review/text', { method: 'POST', body: JSON.stringify({ code: await file.text(), filename: file.name }) }) } } else result = await api('/api/code-review/github', { method: 'POST', body: JSON.stringify({ url: $('#review-repo').value.trim(), branch: $('#review-branch').value.trim(), path: $('#review-path').value.trim() }) }); renderReview(result); status($('#review-status'), `Review completed · ${new Date(result.report.checkedAt).toLocaleString()}`) } catch (err) { status($('#review-status'), err.message, true) } finally { button.disabled = false; button.textContent = 'Review code' } });
 
-const logInput=$('#dashboard-log-input');
-const historyList=$('#explanation-history'),historySearch=$('#history-search');
-let explanationHistory=[];
-function renderHistory(){const term=historySearch.value.trim().toLowerCase(),items=explanationHistory.filter(item=>!term||`${item.title} ${item.cause}`.toLowerCase().includes(term));historyList.replaceChildren();if(!items.length){historyList.append(el('p','history-empty',term?'No matching explanations.':'Your explanations will appear here.'));return}for(const item of items){const button=el('button','history-item'),title=el('strong','',item.title),meta=el('small','',new Date(item.createdAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}));button.type='button';button.append(title,meta);button.addEventListener('click',()=>restoreHistory(item,button));historyList.append(button)}}
-function restoreHistory(item,button){const meaning=$('#explanation-meaning'),fixes=$('#explanation-fixes');meaning.replaceChildren(el('h3','',item.title),el('p','',item.cause),el('p','fine-print',item.meta));const steps=el('ol');for(const step of item.steps)steps.append(el('li','',step));fixes.replaceChildren(steps,el('p','fine-print',item.remaining));$$('.history-item').forEach(node=>node.classList.toggle('active',node===button));document.querySelector('#explain').scrollIntoView({behavior:'smooth',block:'start'})}
-function addToHistory(explanation,data,meta){const item={title:explanation.title||'Untitled explanation',cause:explanation.cause||'',steps:Array.isArray(explanation.steps)?explanation.steps:[],meta,remaining:`${data.remaining} explanations remaining today · resets at 12:00 AM IST.`,createdAt:Date.now()};explanationHistory=[item,...explanationHistory].slice(0,30);renderHistory()}
-historySearch.addEventListener('input',renderHistory);
-$('#new-explanation').addEventListener('click',()=>{logInput.value='';$('#dashboard-log-count').textContent='0 / 12,000';$('#explanation-meaning').replaceChildren(el('p','empty-copy','Your explanation will appear here.'));$('#explanation-fixes').replaceChildren(el('p','empty-copy','Practical next steps will appear here.'));resizeLogInput();document.querySelector('#explain').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>logInput.focus(),250)});
-$('#sidebar-account').addEventListener('click',()=>toggleAccount(true));
-const workspaceViews={explain:$('#explain'),'security-review':$('#security-review'),'continuous-monitoring':$('#continuous-monitoring')};
-function showWorkspaceView(view='explain'){for(const [name,section] of Object.entries(workspaceViews))section.hidden=name!==view;$$('[data-workspace-view]').forEach(button=>button.classList.toggle('active',button.dataset.workspaceView===view));window.scrollTo({top:0,behavior:'smooth'})}
-$$('[data-workspace-view]').forEach(button=>button.addEventListener('click',()=>showWorkspaceView(button.dataset.workspaceView)));
-$('#new-explanation').addEventListener('click',()=>showWorkspaceView('explain'));
-function resizeLogInput(){const maxHeight=Math.min(window.innerHeight*.45,420);logInput.style.height='auto';const height=Math.min(logInput.scrollHeight,maxHeight);logInput.style.height=`${height}px`;logInput.style.overflowY=logInput.scrollHeight>maxHeight?'auto':'hidden'}
-logInput.addEventListener('input',e=>{$('#dashboard-log-count').textContent=`${e.target.value.length.toLocaleString()} / 12,000`;resizeLogInput()});
-window.addEventListener('resize',resizeLogInput);resizeLogInput();
-logInput.addEventListener('keydown',event=>{if((event.key==='Enter'&&!event.shiftKey)||(event.ctrlKey&&event.key==='Enter')){event.preventDefault();$('#dashboard-explain-btn').click()}});
-const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-const analysisPhrases=['Reading your log…','Finding the likely cause…','Mapping the error signals…','Preparing clear next steps…'];
-function startAnalysisShimmer(container){let index=0;const text=el('span','analysis-shimmer',analysisPhrases[index]);container.append(el('span','explanation-loader-mark'),text);const interval=setInterval(()=>{index=(index+1)%analysisPhrases.length;text.classList.remove('analysis-shimmer-in');void text.offsetWidth;text.textContent=analysisPhrases[index];text.classList.add('analysis-shimmer-in')},1800);return()=>clearInterval(interval)}
-async function typewriter(element,value){const text=String(value??'');element.classList.add('typewriter-cursor');if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){element.textContent=text;element.classList.remove('typewriter-cursor');return}element.textContent='';for(let i=0;i<text.length;i++){element.textContent=text.slice(0,i+1);await wait(8)}element.classList.remove('typewriter-cursor')}
-$('#dashboard-explain-btn').addEventListener('click',async e=>{
-  const button=e.currentTarget,text=logInput.value.trim(),meaning=$('#explanation-meaning'),fixes=$('#explanation-fixes'),announcement=$('#explanation-announcement');
-  if(!text){meaning.replaceChildren(el('p','empty-copy','Paste one error or log first. A stack trace for that error is okay.'));return}
-  button.disabled=true;button.innerHTML='<span class="aural-btn-text">Explaining…</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>';announcement.textContent='Analyzing the log.';
-  meaning.replaceChildren(Object.assign(el('div','explanation-loader'),{role:'status'}));
-  const loader=meaning.firstElementChild,stopShimmer=startAnalysisShimmer(loader);
-  fixes.replaceChildren(el('p','empty-copy','Preparing investigation steps\u2026'));
-  const startedAt=Date.now();
-  try{
-    const data=await api('/api/explain',{method:'POST',body:JSON.stringify({text})});
-    await wait(Math.max(0,2000-(Date.now()-startedAt)));
-    const x=data.explanation,source=x.source==='rule'?'Matched a known error pattern':x.source==='fallback'?'General guidance \u00b7 AI explanation unavailable':'',confidence=['Low','Medium','High'].includes(x.confidence)?x.confidence:'Low';
-    const title=el('h3','typewriter-cursor');meaning.replaceChildren(title);await typewriter(title,x.title||'A log signal needs a closer look');
-    const cause=el('p','');meaning.append(cause);await typewriter(cause,x.cause||'More surrounding context is needed to identify a likely cause.');
-    const meta=el('p','fine-print');meaning.append(meta);await typewriter(meta,[source,`Confidence: ${confidence}`,'Based on redacted log text.'].filter(Boolean).join(' \u00b7 '));
-    const steps=el('ol');fixes.replaceChildren(steps);
-    const items=(Array.isArray(x.steps)?x.steps:[]).filter(s=>typeof s==='string'&&s.trim());if(!items.length)items.push('Compare nearby events and recent changes to identify more context.');
-    for(const step of items){const li=el('li','');steps.append(li);await typewriter(li,step)}
-    const remaining=el('p','fine-print');fixes.append(remaining);await typewriter(remaining,`${data.remaining} explanations remaining today \u00b7 resets at 12:00 AM IST.`);addToHistory({...x,steps:items},data,[source,`Confidence: ${confidence}`,'Based on redacted log text.'].filter(Boolean).join(' \u00b7 '));
-    announcement.textContent='The explanation and troubleshooting steps are ready.';
-  }catch(err){meaning.replaceChildren(el('p','',err.message));fixes.replaceChildren(el('p','empty-copy','No troubleshooting steps are available for this request.'));announcement.textContent='The explanation could not be loaded.'}
-  finally{stopShimmer();button.disabled=false;button.innerHTML='<span class="aural-btn-text">Explain log</span><svg class="aural-btn-icon" viewBox="0 0 20 20" width="15" height="15" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'}
+const logInput = $('#dashboard-log-input');
+const historyList = $('#explanation-history'), historySearch = $('#history-search');
+let explanationHistory = [];
+function renderHistory() {
+  if (!historySearch || !historyList) return;
+  const term = historySearch.value.trim().toLowerCase(), items = explanationHistory.filter(item => !term || `${item.title} ${item.cause}`.toLowerCase().includes(term));
+  historyList.replaceChildren();
+  if (!items.length) { historyList.append(el('p', 'history-empty', term ? 'No matching explanations.' : 'Your explanations will appear here.')); return }
+  for (const item of items) {
+    const button = el('button', 'history-item'), title = el('strong', '', item.title), meta = el('small', '', new Date(item.createdAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
+    button.type = 'button';
+    button.append(title, meta);
+    button.addEventListener('click', () => restoreHistory(item, button));
+    historyList.append(button);
+  }
+}
+function restoreHistory(item, button) {
+  const meaning = $('#explanation-meaning'), fixes = $('#explanation-fixes');
+  if (!meaning || !fixes) return;
+  meaning.replaceChildren(el('h3', '', item.title), el('p', '', item.cause), el('p', 'fine-print', item.meta));
+  const steps = el('ol');
+  for (const step of item.steps) steps.append(el('li', '', step));
+  fixes.replaceChildren(steps, el('p', 'fine-print', item.remaining));
+  $$('.history-item').forEach(node => node.classList.toggle('active', node === button));
+  document.querySelector('#explain')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function addToHistory(explanation, data, meta) {
+  const item = { title: explanation.title || 'Untitled explanation', cause: explanation.cause || '', steps: Array.isArray(explanation.steps) ? explanation.steps : [], meta, remaining: `${data.remaining} explanations remaining today · resets at 12:00 AM IST.`, createdAt: Date.now() };
+  explanationHistory = [item, ...explanationHistory].slice(0, 30);
+  renderHistory();
+}
+if (historySearch) historySearch.addEventListener('input', renderHistory);
+
+const workspaceViews = {
+  explain: $('#explain'),
+  'security-review': $('#security-review'),
+  'continuous-monitoring': $('#continuous-monitoring')
+};
+
+function showWorkspaceView(view = 'explain') {
+  for (const [name, section] of Object.entries(workspaceViews)) {
+    if (section) section.hidden = name !== view;
+  }
+  const reviewSection = $('#review');
+  if (reviewSection) {
+    reviewSection.hidden = view !== 'explain';
+  }
+  $$('[data-workspace-view]').forEach(button => {
+    button.classList.toggle('active', button.dataset.workspaceView === view);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+$$('[data-workspace-view]').forEach(button => {
+  button.addEventListener('click', () => {
+    const view = button.dataset.workspaceView;
+    showWorkspaceView(view);
+    history.pushState(null, '', `#${view}`);
+  });
 });
 
-for(const dialog of $$('dialog'))dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
-async function boot(){try{const [profile]=await Promise.all([loadProfile(),loadApiKeys(),loadLimits()]);if(profile){const connections=$('#connection-list');connections.replaceChildren();if(profile.githubUsername){$('#connections-empty').hidden=true;connections.append(el('p','',`GitHub · @${profile.githubUsername} · repository access`))}else $('#connections-empty').hidden=false}if(window.initializeBilling)await window.initializeBilling()}catch(err){notify(err.message)}}
-function notify(message){const old=$('#global-status');if(old)old.remove();const box=el('div','global-status',message);box.id='global-status';box.setAttribute('role','status');document.body.append(box);setTimeout(()=>box.remove(),5000)}
-function showAccountResult(){const result=new URLSearchParams(location.search).get('github');if(result){toggleAccount(true,'general');history.replaceState(null,'',location.pathname+'#account');setTimeout(()=>notify(result==='connected'?'GitHub repository access connected.':'GitHub connection did not complete.'),100)}}
-setTheme();$('#account-page').addEventListener('transitionend',()=>{});boot();loadLimits();showAccountResult();
-if(location.hash==='#pricing')toggleAccount(true,'billing');
+$('#new-explanation')?.addEventListener('click', () => {
+  if (logInput) {
+    logInput.value = '';
+    resizeLogInput();
+    setTimeout(() => logInput.focus(), 250);
+  }
+  const count = $('#dashboard-log-count');
+  if (count) count.textContent = '0 / 12,000';
+  $('#explanation-meaning')?.replaceChildren(el('p', 'empty-copy', 'Your explanation will appear here.'));
+  $('#explanation-fixes')?.replaceChildren(el('p', 'empty-copy', 'Practical next steps will appear here.'));
+  showWorkspaceView('explain');
+  document.querySelector('#explain')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  history.pushState(null, '', '#explain');
+});
+
+$('.workspace-sidebar .brand')?.addEventListener('click', e => {
+  e.preventDefault();
+  showWorkspaceView('explain');
+  history.pushState(null, '', '#explain');
+});
+
+function syncViewFromHash() {
+  const hash = location.hash.replace(/^#/, '');
+  if (hash === 'security-review' || hash === 'continuous-monitoring') {
+    showWorkspaceView(hash);
+  } else if (hash === 'explain' || hash === '') {
+    showWorkspaceView('explain');
+  }
+}
+window.addEventListener('hashchange', syncViewFromHash);
+syncViewFromHash();
+function resizeLogInput() { const maxHeight = Math.min(window.innerHeight * .45, 420); logInput.style.height = 'auto'; const height = Math.min(logInput.scrollHeight, maxHeight); logInput.style.height = `${height}px`; logInput.style.overflowY = logInput.scrollHeight > maxHeight ? 'auto' : 'hidden' }
+logInput.addEventListener('input', e => { $('#dashboard-log-count').textContent = `${e.target.value.length.toLocaleString()} / 12,000`; resizeLogInput() });
+window.addEventListener('resize', resizeLogInput); resizeLogInput();
+logInput.addEventListener('keydown', event => { if ((event.key === 'Enter' && !event.shiftKey) || (event.ctrlKey && event.key === 'Enter')) { event.preventDefault(); $('#dashboard-explain-btn').click() } });
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const analysisPhrases = ['Reading your log…', 'Finding the likely cause…', 'Mapping the error signals…', 'Preparing clear next steps…'];
+function startAnalysisShimmer(container) { let index = 0; const text = el('span', 'analysis-shimmer', analysisPhrases[index]); container.append(el('span', 'explanation-loader-mark'), text); const interval = setInterval(() => { index = (index + 1) % analysisPhrases.length; text.classList.remove('analysis-shimmer-in'); void text.offsetWidth; text.textContent = analysisPhrases[index]; text.classList.add('analysis-shimmer-in') }, 1800); return () => clearInterval(interval) }
+async function typewriter(element, value) { const text = String(value ?? ''); element.classList.add('typewriter-cursor'); if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { element.textContent = text; element.classList.remove('typewriter-cursor'); return } element.textContent = ''; for (let i = 0; i < text.length; i++) { element.textContent = text.slice(0, i + 1); await wait(8) } element.classList.remove('typewriter-cursor') }
+$('#dashboard-explain-btn').addEventListener('click', async e => {
+  const button = e.currentTarget, text = logInput.value.trim(), meaning = $('#explanation-meaning'), fixes = $('#explanation-fixes'), announcement = $('#explanation-announcement');
+  if (!text) { meaning.replaceChildren(el('p', 'empty-copy', 'Paste one error or log first. A stack trace for that error is okay.')); return }
+  button.disabled = true; button.innerHTML = '<span class="aural-btn-text">Explaining…</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>'; announcement.textContent = 'Analyzing the log.';
+  meaning.replaceChildren(Object.assign(el('div', 'explanation-loader'), { role: 'status' }));
+  const loader = meaning.firstElementChild, stopShimmer = startAnalysisShimmer(loader);
+  fixes.replaceChildren(el('p', 'empty-copy', 'Preparing investigation steps\u2026'));
+  const startedAt = Date.now();
+  try {
+    const data = await api('/api/explain', { method: 'POST', body: JSON.stringify({ text }) });
+    await wait(Math.max(0, 2000 - (Date.now() - startedAt)));
+    const x = data.explanation, source = x.source === 'rule' ? 'Matched a known error pattern' : x.source === 'fallback' ? 'General guidance \u00b7 AI explanation unavailable' : '', confidence = ['Low', 'Medium', 'High'].includes(x.confidence) ? x.confidence : 'Low';
+    const title = el('h3', 'typewriter-cursor'); meaning.replaceChildren(title); await typewriter(title, x.title || 'A log signal needs a closer look');
+    const cause = el('p', ''); meaning.append(cause); await typewriter(cause, x.cause || 'More surrounding context is needed to identify a likely cause.');
+    const meta = el('p', 'fine-print'); meaning.append(meta); await typewriter(meta, [source, `Confidence: ${confidence}`, 'Based on redacted log text.'].filter(Boolean).join(' \u00b7 '));
+    const steps = el('ol'); fixes.replaceChildren(steps);
+    const items = (Array.isArray(x.steps) ? x.steps : []).filter(s => typeof s === 'string' && s.trim()); if (!items.length) items.push('Compare nearby events and recent changes to identify more context.');
+    for (const step of items) { const li = el('li', ''); steps.append(li); await typewriter(li, step) }
+    const remaining = el('p', 'fine-print'); fixes.append(remaining); await typewriter(remaining, `${data.remaining} explanations remaining today \u00b7 resets at 12:00 AM IST.`); addToHistory({ ...x, steps: items }, data, [source, `Confidence: ${confidence}`, 'Based on redacted log text.'].filter(Boolean).join(' \u00b7 '));
+    announcement.textContent = 'The explanation and troubleshooting steps are ready.';
+  } catch (err) { meaning.replaceChildren(el('p', '', err.message)); fixes.replaceChildren(el('p', 'empty-copy', 'No troubleshooting steps are available for this request.')); announcement.textContent = 'The explanation could not be loaded.' }
+  finally { stopShimmer(); button.disabled = false; button.innerHTML = '<span class="aural-btn-text">Explain log</span><svg class="aural-btn-icon" viewBox="0 0 20 20" width="15" height="15" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>' }
+});
+
+for (const dialog of $$('dialog')) dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close() });
+async function boot() { try { const [profile] = await Promise.all([loadProfile(), loadApiKeys(), loadLimits()]); if (profile) { const connections = $('#connection-list'); connections.replaceChildren(); if (profile.githubUsername) { $('#connections-empty').hidden = true; connections.append(el('p', '', `GitHub · @${profile.githubUsername} · repository access`)) } else $('#connections-empty').hidden = false } if (window.initializeBilling) await window.initializeBilling() } catch (err) { notify(err.message) } }
+function notify(message) { const old = $('#global-status'); if (old) old.remove(); const box = el('div', 'global-status', message); box.id = 'global-status'; box.setAttribute('role', 'status'); document.body.append(box); setTimeout(() => box.remove(), 5000) }
+function showAccountResult() { const result = new URLSearchParams(location.search).get('github'); if (result) { toggleAccount(true, 'general'); history.replaceState(null, '', location.pathname + '#account'); setTimeout(() => notify(result === 'connected' ? 'GitHub repository access connected.' : 'GitHub connection did not complete.'), 100) } }
+setTheme(); $('#account-page').addEventListener('transitionend', () => { }); boot(); loadLimits(); showAccountResult();
+if (location.hash === '#pricing') toggleAccount(true, 'billing');
