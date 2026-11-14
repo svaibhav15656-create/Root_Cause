@@ -91,7 +91,7 @@ async function typewriter(element,value){const text=String(value??'');element.cl
 $('#dashboard-explain-btn').addEventListener('click',async e=>{
   const button=e.currentTarget,text=logInput.value.trim(),meaning=$('#explanation-meaning'),fixes=$('#explanation-fixes'),announcement=$('#explanation-announcement');
   if(!text){meaning.replaceChildren(el('p','empty-copy','Paste one error or log first. A stack trace for that error is okay.'));return}
-  button.disabled=true;button.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>';announcement.textContent='Analyzing the log.';
+  button.disabled=true;button.innerHTML='<span class="aural-btn-text">Explaining…</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>';announcement.textContent='Analyzing the log.';
   meaning.replaceChildren(Object.assign(el('div','explanation-loader'),{role:'status'}));
   const loader=meaning.firstElementChild,stopShimmer=startAnalysisShimmer(loader);
   fixes.replaceChildren(el('p','empty-copy','Preparing investigation steps\u2026'));
@@ -109,7 +109,7 @@ $('#dashboard-explain-btn').addEventListener('click',async e=>{
     const remaining=el('p','fine-print');fixes.append(remaining);await typewriter(remaining,`${data.remaining} explanations remaining today \u00b7 resets at 12:00 AM IST.`);addToHistory({...x,steps:items},data,[source,`Confidence: ${confidence}`,'Based on redacted log text.'].filter(Boolean).join(' \u00b7 '));
     announcement.textContent='The explanation and troubleshooting steps are ready.';
   }catch(err){meaning.replaceChildren(el('p','',err.message));fixes.replaceChildren(el('p','empty-copy','No troubleshooting steps are available for this request.'));announcement.textContent='The explanation could not be loaded.'}
-  finally{stopShimmer();button.disabled=false;button.innerHTML='<svg class="prompt-arrow-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>'}
+  finally{stopShimmer();button.disabled=false;button.innerHTML='<span class="aural-btn-text">Explain log</span><svg class="aural-btn-icon" viewBox="0 0 20 20" width="15" height="15" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'}
 });
 
 for(const dialog of $$('dialog'))dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
