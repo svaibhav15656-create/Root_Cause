@@ -2308,7 +2308,7 @@ body[data-theme="light"] {
     inset: 0 !important;
     z-index: 1 !important;
     pointer-events: none !important;
-    background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(5,5,16,.45) 0%, transparent 70%) !important;
+    background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(5, 5, 16, .45) 0%, transparent 70%) !important;
 }
 
 .workspace-sidebar,
@@ -2321,7 +2321,7 @@ body[data-theme="light"] {
 
 /* sidebar keeps its own dark surface so it stays readable */
 .workspace-sidebar {
-    background: rgba(8,8,12,.82) !important;
+    background: rgba(8, 8, 12, .82) !important;
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
 }
@@ -2346,7 +2346,7 @@ body[data-theme="light"] {
 .topbar button {
     border: 1px solid #303136 !important;
     border-radius: 6px !important;
-    background: rgba(10,10,14,.85) !important;
+    background: rgba(10, 10, 14, .85) !important;
     color: #eeeeef !important;
     box-shadow: none !important
 }
@@ -2356,7 +2356,7 @@ body[data-theme="light"] {
 .page-content .button:hover:not(:disabled),
 .topbar button:hover:not(:disabled) {
     border-color: #5a5b61 !important;
-    background: rgba(16,16,20,.9) !important;
+    background: rgba(16, 16, 20, .9) !important;
     box-shadow: none !important
 }
 
@@ -2392,7 +2392,7 @@ body[data-theme="light"] {
 .explain-input-area textarea,
 .history-search input {
     border-color: #292a2e !important;
-    background: rgba(10,10,14,.75) !important;
+    background: rgba(10, 10, 14, .75) !important;
     box-shadow: none !important
 }
 
@@ -2458,7 +2458,7 @@ body[data-theme="light"] {
     font-size: clamp(48px, 6vw, 76px);
     line-height: 1.02;
     color: #f0f0f4;
-    text-shadow: 0 2px 32px rgba(140,100,230,0.18)
+    text-shadow: 0 2px 32px rgba(140, 100, 230, 0.18)
 }
 
 .explain-input-area textarea {
@@ -2657,19 +2657,19 @@ body[data-theme="light"] {
     width: 100% !important;
     max-width: 720px;
     margin: 0 auto;
-    border: 1px solid rgba(100,90,160,.35) !important;
+    border: 1px solid rgba(100, 90, 160, .35) !important;
     border-radius: 26px !important;
-    background: rgba(10,10,20,.72) !important;
+    background: rgba(10, 10, 20, .72) !important;
     backdrop-filter: blur(18px) !important;
     -webkit-backdrop-filter: blur(18px) !important;
     padding: 14px 16px 10px 18px !important;
-    box-shadow: 0 4px 32px rgba(80,50,160,0.18), 0 2px 8px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 4px 32px rgba(80, 50, 160, 0.18), 0 2px 8px rgba(0, 0, 0, 0.5) !important;
     transition: border-color .2s ease, box-shadow .2s ease;
 }
 
 .log-composer:focus-within {
-    border-color: rgba(140,100,230,.7) !important;
-    box-shadow: 0 0 0 1px rgba(140,100,230,.4), 0 8px 40px rgba(80,50,160,0.28), 0 2px 8px rgba(0,0,0,0.5) !important;
+    border-color: rgba(140, 100, 230, .7) !important;
+    box-shadow: 0 0 0 1px rgba(140, 100, 230, .4), 0 8px 40px rgba(80, 50, 160, 0.28), 0 2px 8px rgba(0, 0, 0, 0.5) !important;
 }
 
 .log-composer textarea {
@@ -2717,7 +2717,7 @@ body[data-theme="light"] {
     border: none !important;
     padding: 0 !important;
     cursor: pointer !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
     transition: transform .15s ease, background .15s ease !important;
 }
 
@@ -3519,13 +3519,16 @@ body[data-theme="light"] .sun-moon-toggle {
 .workspace-sidebar .brand {
     color: #f3f0ff !important;
 }
+
 .workspace-sidebar .brand b {
     color: #c4b5fd !important;
 }
+
 .workspace-sidebar .brand b span {
     color: #8b5cf6 !important;
     text-shadow: 0 0 10px rgba(139, 92, 246, 0.6) !important;
 }
+
 .workspace-sidebar .brand strong {
     color: #f3f0ff !important;
     letter-spacing: -0.01em !important;
@@ -3629,13 +3632,16 @@ body[data-theme="light"] .sun-moon-toggle {
     color: #ede9fe !important;
     font-size: 12px !important;
 }
+
 .workspace-sidebar .history-search input::placeholder {
     color: rgba(196, 181, 253, 0.4) !important;
 }
+
 .workspace-sidebar .history-item {
     border-radius: 8px !important;
     color: #c4b5fd !important;
 }
+
 .workspace-sidebar .history-item:hover {
     background: rgba(139, 92, 246, 0.14) !important;
     color: #ffffff !important;
@@ -3663,11 +3669,13 @@ body[data-theme="light"] .sun-moon-toggle {
     cursor: pointer !important;
     transition: all .2s ease !important;
 }
+
 .account-trigger.sidebar-account:hover {
     background: rgba(139, 92, 246, 0.18) !important;
     border-color: rgba(167, 139, 250, 0.4) !important;
     color: #ffffff !important;
 }
+
 #header-avatar {
     display: inline-flex !important;
     align-items: center !important;
@@ -3683,9 +3691,9 @@ body[data-theme="light"] .sun-moon-toggle {
 }
 
 
-/* ── 2. LOG COMPOSER ("bring back the search bar where we will paste log in middle") ── */
+/* ── 2. LOG COMPOSER (Restored prompt-input pill card) ── */
 .explain-input-area {
-    width: min(760px, 100%) !important;
+    width: min(740px, 100%) !important;
     margin: 0 auto !important;
 }
 
@@ -3705,71 +3713,67 @@ body[data-theme="light"] .sun-moon-toggle {
     letter-spacing: -0.02em !important;
 }
 
-.log-composer {
+.log-composer,
+.log-composer.prompt-input-card {
     position: relative !important;
     z-index: 2 !important;
     display: flex !important;
     flex-direction: column !important;
     width: 100% !important;
-    min-height: 180px !important;
-    border-radius: 20px !important;
-    background: rgba(8, 7, 22, 0.72) !important;
-    backdrop-filter: blur(24px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-    border: 1px solid rgba(139, 92, 246, 0.28) !important;
-    box-shadow:
-        0 14px 44px rgba(0, 0, 0, 0.65),
-        0 0 28px rgba(124, 58, 237, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    transition: border-color .25s ease, box-shadow .25s ease !important;
+    max-width: 720px !important;
+    min-height: auto !important;
+    margin: 0 auto !important;
+    border: 1px solid rgba(139, 92, 246, 0.35) !important;
+    border-radius: 26px !important;
+    background: rgba(10, 10, 20, 0.72) !important;
+    backdrop-filter: blur(18px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+    padding: 14px 16px 10px 18px !important;
+    box-shadow: 0 4px 32px rgba(80, 50, 160, 0.18), 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+    overflow: visible !important;
+    transition: border-color .2s ease, box-shadow .2s ease !important;
 }
 
-.log-composer:focus-within {
-    border-color: rgba(167, 139, 250, 0.65) !important;
-    box-shadow:
-        0 18px 56px rgba(0, 0, 0, 0.75),
-        0 0 40px rgba(139, 92, 246, 0.32),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+.log-composer:focus-within,
+.log-composer.prompt-input-card:focus-within {
+    border-color: rgba(167, 139, 250, 0.7) !important;
+    box-shadow: 0 0 0 1px rgba(140, 100, 230, 0.4), 0 8px 40px rgba(80, 50, 160, 0.28), 0 2px 8px rgba(0, 0, 0, 0.5) !important;
 }
 
 .log-composer textarea {
     display: block !important;
     width: 100% !important;
-    min-height: 120px !important;
-    max-height: 420px !important;
-    padding: 18px 22px 10px 22px !important;
-    background: transparent !important;
+    min-height: 44px !important;
+    max-height: 240px !important;
     border: none !important;
     outline: none !important;
-    color: #f8fafc !important;
-    font: 14px/1.65 'DM Mono', Consolas, Monaco, monospace !important;
-    letter-spacing: -0.01em !important;
+    background: transparent !important;
+    color: #f1f2f4 !important;
+    font: 14px/1.65 Inter, 'DM Sans', system-ui, sans-serif !important;
     resize: none !important;
+    padding: 0 0 6px 0 !important;
+    margin: 0 !important;
     box-shadow: none !important;
-    caret-color: #a78bfa !important;
+    overscroll-behavior: contain !important;
+}
+
+.log-composer textarea:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .log-composer textarea::placeholder {
-    color: rgba(196, 181, 253, 0.42) !important;
-    font-family: 'DM Sans', -apple-system, sans-serif !important;
-    font-size: 15px !important;
+    color: rgba(196, 181, 253, 0.48) !important;
+    font-size: 14px !important;
 }
 
-.log-composer-footer {
+.prompt-input-actions {
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
-    padding: 10px 14px 12px 20px !important;
-    border-top: 1px solid rgba(139, 92, 246, 0.12) !important;
-    background: rgba(15, 12, 35, 0.3) !important;
-}
-
-.composer-hint {
-    color: rgba(196, 181, 253, 0.45) !important;
-    font: 400 12px/1.4 'DM Sans', -apple-system, sans-serif !important;
-    letter-spacing: .01em !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    padding-top: 2px !important;
 }
 
 
@@ -3779,6 +3783,7 @@ body[data-theme="light"] .sun-moon-toggle {
     inherits: false;
     initial-value: 0deg;
 }
+
 @property --shine {
     syntax: "<percentage>";
     inherits: false;
@@ -3786,14 +3791,16 @@ body[data-theme="light"] .sun-moon-toggle {
 }
 
 @keyframes aural-spin {
-    to { --a: 360deg; }
+    to {
+        --a: 360deg;
+    }
 }
 
 .aural-btn,
 #dashboard-explain-btn {
     all: unset !important;
     box-sizing: border-box !important;
-    --h: 44px;
+    --h: 36px;
     height: var(--h) !important;
     color: #121018 !important;
     font: 600 13px/1 'Geist', 'DM Sans', system-ui, -apple-system, sans-serif !important;
@@ -3805,15 +3812,15 @@ body[data-theme="light"] .sun-moon-toggle {
     border: 0 !important;
     border-radius: 999px !important;
     align-items: center !important;
-    gap: 10px !important;
-    padding: 0 18px 0 22px !important;
+    gap: 8px !important;
+    padding: 0 16px 0 18px !important;
     text-decoration: none !important;
     display: inline-flex !important;
     position: relative !important;
     box-shadow:
         inset 0 1px 1px rgba(255, 255, 255, 0.95),
         inset 0 -1px 1px rgba(0, 0, 0, 0.25),
-        0 10px 28px -8px rgba(201, 165, 135, 0.75),
+        0 8px 22px -6px rgba(201, 165, 135, 0.75),
         0 2px 6px rgba(0, 0, 0, 0.4) !important;
     transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s cubic-bezier(.22, 1, .36, 1) !important;
 }
@@ -3898,6 +3905,7 @@ body[data-theme="light"] .sun-moon-toggle {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .aural-btn:before,
     #dashboard-explain-btn:before {
         animation: none !important;
