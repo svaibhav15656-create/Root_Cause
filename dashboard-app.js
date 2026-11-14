@@ -83,7 +83,7 @@ $('#new-explanation').addEventListener('click',()=>showWorkspaceView('explain'))
 function resizeLogInput(){const maxHeight=Math.min(window.innerHeight*.45,420);logInput.style.height='auto';const height=Math.min(logInput.scrollHeight,maxHeight);logInput.style.height=`${height}px`;logInput.style.overflowY=logInput.scrollHeight>maxHeight?'auto':'hidden'}
 logInput.addEventListener('input',e=>{$('#dashboard-log-count').textContent=`${e.target.value.length.toLocaleString()} / 12,000`;resizeLogInput()});
 window.addEventListener('resize',resizeLogInput);resizeLogInput();
-logInput.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();$('#dashboard-explain-btn').click()}});
+logInput.addEventListener('keydown',event=>{if((event.key==='Enter'&&!event.shiftKey)||(event.ctrlKey&&event.key==='Enter')){event.preventDefault();$('#dashboard-explain-btn').click()}});
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const analysisPhrases=['Reading your log…','Finding the likely cause…','Mapping the error signals…','Preparing clear next steps…'];
 function startAnalysisShimmer(container){let index=0;const text=el('span','analysis-shimmer',analysisPhrases[index]);container.append(el('span','explanation-loader-mark'),text);const interval=setInterval(()=>{index=(index+1)%analysisPhrases.length;text.classList.remove('analysis-shimmer-in');void text.offsetWidth;text.textContent=analysisPhrases[index];text.classList.add('analysis-shimmer-in')},1800);return()=>clearInterval(interval)}
@@ -91,7 +91,7 @@ async function typewriter(element,value){const text=String(value??'');element.cl
 $('#dashboard-explain-btn').addEventListener('click',async e=>{
   const button=e.currentTarget,text=logInput.value.trim(),meaning=$('#explanation-meaning'),fixes=$('#explanation-fixes'),announcement=$('#explanation-announcement');
   if(!text){meaning.replaceChildren(el('p','empty-copy','Paste one error or log first. A stack trace for that error is okay.'));return}
-  button.disabled=true;button.textContent='Reading your log\u2026';announcement.textContent='Analyzing the log.';
+  button.disabled=true;button.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>';announcement.textContent='Analyzing the log.';
   meaning.replaceChildren(Object.assign(el('div','explanation-loader'),{role:'status'}));
   const loader=meaning.firstElementChild,stopShimmer=startAnalysisShimmer(loader);
   fixes.replaceChildren(el('p','empty-copy','Preparing investigation steps\u2026'));
@@ -109,7 +109,7 @@ $('#dashboard-explain-btn').addEventListener('click',async e=>{
     const remaining=el('p','fine-print');fixes.append(remaining);await typewriter(remaining,`${data.remaining} explanations remaining today \u00b7 resets at 12:00 AM IST.`);addToHistory({...x,steps:items},data,[source,`Confidence: ${confidence}`,'Based on redacted log text.'].filter(Boolean).join(' \u00b7 '));
     announcement.textContent='The explanation and troubleshooting steps are ready.';
   }catch(err){meaning.replaceChildren(el('p','',err.message));fixes.replaceChildren(el('p','empty-copy','No troubleshooting steps are available for this request.'));announcement.textContent='The explanation could not be loaded.'}
-  finally{stopShimmer();button.disabled=false;button.textContent='Explain log'}
+  finally{stopShimmer();button.disabled=false;button.innerHTML='<svg class="prompt-arrow-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>'}
 });
 
 for(const dialog of $$('dialog'))dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
