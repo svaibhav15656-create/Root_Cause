@@ -144,14 +144,14 @@ dialog#auth-dialog>#auth-title{text-align:center;font:400 clamp(40px,6vw,54px)/1
 dialog#auth-dialog>#auth-subtitle{text-align:center;color:#a7a8ab;font-size:14px;line-height:1.55;margin:0 0 9px}
 dialog#auth-dialog>#auth-form{display:grid;gap:12px}
 dialog#auth-dialog>#auth-form>label{display:grid;gap:7px;color:#b9bbc0;font-size:10px;letter-spacing:.09em}
-dialog#auth-dialog>#auth-form input{width:100%;box-sizing:border-box;min-height:50px;padding:0 15px;border:1px solid #343538;border-radius:11px;background:#141415!important;color:#f1f1f2!important;font:14px Inter,Arial,sans-serif;letter-spacing:normal}
+dialog#auth-dialog>#auth-form input:not([type=checkbox]){width:100%;box-sizing:border-box;min-height:50px;padding:0 15px;border:1px solid #343538;border-radius:11px;background:#141415!important;color:#f1f1f2!important;font:14px Inter,Arial,sans-serif;letter-spacing:normal}
 dialog#auth-dialog>#auth-form input::placeholder{color:#77797e}
 dialog#auth-dialog>#auth-form .btn{width:100%;min-height:49px;margin-top:2px;border:1px solid #343538;border-radius:11px;background:linear-gradient(135deg,#292a2c,#151516);color:#f3f3f4;font-size:14px}
 dialog#auth-dialog>#auth-form .error{margin:0;color:#ff9b9b;font-size:12px}
 dialog#auth-dialog>.auth-consent{text-align:center;color:#929499;font-size:11px;line-height:1.6;margin-top:2px}
 dialog#auth-dialog>.auth-consent a{color:#c4c5c9}
-#age-wrap{display:flex!important;flex-direction:row!important;align-items:center;gap:9px;margin:8px 0 0;font-size:12px;color:#c4c5c9;cursor:pointer}
-#age-wrap input[type=checkbox]{width:16px;height:16px;min-height:unset;accent-color:#6f8e74;flex-shrink:0;cursor:pointer}
+dialog#auth-dialog #age-wrap,dialog#auth-dialog>#auth-form label#age-wrap,#age-wrap{display:flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;margin:8px 0!important;font-size:12px!important;letter-spacing:normal!important;text-transform:none!important;color:#c4c5c9!important;cursor:pointer!important;width:100%!important}
+dialog#auth-dialog #age-wrap input[type=checkbox],dialog#auth-dialog>#auth-form input[type=checkbox],#age-wrap input[type=checkbox]{width:18px!important;min-width:18px!important;max-width:18px!important;height:18px!important;min-height:18px!important;padding:0!important;margin:0!important;border:1px solid #45474d!important;border-radius:4px!important;background:#141415!important;accent-color:#6f8e74!important;flex:0 0 18px!important;cursor:pointer!important}
 #age-wrap.hidden{display:none!important}
 dialog#auth-dialog>#forgot-password{text-align:center;color:#c4c5c9;margin-top:2px}
 dialog#auth-dialog>p:last-child{text-align:center;color:#a7a8ab;font-size:13px;margin-top:2px}

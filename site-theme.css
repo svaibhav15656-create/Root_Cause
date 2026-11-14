@@ -123,7 +123,7 @@ button,.btn,.button,.btn.dark,.button.primary,.hero .btn.dark{border:1px solid #
 .ihb:hover:not(:disabled) .ihb-blob,.ihb:focus-visible:not(:disabled) .ihb-blob{left:0;top:0;width:100%;height:100%;border-radius:999px;transform:scale(1.05);opacity:1}
 .ihb:disabled,.btn.ihb:disabled,.button.ihb:disabled{opacity:.55;cursor:not-allowed}
 .ihb:disabled .ihb-blob{opacity:.35}
-.log-composer>.button.ihb{min-width:0;min-height:34px;padding:7px 14px!important;font-size:12px}
+.log-composer>.button.ihb,.log-composer>.button{position:absolute!important;right:14px!important;bottom:14px!important;z-index:5!important;min-width:0!important;min-height:34px!important;padding:7px 14px!important;font-size:12px!important}
 body[data-theme="light"] .ihb,body[data-theme="light"] .btn.ihb,body[data-theme="light"] .button.ihb{background:#fff!important;border-color:#cfd0d5!important;color:#17181b!important}
 body[data-theme="light"] .button.primary.ihb,body[data-theme="light"] .btn.dark.ihb{background:#17181b!important;border-color:#17181b!important;color:#fff!important}
 body[data-theme="light"] .ihb-blob{background:#17181b}
