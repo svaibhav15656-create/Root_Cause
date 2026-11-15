@@ -2866,18 +2866,29 @@ body[data-theme="light"] {
 .workspace-sidebar {
     width: var(--sidebar-collapsed) !important;
     padding: 22px 12px 14px !important;
-    transition: width .22s ease
+    transition: width .22s ease;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    overflow: hidden !important;
 }
 
 .workspace-sidebar:hover,
 .workspace-sidebar:focus-within {
-    width: var(--sidebar-expanded) !important
+    width: var(--sidebar-expanded) !important;
+    align-items: stretch !important;
 }
 
 .workspace-sidebar .brand {
     gap: 10px;
     padding: 0 8px;
-    margin-bottom: 22px
+    margin-bottom: 22px;
+    justify-content: center;
+}
+
+.workspace-sidebar:hover .brand,
+.workspace-sidebar:focus-within .brand {
+    justify-content: flex-start;
 }
 
 .workspace-sidebar .brand strong,
@@ -2912,12 +2923,14 @@ body[data-theme="light"] {
 .sidebar-features {
     display: grid;
     gap: 4px;
-    margin: 0 0 12px
+    margin: 0 0 12px;
+    width: 100%;
 }
 
 .sidebar-feature {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     width: 100%;
     min-height: 39px;
@@ -2929,7 +2942,12 @@ body[data-theme="light"] {
     font: 12px/1.2 'DM Sans', Arial, sans-serif;
     text-align: left;
     white-space: nowrap;
-    cursor: not-allowed
+    cursor: pointer;
+}
+
+.workspace-sidebar:hover .sidebar-feature,
+.workspace-sidebar:focus-within .sidebar-feature {
+    justify-content: flex-start;
 }
 
 .sidebar-feature:disabled {
@@ -2950,9 +2968,15 @@ body[data-theme="light"] {
 }
 
 .workspace-sidebar .sidebar-new {
-    justify-content: flex-start;
+    justify-content: center;
     gap: 10px;
-    white-space: nowrap
+    white-space: nowrap;
+    width: 100%;
+}
+
+.workspace-sidebar:hover .sidebar-new,
+.workspace-sidebar:focus-within .sidebar-new {
+    justify-content: flex-start;
 }
 
 .workspace-sidebar .sidebar-new>span:first-child {
@@ -2966,8 +2990,25 @@ body[data-theme="light"] {
 }
 
 .workspace-sidebar .sidebar-account {
+    justify-content: center;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.workspace-sidebar:hover .sidebar-account,
+.workspace-sidebar:focus-within .sidebar-account {
     justify-content: flex-start;
-    white-space: nowrap
+}
+
+/* Theme toggle */
+.workspace-sidebar .sun-moon-toggle {
+    margin: auto 0 0 0 !important;
+    align-self: center !important;
+}
+
+.workspace-sidebar:hover .sun-moon-toggle,
+.workspace-sidebar:focus-within .sun-moon-toggle {
+    align-self: flex-start !important;
 }
 
 .page-content {
@@ -3691,7 +3732,25 @@ body[data-theme="light"] .sun-moon-toggle {
 }
 
 
-/* ── 2. LOG COMPOSER (Restored prompt-input pill card) ── */
+/* ── 2. LOG COMPOSER (Restored prompt-input pill card — vertically centered) ── */
+
+/* Vertically center the heading + input when no results are showing */
+.explain-section {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 100vh !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.explain-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
 .explain-input-area {
     width: min(740px, 100%) !important;
     margin: 0 auto !important;
